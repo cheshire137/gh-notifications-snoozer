@@ -8,7 +8,13 @@
     "electron-prebuilt": "^1.2.6"
   },
   "devDependencies": {
-    "electron-prebuilt": "^1.2.6"
+    "electron-prebuilt": "^1.2.6",
+    "eslint": "^3.0.1",
+    "eslint-config-airbnb": "^9.0.1",
+    "eslint-plugin-import": "^1.10.2",
+    "eslint-plugin-jsx-a11y": "^2.0.0",
+    "eslint-plugin-react": "^5.2.2",
+    "spectron": "^3.2.6"
   },
   "scripts": {
     "start": "./node_modules/.bin/electron .",
