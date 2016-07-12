@@ -1,0 +1,27 @@
+{
+  "name": "gh-notifications-snoozer",
+  "version": "0.0.1",
+  "description": "An easier way to deal with github notifications",
+  "main": "main.js",
+  "dependencies": {
+    "electron": "^0.4.1",
+    "electron-prebuilt": "^1.2.6"
+  },
+  "devDependencies": {
+    "electron-prebuilt": "^1.2.6"
+  },
+  "scripts": {
+    "start": "./node_modules/.bin/electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cheshire137/gh-notifications-snoozer.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cheshire137/gh-notifications-snoozer/issues"
+  },
+  "homepage": "https://github.com/cheshire137/gh-notifications-snoozer#readme"
+}
