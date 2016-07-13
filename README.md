@@ -11,3 +11,4 @@ git clone https://github.com/cheshire137/gh-notifications-snoozer
 cd gh-notifications-snoozer
 # Install dependencies and run the app
 npm install && npm start
+```
