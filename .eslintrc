@@ -1,4 +1,10 @@
 // Using the airbnb linter rules https://github.com/airbnb/javascript/tree/master/packages/eslint-config-airbnb
 {
-  "extends": "airbnb"
+  extends: "airbnb",
+  env: {
+    mocha: true
+  },
+  rules: {
+    semi: [2, "never"]
+  }
 }
