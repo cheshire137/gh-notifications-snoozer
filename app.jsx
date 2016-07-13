@@ -1,6 +1,6 @@
 const React = require('react')
-const Filter = require('./filter')
-const TaskList = require('./task-list')
+const Filter = require('./components/Filter')
+const TaskList = require('./components/TaskList')
 
 class App extends React.Component {
   render() {
