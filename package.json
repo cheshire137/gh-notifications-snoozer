@@ -27,7 +27,7 @@
     "type": "git",
     "url": "git+https://github.com/cheshire137/gh-notifications-snoozer.git"
   },
-  "author": "",
+  "author": "probablycorey and cheshire137",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/cheshire137/gh-notifications-snoozer/issues"
