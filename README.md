@@ -12,3 +12,8 @@ cd gh-notifications-snoozer
 # Install dependencies and run the app
 npm install && npm start
 ```
+
+## How to Run Tests
+
+    npm install
+    npm test
