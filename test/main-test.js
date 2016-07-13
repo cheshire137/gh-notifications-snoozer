@@ -1,23 +1,25 @@
 const Application = require('spectron').Application
 const assert = require('assert')
+const path = require('path')
 
-describe('application launch', () => {
+describe('application launch', function() {
   this.timeout(10000)
 
-  beforeEach(() => {
+  beforeEach(function() {
     this.app = new Application({
-      path: '/Applications/MyApp.app/Contents/MacOS/MyApp'
+      path: path.join(__dirname, '..', 'node_modules', '.bin', 'electron'),
+      args: [path.join(__dirname, '..')]
     })
     return this.app.start()
   })
 
-  afterEach(() => {
+  afterEach(function() {
     if (this.app && this.app.isRunning()) {
       return this.app.stop()
     }
   })
 
-  it('shows an initial window', () => {
+  it('shows an initial window', function() {
     return this.app.client.getWindowCount().then(function (count) {
       assert.equal(count, 1)
     })
