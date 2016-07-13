@@ -1,3 +1,17 @@
-// This file is required by the index.html file and will
-// be executed in the renderer process for that window.
-// All of the Node.js APIs are available in this process.
+const React = require('react')
+const ReactDOM = require('react-dom')
+
+class App extends React.Component {
+  render() {
+    return (
+      <p>sarah</p>
+    )
+    // return React.createElement('p', {}, 'sarah')
+  }
+}
+
+
+ReactDOM.render(
+  React.createElement(App, null),
+  document.getElementById('content')
+)

@@ -24,4 +24,10 @@ describe('application launch', function() {
       assert.equal(count, 1)
     })
   })
+
+  it('renders sarah', function() {
+    return this.app.client.getText('p').then(text => {
+      assert.equal('sarah', text)
+    })
+  })
 })
