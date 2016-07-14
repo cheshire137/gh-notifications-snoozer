@@ -1,8 +1,8 @@
 const React = require('react')
-const Filter = require('./filter')
-const TaskList = require('./task-list')
+const Filter = require('../Filter')
+const TaskList = require('../TaskList')
 
-class App extends React.Component {
+class Main extends React.Component {
   render() {
     return (
       <div>
@@ -13,4 +13,4 @@ class App extends React.Component {
   }
 }
 
-module.exports = App
+module.exports = Main
