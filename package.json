@@ -20,7 +20,7 @@
   },
   "scripts": {
     "start": "./scripts/verify-token && ./node_modules/.bin/electron src/main.js",
-    "style": "./node_modules/.bin/eslint -c .eslintrc *.js components/**/*.jsx test/*.js",
+    "style": "./node_modules/.bin/eslint -c .eslintrc *.js scripts/* src/**/*.jsx test/*.js",
     "test": "npm run-script style && mocha"
   },
   "repository": {

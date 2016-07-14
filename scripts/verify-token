@@ -20,5 +20,5 @@ function exit() {
   console.log("1. Create the token at https://github.com/settings/tokens/new. Make sure it has the `repo` scope.")
   console.log("2. From the shell run `echo TOKEN > .env`. TOKEN is the token you got in step one")
   console.log("3. You are all set!")
-  process.exit(1);
+  process.exit(1)
 }
