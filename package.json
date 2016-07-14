@@ -21,7 +21,8 @@
   "scripts": {
     "start": "./scripts/verify-token && ./node_modules/.bin/electron src/main.js",
     "style": "./node_modules/.bin/eslint -c .eslintrc *.js scripts/* src/**/*.jsx test/*.js",
-    "test": "npm run-script style && mocha"
+    "unit-tests": "mocha",
+    "test": "npm run-script style && npm run-script unit-tests"
   },
   "repository": {
     "type": "git",

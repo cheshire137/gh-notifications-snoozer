@@ -29,4 +29,4 @@ Run the app with: `npm start`
     npm install
     npm test
 
-You can run just the style checker by itself with `npm run-script style`.
+You can run just the style checker by itself with `npm run-script style`. You can run just the tests by themselves with `npm run-script unit-tests`.
