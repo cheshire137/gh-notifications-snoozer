@@ -20,7 +20,7 @@
     "spectron": "^3.2.6"
   },
   "scripts": {
-    "start": "./node_modules/.bin/electron .",
+    "start": "./scripts/verify-token && ./node_modules/.bin/electron .",
     "test": "mocha"
   },
   "repository": {
