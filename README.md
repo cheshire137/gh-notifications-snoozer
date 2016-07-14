@@ -2,16 +2,27 @@
 
 Lists and rules and snoozing PRs, oh my!
 
-## To Use
+## How to Develop
+
+### First-time Setup
 
 ```bash
 # Clone this repository
 git clone https://github.com/cheshire137/gh-notifications-snoozer
 # Go into the repository
 cd gh-notifications-snoozer
-# Install dependencies and run the app
-npm install && npm start
+# Install dependencies
+npm install
 ```
+
+You must have a `.env` file containing a GitHub personal access token.
+
+1. [Create a token](https://github.com/settings/tokens/new) with the `repo` scope.
+2. From your terminal, run `echo YOUR_TOKEN > .env` where YOUR_TOKEN is the token you got in step one.
+
+### Every Time
+
+Run the app with: `npm start`
 
 ## How to Run Tests
 
