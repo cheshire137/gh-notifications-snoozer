@@ -8,7 +8,7 @@ describe('application launch', function() {
   beforeEach(function() {
     this.app = new Application({
       path: path.join(__dirname, '..', 'node_modules', '.bin', 'electron'),
-      args: [path.join(__dirname, '..')]
+      args: [path.join(__dirname, '..', 'src')]
     })
     return this.app.start()
   })
