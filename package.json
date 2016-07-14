@@ -19,7 +19,7 @@
     "spectron": "^3.2.6"
   },
   "scripts": {
-    "start": "./node_modules/.bin/electron src/main.js",
+    "start": "./scripts/verify-token && ./node_modules/.bin/electron src/main.js",
     "style": "./node_modules/.bin/eslint -c .eslintrc *.js components/**/*.jsx test/*.js",
     "test": "npm run-script style && mocha"
   },
