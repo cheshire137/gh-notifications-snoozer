@@ -21,7 +21,8 @@
   },
   "scripts": {
     "start": "./node_modules/.bin/electron .",
-    "test": "mocha"
+    "style": "./node_modules/.bin/eslint -c .eslintrc *.js components/**/*.jsx test/*.js",
+    "test": "npm run-script style && mocha"
   },
   "repository": {
     "type": "git",

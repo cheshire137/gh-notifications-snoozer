@@ -17,3 +17,5 @@ npm install && npm start
 
     npm install
     npm test
+
+You can run just the style checker by itself with `npm run-script style`.
