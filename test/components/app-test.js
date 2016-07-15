@@ -2,6 +2,7 @@ const assert = require('assert')
 const jsdom = require('jsdom')
 const React = require('react')
 const ReactDOM = require('react-dom')
+const ReactRedux = require('react-redux')
 const Redux = require('redux')
 const TestUtils = require('react-addons-test-utils')
 
@@ -20,7 +21,11 @@ describe('App', function() {
   })
 
   it('renders', function() {
-    const appComponent = TestUtils.renderIntoDocument(<App />)
+    const appComponent = TestUtils.renderIntoDocument(
+      <ReactRedux.Provider store={store}>
+        <App />
+      </ReactRedux.Provider>
+    )
     assert(ReactDOM.findDOMNode(appComponent))
   })
 })
