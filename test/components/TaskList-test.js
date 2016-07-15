@@ -5,10 +5,10 @@ const ReactDOM = require('react-dom')
 const Redux = require('redux')
 const TestUtils = require('react-addons-test-utils')
 
-const App = require('../../components/App')
+const TaskList = require('../../components/TaskList')
 const reducer = require('../../reducers/reducer')
 
-describe('App', function() {
+describe('TaskList', function() {
   let store
 
   before(function() {
@@ -20,7 +20,7 @@ describe('App', function() {
   })
 
   it('renders', function() {
-    const appComponent = TestUtils.renderIntoDocument(<App />)
+    const appComponent = TestUtils.renderIntoDocument(<TaskList store={store}/>)
     assert(ReactDOM.findDOMNode(appComponent))
   })
 })
