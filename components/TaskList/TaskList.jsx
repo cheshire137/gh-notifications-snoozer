@@ -4,7 +4,7 @@ const { connect } = require('react-redux')
 const TaskList = ({tasks}) => {
   const taskElements = tasks
     .filter((task) => {
-      return !task.ignore
+      return !task.ignore && !task.archived
     })
     .map((task) => {
       return <li key={task.id}>{task.title}</li>
