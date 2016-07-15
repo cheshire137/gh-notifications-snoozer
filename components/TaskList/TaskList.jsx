@@ -1,20 +1,30 @@
 const React = require('react')
+const { connect } = require('react-redux')
 
-class TaskList extends React.Component {
-  render() {
-    return (
-      <div>
-        <nav>
-          <button>snooze</button>
-          <button>ignore</button>
-          <button>archive</button>
-        </nav>
-        <ol>
-          <li>LOOK AT THIS ISSUE</li>
-        </ol>
-      </div>
-    )
+const TaskList = ({tasks}) => {
+  const taskElements = tasks.map((task) => {
+    return <li key={task.id}>{task.title}</li>
+  })
+
+
+  return (
+    <div>
+      <nav>
+        <button>snooze</button>
+        <button>ignore</button>
+        <button>archive</button>
+      </nav>
+      <ol>
+        {taskElements}
+      </ol>
+    </div>
+  )
+}
+
+const mapStateToProps = (tasks) => {
+  return {
+    tasks: tasks
   }
 }
 
-module.exports = TaskList
+module.exports = connect(mapStateToProps)(TaskList)
