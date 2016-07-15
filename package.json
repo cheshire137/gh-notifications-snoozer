@@ -17,7 +17,7 @@
     "react-addons-test-utils": "^15.2.1"
   },
   "scripts": {
-    "start": "./node_modules/.bin/electron .",
+    "start": "./scripts/verify-token && ./node_modules/.bin/electron .",
     "test": "./node_modules/.bin/electron-mocha --recursive --compilers js:babel-register test"
   },
   "repository": {
