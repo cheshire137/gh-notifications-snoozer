@@ -7,12 +7,18 @@
     <div id="content"></div>
   </body>
   <script>
-    const App = require('./components/App')
     const React = require('react')
-    const ReactDOM = require('react-dom')
+    const { render } = require('react-dom')
+    const { Provider } = require('react-redux')
+    const { createStore, applyMiddleware } = require('redux')
 
-    ReactDOM.render(
-      React.createElement(App, null),
+    const App = require('./components/App')
+    const reducers = require('./reducers')
+
+    render(
+      <Provider store={createStore(reducers)}>
+        <App />
+      </Provider>
       document.getElementById('content')
     )
   </script>
