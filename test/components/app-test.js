@@ -1,6 +1,6 @@
 const assert = require('assert')
 
-const App = require('../../components/App/App')
+const App = require('../../components/App')
 const jsdom = require('jsdom')
 const React = require('react')
 const ReactDOM = require('react-dom')
