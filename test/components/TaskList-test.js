@@ -8,7 +8,7 @@ const TestUtils = require('react-addons-test-utils')
 const TaskList = require('../../components/TaskList')
 const reducer = require('../../reducers/reducer')
 
-describe('TaskList', function() {
+describe('XXXTaskList', function() {
   let element
 
   before(function() {
@@ -19,7 +19,8 @@ describe('TaskList', function() {
       {id: 1, title: "this is a task" },
       {id: 2, title: "this is also a task" },
       {id: 3, title: "ignore this one", ignore: true },
-      {id: 4, title: "this one is archived", archived: true }
+      {id: 4, title: "this one is archived", archive: true },
+      {id: 5, title: "this one is archived", snooze: true }
     ]
     const store = Redux.createStore(reducer, DEFAULT_TASKS)
     const appComponent = TestUtils.renderIntoDocument(<TaskList store={store}/>)
@@ -28,11 +29,7 @@ describe('TaskList', function() {
     assert(element)
   })
 
-  it('do not show tasks that are ignored', function() {
-    assert.equal(2, element.querySelectorAll("li").length)
-  })
-
-  it('XXXdo not show tasks that are archived', function() {
+  it('do not show tasks that are ignored, archived or snoozed', function() {
     assert.equal(2, element.querySelectorAll("li").length)
   })
 })
