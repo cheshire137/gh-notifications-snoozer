@@ -4,7 +4,15 @@ const { connect } = require('react-redux')
 const TaskList = ({tasks}) => {
   const taskElements = tasks
     .filter((task) => {
-      return !task.ignore && !task.archive && !task.snooze
+      if (task.ignore) {
+        return false
+      } else if (task.snooze) {
+        return false
+      } else if (task.archivedAt >= task.updatedAt) {
+        return false
+      } else {
+        return true
+      }
     })
     .map((task) => {
       return <li key={task.id}>{task.title}</li>
