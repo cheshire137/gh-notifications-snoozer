@@ -32,11 +32,11 @@ describe('TaskList', function() {
     assert(element)
   })
 
-  it('do not show tasks that are ignored, archived or snoozed', function() {
+  it('does not show tasks that are ignored, archived or snoozed', function() {
     assert.equal(2, element.querySelectorAll("li").length)
   })
 
-  it('shows archived tasks if they have updates', function() {
+  it('unarchives tasks if there are the takes has updates', function() {
     const tasks = defaultTasks.map(task => {
       task.updateAt = new Date()
       return task
