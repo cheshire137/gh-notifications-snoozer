@@ -18,7 +18,7 @@
   },
   "scripts": {
     "start": "./scripts/verify-token && electron src/main.js",
-    "style": "eslint -c .eslintrc *.js scripts/* src/**/*.jsx test/*.js",
+    "style": "eslint -c .eslintrc *.js scripts/* src/**/*.jsx test/**/*.js",
     "unit-tests": "electron-mocha --recursive --compilers js:babel-register test",
     "test": "npm run-script style && npm run-script unit-tests"
   },
