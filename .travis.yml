@@ -2,4 +2,8 @@ notifications:
   email: false
 language: node_js
 node_js:
-- "6"
+- "5"
+before_install:
+  - "npm config set spin false"
+script:
+  - npm run-script unit-tests
