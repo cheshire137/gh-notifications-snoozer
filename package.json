@@ -17,9 +17,9 @@
     "react-addons-test-utils": "^15.2.1"
   },
   "scripts": {
-    "start": "./scripts/verify-token && ./node_modules/.bin/electron src/main.js",
-    "style": "./node_modules/.bin/eslint -c .eslintrc *.js scripts/* src/**/*.jsx test/*.js",
-    "unit-tests": "./node_modules/.bin/electron-mocha --recursive --compilers js:babel-register test",
+    "start": "./scripts/verify-token && electron src/main.js",
+    "style": "eslint -c .eslintrc *.js scripts/* src/**/*.jsx test/*.js",
+    "unit-tests": "electron-mocha --recursive --compilers js:babel-register test",
     "test": "npm run-script unit-tests"
   },
   "repository": {
