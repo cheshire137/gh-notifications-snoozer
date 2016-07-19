@@ -3,16 +3,6 @@
 const fs = require('fs')
 const path = require('path')
 
-try {
-  const token = fs.readFileSync(path.join(__dirname, '../.env')).toString()
-  if (!token || !token.match(/^\s*[\w]{40}\s*$/)) {
-    exit(1)
-  }
-}
-catch (error) {
-  exit(1)
-}
-
 function exit() {
   console.log('You must have a `.env` file containing a GitHub personal access token.')
   console.log('----------------------------------------------------------------------')
@@ -21,4 +11,13 @@ function exit() {
   console.log('2. From the shell run `echo TOKEN > .env`. TOKEN is the token you got in step one')
   console.log('3. You are all set!')
   process.exit(1)
+}
+
+try {
+  const token = fs.readFileSync(path.join(__dirname, '../.env')).toString()
+  if (!token || !token.match(/^\s*[\w]{40}\s*$/)) {
+    exit(1)
+  }
+} catch (error) {
+  exit(1)
 }
