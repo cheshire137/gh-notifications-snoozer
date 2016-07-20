@@ -8,3 +8,10 @@ before_install:
 script:
   - "npm run-script unit-tests"
   - "npm run-script style"
+addons:
+  apt:
+    packages:
+      - xvfb
+install:
+  - export DISPLAY=':99.0'
+  - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &

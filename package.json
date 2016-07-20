@@ -17,12 +17,13 @@
     "eslint-plugin-react": "^5.2.2",
     "jsdom": "^9.4.1",
     "mocha": "^2.5.3",
-    "react-addons-test-utils": "^15.2.1"
+    "react-addons-test-utils": "^15.2.1",
+    "xvfb-maybe": "^0.1.3"
   },
   "scripts": {
     "start": "./scripts/verify-token && electron src/main.js",
     "style": "eslint -c .eslintrc *.js scripts/* src/**/*.jsx test/**/*.js",
-    "unit-tests": "electron-mocha --recursive --compilers js:babel-register test",
+    "unit-tests": "xvfb-maybe electron-mocha --recursive --compilers js:babel-register test",
     "test": "npm run-script style && npm run-script unit-tests"
   },
   "repository": {
