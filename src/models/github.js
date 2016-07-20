@@ -20,7 +20,7 @@ class GitHub extends Fetcher {
     const options = {
       headers: {
         Accept: 'application/vnd.github.v3+json',
-        Authorization: `token ${token}`,
+        Authorization: encodeURIComponent(`token ${token}`),
       },
     }
     return super.get(url, options)
