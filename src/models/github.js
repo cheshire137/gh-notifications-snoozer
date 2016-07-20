@@ -11,7 +11,7 @@ class GitHub extends Fetcher {
 
   static getToken() {
     const tokenPath = path.join(__dirname, '..', '..', '.env')
-    return fs.readFileSync(tokenPath).toString()
+    return fs.readFileSync(tokenPath).toString().trim()
   }
 
   get(relativeUrl) {
@@ -20,7 +20,7 @@ class GitHub extends Fetcher {
     const options = {
       headers: {
         Accept: 'application/vnd.github.v3+json',
-        Authorization: encodeURIComponent(`token ${token}`),
+        Authorization: `token ${token}`,
       },
     }
     return super.get(url, options)
