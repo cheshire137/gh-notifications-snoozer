@@ -3,17 +3,21 @@ notifications:
 language: node_js
 node_js:
 - "6"
-before_install:
-  - "npm config set spin false"
 script:
   - "npm run-script unit-tests"
   - "npm run-script style"
+cache:
+- apt: true
+- directories:
+  - "$HOME/.npm"
+  - "$HOME/.electron"
+  - "/Library/Caches/Homebrew"
 addons:
   apt:
     packages:
       - xvfb
+before_install:
+  - "npm config set spin false"
 install:
   - export DISPLAY=':99.0'
   - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-cache:
-- apt: true
