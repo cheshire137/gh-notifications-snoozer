@@ -1,0 +1,9 @@
+{
+  "application/javascript": {
+    "presets": ["es2015", "react"],
+    "sourceMaps": "inline"
+  },
+  "text/less": {
+    "dumpLineNumbers": "comments"
+  }
+}

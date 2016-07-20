@@ -9,10 +9,10 @@ const TestUtils = require('react-addons-test-utils')
 const App = require('../../components/App')
 const reducer = require('../../reducers/reducer')
 
-describe('App', function() {
+describe('App', () => {
   let store
 
-  before(function() {
+  before(() => {
     global.document = jsdom.jsdom('<!doctype html><html><body></body></html>')
     global.window = global.document.defaultView
 
@@ -20,8 +20,8 @@ describe('App', function() {
     store = Redux.createStore(reducer, initialState)
   })
 
-  it('renders', function() {
-    const appComponent = TestUtils.renderIntoDocument(
+  it('renders', () => {
+    const appComponent = TestUtils.renderIntoDocument(<App />)
       <ReactRedux.Provider store={store}>
         <App />
       </ReactRedux.Provider>

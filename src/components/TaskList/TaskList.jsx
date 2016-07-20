@@ -34,12 +34,12 @@ class TaskList extends React.Component {
   render() {
     return (
       <div>
-        <nav>
-          <button id="snooze" onClick={event => this.onClick(event)}>snooze</button>
-          <button>ignore</button>
-          <button>archive</button>
+        <nav className="controls-container">
+          <button type="button" className="control">snooze</button>
+          <button type="button" className="control">ignore</button>
+          <button type="button" className="control">archive</button>
         </nav>
-        <ol>
+        <ol className="issues-list">
           {this.taskElements}
         </ol>
       </div>
