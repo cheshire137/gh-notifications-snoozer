@@ -4,6 +4,7 @@
   "description": "An easier way to deal with github notifications",
   "main": "src/main.js",
   "dependencies": {
+    "node-fetch": "^1.5.3",
     "react": "^15.2.1",
     "react-dom": "^15.2.1"
   },
