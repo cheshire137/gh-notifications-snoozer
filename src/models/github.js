@@ -1,3 +1,5 @@
+const fs = require('fs')
+const path = require('path')
 const Config = require('../config.json')
 const Fetcher = require('./fetcher')
 
@@ -7,8 +9,13 @@ class GitHub extends Fetcher {
     return this.get('notifications')
   }
 
-  get(path) {
-    const url = `${Config.githubApiUrl}/${path}`
+  static getToken() {
+    const tokenPath = path.join(__dirname, '..', '..', '.env')
+    return fs.readFileSync(tokenPath).toString()
+  }
+
+  get(relativeUrl) {
+    const url = `${Config.githubApiUrl}/${relativeUrl}`
     const options = {
       headers: {
         Accept: 'application/vnd.github.v3+json',

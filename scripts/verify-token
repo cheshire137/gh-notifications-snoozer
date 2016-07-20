@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
-const fs = require('fs')
-const path = require('path')
+const GitHub = require('../src/models/github')
 
 function exit() {
   console.log('You must have a `.env` file containing a GitHub personal access token.')
@@ -14,7 +13,7 @@ function exit() {
 }
 
 try {
-  const token = fs.readFileSync(path.join(__dirname, '../.env')).toString()
+  const token = GitHub.getToken()
   if (!token || !token.match(/^\s*[\w]{40}\s*$/)) {
     exit(1)
   }
