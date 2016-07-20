@@ -6,7 +6,7 @@ const ReactRedux = require('react-redux')
 const Redux = require('redux')
 const TestUtils = require('react-addons-test-utils')
 
-const App = require('../../components/App')
+const App = require('../../src/components/App')
 const reducer = require('../../reducers/reducer')
 
 describe('App', () => {
@@ -21,7 +21,7 @@ describe('App', () => {
   })
 
   it('renders', () => {
-    const appComponent = TestUtils.renderIntoDocument(<App />)
+    const appComponent = TestUtils.renderIntoDocument(
       <ReactRedux.Provider store={store}>
         <App />
       </ReactRedux.Provider>

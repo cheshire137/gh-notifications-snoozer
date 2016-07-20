@@ -5,7 +5,7 @@ const ReactDOM = require('react-dom')
 const Redux = require('redux')
 const TestUtils = require('react-addons-test-utils')
 
-const TaskList = require('../../components/TaskList')
+const TaskList = require('../../src/components/TaskList')
 const reducer = require('../../reducers/reducer')
 
 describe('TaskList', function() {
