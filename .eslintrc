@@ -2,11 +2,25 @@
 {
   "extends": "airbnb",
   "env": {
-    "mocha": true
+    "es6": true,
+    "mocha": true,
+    "node": true
   },
   "rules": {
     "semi": [2, "never"],
     "react/jsx-quotes": 0,
-    "jsx-quotes": [2, "prefer-double"]
-  }
+    "jsx-quotes": [2, "prefer-double"],
+    "space-before-function-paren": [2, "never"],
+    "func-names": 0,
+    "consistent-return": 0,
+    "no-console": 0,
+    "react/prefer-stateless-function": 0
+  },
+  "ecmaFeatures": {
+    "jsx": true
+  },
+  "plugins": [
+    "react"
+  ],
+  "globals": {}
 }
