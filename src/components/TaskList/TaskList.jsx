@@ -32,9 +32,9 @@ class TaskList extends React.Component {
           <button type="button" className="control">archive</button>
         </nav>
         <ol className="issues-list">
-          {this.state.notifications.map(notification => {
-            return <TaskListItem {...notification} key={notification.id} />
-          })}
+          {this.state.notifications.map(notification =>
+            <TaskListItem {...notification} key={notification.id} />
+          )}
         </ol>
       </div>
     )
