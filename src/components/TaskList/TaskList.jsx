@@ -1,5 +1,6 @@
 const React = require('react')
 const GitHub = require('../../models/github')
+const TaskListItem = require('../TaskListItem')
 
 class TaskList extends React.Component {
   constructor(props, context) {
@@ -32,13 +33,7 @@ class TaskList extends React.Component {
         </nav>
         <ol className="issues-list">
           {this.state.notifications.map(notification => {
-            return (
-              <li key={notification.id}>
-                {notification.subject.title}
-                <span>&middot;</span>
-                {notification.updated_at}
-              </li>
-            )
+            return <TaskListItem {...notification} key={notification.id} />
           })}
         </ol>
       </div>
