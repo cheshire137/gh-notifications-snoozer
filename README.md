@@ -1,5 +1,7 @@
 # gh-notifications-snoozer
 
+[![Build status](https://travis-ci.org/cheshire137/gh-notifications-snoozer.svg?branch=master)](https://travis-ci.org/cheshire137/gh-notifications-snoozer)
+
 Lists and rules and snoozing PRs, oh my!
 
 ## How to Develop
