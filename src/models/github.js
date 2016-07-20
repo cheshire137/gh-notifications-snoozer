@@ -16,15 +16,14 @@ class GitHub extends Fetcher {
 
   get(relativeUrl) {
     const url = `${Config.githubApiUrl}/${relativeUrl}`
-    const token = this.getToken()
+    const token = GitHub.getToken()
     const options = {
       headers: {
         Accept: 'application/vnd.github.v3+json',
         Authorization: `token ${token}`,
       },
     }
-    console.log('github get', url, options)
-    return this.get(url, options)
+    return super.get(url, options)
   }
 }
 
