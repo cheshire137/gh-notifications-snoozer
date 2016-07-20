@@ -4,7 +4,6 @@ module.exports = class Fetcher {
   get(url, opts) {
     const options = opts || {}
     options.method = 'GET'
-    console.log('get', url, options)
     return this.makeRequest(url, options)
   }
 
