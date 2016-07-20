@@ -10,7 +10,7 @@ describe('reducers', function() {
 
   it('adds a task', function() {
     const action = {
-      type: 'TASK_ADD',
+      type: 'TASKS_ADD',
       task : {
         title: 'This is the title'
       }

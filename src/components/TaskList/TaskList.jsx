@@ -7,11 +7,13 @@ class TaskList extends React.Component {
 
     this.taskElements = props.tasks
       .filter((task) => {
+        console.log(task.title);
+        console.log(task.archivedAt, task.updatedAt, task.archivedAt > task.updatedAt);
         if (task.ignore) {
           return false
         } else if (task.snooze) {
           return false
-        } else if (task.archivedAt >= task.updatedAt) {
+        } else if (task.archivedAt > task.updatedAt) {
           return false
         } else {
           return true

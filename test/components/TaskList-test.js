@@ -18,8 +18,8 @@ describe('TaskList', function() {
     {id: 1, title: "this is a task" },
     {id: 2, title: "this is also a task" },
     {id: 3, title: "ignore this one", ignore: true },
-    {id: 4, title: "this one is archived", archivedAt: yesterday, updatedAt: yesterday },
-    {id: 5, title: "this one is archived", snooze: true }
+    {id: 4, title: "this one is archived", archivedAt: today, updatedAt: yesterday },
+    {id: 5, title: "this one is snoozed", snooze: true }
   ]
   const store = Redux.createStore(reducer, defaultTasks)
 
@@ -37,25 +37,17 @@ describe('TaskList', function() {
     assert.equal(2, element.querySelectorAll("li").length)
   })
 
-  it('unarchives tasks if there are the takes has updates', function() {
+  it('xxxunarchives a task if the takes has updates', function() {
     const tasks = defaultTasks.map(task => {
       task.updateAt = new Date()
       return task
     })
+
     store.dispatch({type: 'TASKS_UPDATE', tasks: tasks})
-    assert.equal(3, element.querySelectorAll("li").length)
+    assert.equal(3, eek.querySelectorAll("li").length)
   })
 
-  it('unarchives tasks if there are the takes has updates', function() {
-    const tasks = defaultTasks.map(task => {
-      task.updateAt = new Date()
-      return task
-    })
-    store.dispatch({type: 'TASKS_UPDATE', tasks: tasks})
-    assert.equal(3, element.querySelectorAll("li").length)
-  })
-
-  context('xxxwhen the snooze button is pressed', function() {
+  context('when the snooze button is pressed', function() {
     it('snoozes the selected tasks', function() {
       const snoozeButton = element.querySelector('button#snooze')
       const firstCheckbox = element.querySelector('li input[type=checkbox]')
