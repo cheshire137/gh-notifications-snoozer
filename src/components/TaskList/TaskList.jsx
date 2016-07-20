@@ -2,6 +2,11 @@ const React = require('react')
 const GitHub = require('../../models/github')
 
 class TaskList extends React.Component {
+  constructor(props, context) {
+    super(props, context)
+    this.state = { notifications: [] }
+  }
+
   componentDidMount() {
     const github = new GitHub()
     github.getNotifications().
@@ -10,7 +15,7 @@ class TaskList extends React.Component {
   }
 
   onNotificationsLoaded(notifications) {
-    console.log('notifications', notifications)
+    this.setState({ notifications })
   }
 
   onNotificationsError(response) {
@@ -26,7 +31,15 @@ class TaskList extends React.Component {
           <button type="button" className="control">archive</button>
         </nav>
         <ol className="issues-list">
-          <li>LOOK AT THIS ISSUE</li>
+          {this.state.notifications.map(notification => {
+            return (
+              <li key={notification.id}>
+                {notification.subject.title}
+                <span>&middot;</span>
+                {notification.updated_at}
+              </li>
+            )
+          })}
         </ol>
       </div>
     )
