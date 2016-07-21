@@ -11,6 +11,7 @@ module.exports = function(tasks = defaultTasks, action) {
     case 'TASKS_ADD':
       return [...tasks, action.task]
     case 'TASKS_UPDATE':
+      console.log("ok");
       return [action.tasks]
     default:
       return tasks

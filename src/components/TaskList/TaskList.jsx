@@ -4,11 +4,10 @@ const { connect } = require('react-redux')
 class TaskList extends React.Component {
   constructor(props) {
     super(props)
+    this.onSnoozeClick = props.onSnoozeClick
 
     this.taskElements = props.tasks
       .filter((task) => {
-        console.log(task.title);
-        console.log(task.archivedAt, task.updatedAt, task.archivedAt > task.updatedAt);
         if (task.ignore) {
           return false
         } else if (task.snooze) {
@@ -30,14 +29,14 @@ class TaskList extends React.Component {
   }
 
   onClick() {
-    console.log(this.find)
+
   }
 
   render() {
     return (
       <div>
         <nav className="controls-container">
-          <button type="button" className="control">snooze</button>
+          <button id="snooze" type="button" onClick={this.onSnoozeClick} className="control">snooze</button>
           <button type="button" className="control">ignore</button>
           <button type="button" className="control">archive</button>
         </nav>
@@ -55,4 +54,13 @@ const mapStateToProps = (tasks) => {
   }
 }
 
-module.exports = connect(mapStateToProps)(TaskList)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onSnoozeClick: (component) => {
+      const selectedTasks = element.querySelector('li input[type=checkbox]')
+      dispatch({{type: 'TASKS_SNOOZE', task: }})
+    }
+  }
+}
+
+module.exports = connect(mapStateToProps, mapDispatchToProps)(TaskList)

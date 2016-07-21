@@ -7,7 +7,7 @@ const Redux = require('redux')
 const TestUtils = require('react-addons-test-utils')
 
 const App = require('../../src/components/App')
-const reducer = require('../../reducers/reducer')
+const reducer = require('../../src/reducers/reducer')
 
 describe('App', () => {
   let store

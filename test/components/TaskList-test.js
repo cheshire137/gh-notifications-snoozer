@@ -6,7 +6,7 @@ const Redux = require('redux')
 const TestUtils = require('react-addons-test-utils')
 
 const TaskList = require('../../src/components/TaskList')
-const reducer = require('../../reducers/reducer')
+const reducer = require('../../src/reducers/reducer')
 
 describe('TaskList', function() {
   let element
@@ -37,23 +37,25 @@ describe('TaskList', function() {
     assert.equal(2, element.querySelectorAll("li").length)
   })
 
-  it('xxxunarchives a task if the takes has updates', function() {
+  it('unarchives a task if the takes has updates', function() {
     const tasks = defaultTasks.map(task => {
       task.updateAt = new Date()
       return task
     })
 
     store.dispatch({type: 'TASKS_UPDATE', tasks: tasks})
-    assert.equal(3, eek.querySelectorAll("li").length)
+    assert.equal(3, element.querySelectorAll("li").length)
   })
 
   context('when the snooze button is pressed', function() {
-    it('snoozes the selected tasks', function() {
+    it('xxxsnoozes the selected tasks', function() {
       const snoozeButton = element.querySelector('button#snooze')
       const firstCheckbox = element.querySelector('li input[type=checkbox]')
       firstCheckbox.checked = true
 
       TestUtils.Simulate.click(snoozeButton)
+
+      assert.equal(2, element.querySelectorAll("li").length)
     })
   })
 })
