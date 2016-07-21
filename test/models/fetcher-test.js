@@ -5,15 +5,12 @@ const fetchMock = require('fetch-mock')
 describe('Fetcher', () => {
   describe('get', () => {
     before(() => {
-      fetchMock.get('http://example.com', {
-        foo: 'bar',
-      })
+      fetchMock.get('http://example.com', { foo: 'bar' })
     })
 
     it('returns a promise that resolves with the JSON response', done => {
       const fetcher = new Fetcher()
       fetcher.get('http://example.com').then(json => {
-        assert.equal(1, fetchMock.calls().matched.length)
         assert.deepEqual({ foo: 'bar' }, json)
         fetchMock.restore()
         done()
