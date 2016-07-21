@@ -11,7 +11,7 @@ describe('Fetcher', () => {
       }
       const expected = '404 Not Found'
       const github = new GitHub()
-      assert(expected === github.getStatus(fakeResponse))
+      assert.equal(expected, github.getStatus(fakeResponse))
     })
   })
 })

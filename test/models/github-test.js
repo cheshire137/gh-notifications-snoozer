@@ -9,7 +9,7 @@ describe('GitHub', () => {
     it('returns contents of .env file', () => {
       const tokenPath = path.join(__dirname, '..', '..', '.env')
       const expected = fs.readFileSync(tokenPath).toString().trim()
-      assert(expected === GitHub.getToken())
+      assert.equal(expected, GitHub.getToken())
     })
   })
 })
