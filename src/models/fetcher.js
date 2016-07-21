@@ -15,7 +15,7 @@ module.exports = class Fetcher {
     return new Promise((resolve, reject) => {
       fetch(url, options).then((response) => {
         this.handleJsonResponse(response, url, resolve, reject)
-      })
+      }).catch(reject)
     })
   }
 
@@ -30,7 +30,7 @@ module.exports = class Fetcher {
         reject(jsonError)
       }
     }).catch((error) => {
-      console.error('failed to parse json response', error)
+      console.error('failed to parse JSON response', error)
       reject({ error })
     })
   }
