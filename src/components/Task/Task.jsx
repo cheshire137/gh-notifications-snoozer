@@ -2,23 +2,15 @@ const React = require('react')
 const { connect } = require('react-redux')
 
 class Task extends React.Component {
-  render() {
-    const {task, onClick} = this.props
+  onChange(event) {
+    const { task } = this.props
+    const type = event.target.checked ? 'TASKS_SELECT' : 'TASKS_UNSELECT'
 
-    if (!this.isVisible()) {
-      return null
-    }
-
-    return (
-      <li>
-        <input type="checkbox" checked={task.selected} onClick={() => onClick(task)}/>
-        <span>{task.title}</span>
-      </li>
-    )
+    this.props.dispatch({ type, task })
   }
 
   isVisible() {
-    const {task} = this.props
+    const { task } = this.props
 
     if (task.ignore) {
       return false
@@ -30,15 +22,20 @@ class Task extends React.Component {
 
     return true
   }
-}
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onClick: (task) => {
-      // WHY DOESN'T DISPATCH CALL THE REDUCER?!?
-      dispatch({type: 'TASKS_SELECT', task: task})
+  render() {
+    const { task } = this.props
+
+    if (!this.isVisible()) {
+      return null
     }
+
+    return (
+      <li>
+        <input type="checkbox" onChange={event => this.onChange(event)} />
+        <span>{task.title}</span>
+      </li>
+    )
   }
 }
-
-module.exports = connect(null, mapDispatchToProps)(Task)
+module.exports = connect()(Task)

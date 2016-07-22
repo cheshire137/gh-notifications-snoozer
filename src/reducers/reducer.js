@@ -15,14 +15,14 @@ module.exports = function(tasks = defaultTasks, action) {
     case 'TASKS_SELECT':
       return tasks.map(task => {
         if (task.id === action.task.id) {
-          return Object.assign({}, task, { selected: true })
+          return Object.assign({}, task, { isSelected: true })
         }
         return task
       })
     case 'TASKS_UNSELECT':
       return tasks.map(task => {
         if (task.id === action.task.id) {
-          return Object.assign({}, task, { selected: false })
+          return Object.assign({}, task, { isSelected: false })
         }
         return task
       })
