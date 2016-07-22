@@ -5,7 +5,7 @@ const Task = require('../Task')
 
 class TaskList extends React.Component {
   onSnoozeClick() {
-    this.props.dispatch({type: 'TASKS_SNOOZE' })
+    this.props.dispatch({ type: 'TASKS_SNOOZE' })
   }
 
   render() {
@@ -26,8 +26,6 @@ class TaskList extends React.Component {
   }
 }
 
-const mapStateToProps = (tasks) => {
-  return {tasks}
-}
+const mapStateToProps = tasks => ({ tasks })
 
 module.exports = connect(mapStateToProps)(TaskList)
