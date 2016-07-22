@@ -5,7 +5,6 @@ const Task = require('../Task')
 
 class TaskList extends React.Component {
   render() {
-    const taskElements = this.props.tasks.map(task => <Task key={task.id} task={task} />)
     return (
       <div>
         <nav className="controls-container">
@@ -14,7 +13,9 @@ class TaskList extends React.Component {
           <button type="button" className="control">archive</button>
         </nav>
         <ol className="issues-list">
-          {taskElements}
+          {this.props.tasks.map(task => {
+            return (<Task key={task.id} task={task} />)
+          })}
         </ol>
       </div>
     )
