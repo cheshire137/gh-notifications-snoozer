@@ -4,11 +4,15 @@ const { connect } = require('react-redux')
 const Task = require('../Task')
 
 class TaskList extends React.Component {
+  onSnoozeClick() {
+    this.props.dispatch({type: 'TASKS_SNOOZE' })
+  }
+
   render() {
     return (
       <div>
         <nav className="controls-container">
-          <button id="snooze" type="button" onClick={this.props.onSnoozeClick} className="control">snooze</button>
+          <button id="snooze" type="button" onClick={() => this.onSnoozeClick()} className="control">snooze</button>
           <button type="button" className="control">ignore</button>
           <button type="button" className="control">archive</button>
         </nav>
@@ -23,18 +27,7 @@ class TaskList extends React.Component {
 }
 
 const mapStateToProps = (tasks) => {
-  return {
-    tasks: tasks
-  }
+  return {tasks}
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onSnoozeClick: (component) => {
-      console.log("SNOOZE CLICKED");
-      dispatch({type: 'TASKS_SNOOZE' })
-    }
-  }
-}
-
-module.exports = connect(mapStateToProps, mapDispatchToProps)(TaskList)
+module.exports = connect(mapStateToProps)(TaskList)
