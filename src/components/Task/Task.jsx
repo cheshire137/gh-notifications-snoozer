@@ -10,7 +10,7 @@ class Task extends React.Component {
     }
 
     return (
-      <li key={task.id}>
+      <li>
         <input type="checkbox" checked={task.selected} onClick={() => onClick(task)}/>
         <span>{task.title}</span>
       </li>
