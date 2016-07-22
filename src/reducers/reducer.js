@@ -11,8 +11,29 @@ module.exports = function(tasks = defaultTasks, action) {
     case 'TASKS_ADD':
       return [...tasks, action.task]
     case 'TASKS_UPDATE':
-      console.log("ok");
       return [action.tasks]
+    case 'TASKS_SELECT':
+      console.log("in");
+      return tasks.map(task => {
+        if (task.id == action.task.id) {
+          task.selected = true
+        }
+        return tasks
+      })
+    case 'TASKS_UNSELECT':
+      return tasks.map(task => {
+        if (task.id == action.task.id) {
+          task.selected = false
+        }
+        return tasks
+      })
+    case 'TASKS_SNOOZE':
+      return tasks.map(task => {
+        if (task.isSelected) {
+          task.snooze = true
+        }
+        return tasks
+      })
     default:
       return tasks
   }

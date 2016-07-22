@@ -48,7 +48,7 @@ describe('TaskList', function() {
   })
 
   context('when the snooze button is pressed', function() {
-    it('xxxsnoozes the selected tasks', function() {
+    it('snoozes the selected tasks', function() {
       const snoozeButton = element.querySelector('button#snooze')
       const firstCheckbox = element.querySelector('li input[type=checkbox]')
       firstCheckbox.checked = true
