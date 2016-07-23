@@ -2,7 +2,7 @@
 
 const storage = require('electron-json-storage')
 
-class Rules {
+class Rule {
   constructor(key) {
     this.key = key
   }
@@ -44,4 +44,4 @@ class Rules {
   }
 }
 
-module.exports = Rules
+module.exports = Rule
