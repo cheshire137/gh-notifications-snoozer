@@ -1,39 +1,31 @@
 const React = require('react')
-const GitHub = require('../../models/github')
+const { connect } = require('react-redux')
+
 const TaskListItem = require('../TaskListItem')
 
 class TaskList extends React.Component {
-  constructor(props, context) {
-    super(props, context)
-    this.state = { notifications: [] }
-  }
-
-  componentDidMount() {
-    const github = new GitHub()
-    github.getNotifications().
-           then(this.onNotificationsLoaded.bind(this)).
-           catch(this.onNotificationsError.bind(this))
-  }
-
-  onNotificationsLoaded(notifications) {
-    this.setState({ notifications })
-  }
-
-  onNotificationsError(response) {
-    console.error('failed to load notifications', response)
+  onSnoozeClick() {
+    this.props.dispatch({ type: 'TASKS_SNOOZE' })
   }
 
   render() {
     return (
       <div>
         <nav className="controls-container">
-          <button type="button" className="control">snooze</button>
+          <button
+            id="snooze"
+            type="button"
+            onClick={() => this.onSnoozeClick()}
+            className="control"
+          >
+            snooze
+          </button>
           <button type="button" className="control">ignore</button>
           <button type="button" className="control">archive</button>
         </nav>
         <ol className="issues-list">
-          {this.state.notifications.map(notification =>
-            <TaskListItem {...notification} key={notification.id} />
+          {this.props.tasks.map(task =>
+            <TaskListItem task={task} key={task.id} />
           )}
         </ol>
       </div>
@@ -41,4 +33,11 @@ class TaskList extends React.Component {
   }
 }
 
-module.exports = TaskList
+const mapStateToProps = tasks => ({ tasks })
+
+TaskList.propTypes = {
+  tasks: React.PropTypes.array.isRequired,
+  dispatch: React.PropTypes.object.isRequired,
+}
+
+module.exports = connect(mapStateToProps)(TaskList)

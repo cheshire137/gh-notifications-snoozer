@@ -9,12 +9,18 @@
     <div id="content"></div>
   </body>
   <script>
-    const App = require('./components/App')
     const React = require('react')
-    const ReactDOM = require('react-dom')
+    const ReactDom = require('react-dom')
+    const ReactRedux = require('react-redux')
+    const Redux = require('redux')
 
-    ReactDOM.render(
-      React.createElement(App, null),
+    const App = require('./components/App')
+    const reducers = require('./reducers/reducer')
+
+    ReactDom.render(
+      <ReactRedux.Provider store={Redux.createStore(reducers)}>
+        <App />
+      </ReactRedux.Provider>,
       document.getElementById('content')
     )
   </script>
