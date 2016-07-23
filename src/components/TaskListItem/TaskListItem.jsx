@@ -44,8 +44,6 @@ class TaskListItem extends React.Component {
 TaskListItem.propTypes = {
   task: React.PropTypes.object.isRequired,
   dispatch: React.PropTypes.object.isRequired,
-  subject: React.PropTypes.object.isRequired,
-  updated_at: React.PropTypes.string.isRequired,
 }
 
 module.exports = connect()(TaskListItem)

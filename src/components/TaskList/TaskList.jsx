@@ -5,28 +5,8 @@ const GitHub = require('../../models/github')
 const TaskListItem = require('../TaskListItem')
 
 class TaskList extends React.Component {
-  constructor(props, context) {
-    super(props, context)
-    this.state = { notifications: [] }
-  }
-
-  componentDidMount() {
-    const github = new GitHub()
-    github.getNotifications().
-           then(this.onNotificationsLoaded.bind(this)).
-           catch(this.onNotificationsError.bind(this))
-  }
-
   onSnoozeClick() {
     this.props.dispatch({ type: 'TASKS_SNOOZE' })
-  }
-
-  onNotificationsLoaded(notifications) {
-    this.setState({ notifications })
-  }
-
-  onNotificationsError(response) {
-    console.error('failed to load notifications', response)
   }
 
   render() {
@@ -38,8 +18,8 @@ class TaskList extends React.Component {
           <button type="button" className="control">archive</button>
         </nav>
         <ol className="issues-list">
-          {this.state.notifications.map(notification =>
-            <TaskListItem {...notification} key={notification.id} />
+          {this.props.tasks.map(task =>
+            <TaskListItem {task} key={task.id} />
           )}
         </ol>
       </div>
