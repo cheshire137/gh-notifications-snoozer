@@ -5,7 +5,7 @@ module.exports = function(tasks = defaultTasks, action) {
     case 'TASKS_ADD':
       return [...tasks, action.task]
     case 'TASKS_UPDATE':
-      return [action.tasks]
+      return action.tasks
     case 'TASKS_SELECT':
       return tasks.map(task => {
         if (task.id === action.task.id) {

@@ -12,6 +12,7 @@ class Task extends React.Component {
   isVisible() {
     const { task } = this.props
 
+    console.log(task.archivedAt, task.updatedAt, task.archivedAt > task.updatedAt);
     if (task.ignore) {
       return false
     } else if (task.snooze) {

@@ -1,5 +1,9 @@
-const assert = require('assert')
+// The fake DOM must come before the call to react
 const jsdom = require('jsdom')
+global.document = jsdom.jsdom('<!doctype html><html><body></body></html>')
+global.window = global.document.defaultView
+
+const assert = require('assert')
 const React = require('react')
 const ReactDOM = require('react-dom')
 const ReactRedux = require('react-redux')
@@ -25,9 +29,6 @@ describe('TaskList', () => {
   const store = Redux.createStore(reducer, defaultTasks)
 
   before(() => {
-    global.document = jsdom.jsdom('<!doctype html><html><body></body></html>')
-    global.window = global.document.defaultView
-
     taskListComponent = TestUtils.renderIntoDocument(
       <ReactRedux.Provider store={store}>
         <TaskList />
@@ -44,7 +45,7 @@ describe('TaskList', () => {
 
   it('unarchives a task if the takes has updates', () => {
     const tasks = defaultTasks.map(task => {
-      return Object.assign({}, task, { updateAt: new Date() })
+      return Object.assign({}, task, { updatedAt: new Date() })
     })
 
     store.dispatch({ type: 'TASKS_UPDATE', tasks })
