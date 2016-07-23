@@ -1,66 +1,20 @@
-// The fake DOM must come before the call to react
-const jsdom = require('jsdom')
-global.document = jsdom.jsdom('<!doctype html><html><body></body></html>')
-global.window = global.document.defaultView
-
-const assert = require('assert')
-const React = require('react')
-const ReactDOM = require('react-dom')
-const ReactRedux = require('react-redux')
-const Redux = require('redux')
-const TestUtils = require('react-addons-test-utils')
-
-const TaskList = require('../../src/components/TaskList')
-const reducer = require('../../src/reducers/reducer')
-
 describe('TaskList', () => {
-  let element
-  let taskListComponent
-  const msecsInDay = 1000 * 60 * 60 * 24
-  const today = new Date()
-  const yesterday = new Date(today - msecsInDay)
-  const defaultTasks = [
-    { id: 1, title: 'this is a task' },
-    { id: 2, title: 'this is also a task' },
-    { id: 3, title: 'ignore this one', ignore: true },
-    { id: 4, title: 'this one is archived', archivedAt: today, updatedAt: yesterday },
-    { id: 5, title: 'this one is snoozed', snooze: true },
-  ]
-  const store = Redux.createStore(reducer, defaultTasks)
+  it('does not show tasks that are ignored, archived or snoozed')
 
-  before(() => {
-    taskListComponent = TestUtils.renderIntoDocument(
-      <ReactRedux.Provider store={store}>
-        <TaskList />
-      </ReactRedux.Provider>
-    )
-    element = ReactDOM.findDOMNode(taskListComponent)
-
-    assert(element)
+  context('when the snooze button is clicked', () => {
+    it('hides selected tasks')
+    it('updates the selected task\'s `snooze_until` field')
+    it('shows the tasks again, starting at midnight of the next day')
   })
 
-  it('does not show tasks that are ignored, archived or snoozed', () => {
-    assert.equal(2, element.querySelectorAll('li').length)
+  context('when the archive button is clicked', () => {
+    it('hides selected tasks')
+    it('updates the selected task\'s `archived_at` field')
+    it('shows tasks again if `updated_at` is greater than `archived_at`')
   })
 
-  it('unarchives a task if the takes has updates', () => {
-    const tasks = defaultTasks.map(task => {
-      return Object.assign({}, task, { updatedAt: new Date() })
-    })
-
-    store.dispatch({ type: 'TASKS_UPDATE', tasks })
-    assert.equal(3, element.querySelectorAll('li').length)
-  })
-
-  context('when the snooze button is pressed', () => {
-    it('snoozes the selected tasks', () => {
-      const snoozeButton = element.querySelector('button#snooze')
-      const firstCheckbox = element.querySelector('li input[type=checkbox]')
-      firstCheckbox.checked = true
-
-      TestUtils.Simulate.click(snoozeButton)
-
-      assert.equal(2, element.querySelectorAll('li').length)
-    })
+  context('when the ignore button is clicked', () => {
+    it('hides selected tasks')
+    it('updates the selected task\'s `ignored` field')
   })
 })
