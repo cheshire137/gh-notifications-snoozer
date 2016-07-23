@@ -1,7 +1,7 @@
 const React = require('react')
 const { connect } = require('react-redux')
 
-class Task extends React.Component {
+class TaskListItem extends React.Component {
   onChange(event) {
     const { task } = this.props
     const type = event.target.checked ? 'TASKS_SELECT' : 'TASKS_UNSELECT'
@@ -12,7 +12,6 @@ class Task extends React.Component {
   isVisible() {
     const { task } = this.props
 
-    console.log(task.archivedAt, task.updatedAt, task.archivedAt > task.updatedAt);
     if (task.ignore) {
       return false
     } else if (task.snooze) {
@@ -34,9 +33,19 @@ class Task extends React.Component {
     return (
       <li>
         <input type="checkbox" onChange={event => this.onChange(event)} />
-        <span>{task.title}</span>
+        {task.title}
+        <span>&middot;</span>
+        {task.updated_at}
       </li>
     )
   }
 }
-module.exports = connect()(Task)
+
+TaskListItem.propTypes = {
+  task: React.PropTypes.object.isRequired,
+  dispatch: React.PropTypes.object.isRequired,
+  subject: React.PropTypes.object.isRequired,
+  updated_at: React.PropTypes.string.isRequired,
+}
+
+module.exports = connect()(TaskListItem)

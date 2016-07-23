@@ -5,6 +5,8 @@ const ReactDOM = require('react-dom')
 const ReactRedux = require('react-redux')
 const Redux = require('redux')
 const TestUtils = require('react-addons-test-utils')
+const fetchMock = require('fetch-mock')
+const Config = require('../../src/config.json')
 
 const App = require('../../src/components/App')
 const reducer = require('../../src/reducers/reducer')
@@ -18,6 +20,11 @@ describe('App', () => {
 
     const initialState = []
     store = Redux.createStore(reducer, initialState)
+    fetchMock.get(`${Config.githubApiUrl}/notifications`, [])
+  })
+
+  after(() => {
+    fetchMock.restore()
   })
 
   it('renders', () => {
