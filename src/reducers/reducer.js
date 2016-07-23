@@ -20,7 +20,7 @@ module.exports = function(tasks = defaultTasks, action) {
         }
         return task
       })
-    case 'TASKS_UNSELECT':
+    case 'TASKS_DESELECT':
       return tasks.map(task => {
         if (task.id === action.task.id) {
           return Object.assign({}, task, { isSelected: false })

@@ -4,7 +4,7 @@ const { connect } = require('react-redux')
 class TaskListItem extends React.Component {
   onChange(event) {
     const { task } = this.props
-    const type = event.target.checked ? 'TASKS_SELECT' : 'TASKS_UNSELECT'
+    const type = event.target.checked ? 'TASKS_SELECT' : 'TASKS_DESELECT'
 
     this.props.dispatch({ type, task })
   }
