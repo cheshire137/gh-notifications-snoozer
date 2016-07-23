@@ -7,6 +7,18 @@ class Rules {
     this.key = key
   }
 
+  exists() {
+    return new Promise((resolve, reject) => {
+      storage.has(this.key, (error, hasKey) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(hasKey)
+        }
+      })
+    })
+  }
+
   retrieve() {
     return new Promise((resolve, reject) => {
       storage.get(this.key, (error, value) => {
