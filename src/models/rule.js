@@ -1,6 +1,7 @@
 'use strict'
 
 const storage = require('electron-json-storage')
+const Rules = require('./rules')
 
 class Rule {
   constructor(key) {
@@ -37,7 +38,7 @@ class Rule {
         if (error) {
           reject(error)
         } else {
-          resolve()
+          Rules.addKey(this.key).then(resolve).catch(reject)
         }
       })
     })
