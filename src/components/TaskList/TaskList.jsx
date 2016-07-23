@@ -1,7 +1,6 @@
 const React = require('react')
 const { connect } = require('react-redux')
 
-const GitHub = require('../../models/github')
 const TaskListItem = require('../TaskListItem')
 
 class TaskList extends React.Component {
@@ -13,13 +12,20 @@ class TaskList extends React.Component {
     return (
       <div>
         <nav className="controls-container">
-          <button id="snooze" type="button" onClick={() => this.onSnoozeClick()} className="control">snooze</button>
+          <button
+            id="snooze"
+            type="button"
+            onClick={() => this.onSnoozeClick()}
+            className="control"
+          >
+            snooze
+          </button>
           <button type="button" className="control">ignore</button>
           <button type="button" className="control">archive</button>
         </nav>
         <ol className="issues-list">
           {this.props.tasks.map(task =>
-            <TaskListItem {task} key={task.id} />
+            <TaskListItem task={task} key={task.id} />
           )}
         </ol>
       </div>
@@ -28,5 +34,10 @@ class TaskList extends React.Component {
 }
 
 const mapStateToProps = tasks => ({ tasks })
+
+TaskList.propTypes = {
+  tasks: React.PropTypes.array.isRequired,
+  dispatch: React.PropTypes.object.isRequired,
+}
 
 module.exports = connect(mapStateToProps)(TaskList)
