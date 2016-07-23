@@ -1,6 +1,8 @@
+'use strict'
+
 require('isomorphic-fetch')
 
-module.exports = class Fetcher {
+class Fetcher {
   get(url, opts) {
     const options = opts || {}
     options.method = 'GET'
@@ -39,3 +41,5 @@ module.exports = class Fetcher {
     return `${response.status} ${response.statusText}`
   }
 }
+
+module.exports = Fetcher
