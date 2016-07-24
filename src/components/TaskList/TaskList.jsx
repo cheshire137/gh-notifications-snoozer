@@ -37,7 +37,7 @@ const mapStateToProps = tasks => ({ tasks })
 
 TaskList.propTypes = {
   tasks: React.PropTypes.array.isRequired,
-  dispatch: React.PropTypes.object.isRequired,
+  dispatch: React.PropTypes.func.isRequired,
 }
 
 module.exports = connect(mapStateToProps)(TaskList)
