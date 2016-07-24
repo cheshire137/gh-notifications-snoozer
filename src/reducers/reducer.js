@@ -9,8 +9,6 @@ const defaultTasks = [
 
 module.exports = function(tasks = defaultTasks, action) {
   switch (action.type) {
-    case 'TASKS_ADD':
-      return [...tasks, action.task]
     case 'TASKS_UPDATE':
       return action.tasks
     case 'TASKS_SELECT':
