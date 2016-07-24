@@ -1,16 +1,11 @@
-// THIS IS DUMMY DATA THAT WILL BE REPLACED BY ACTUAL API CALLS
-const defaultTasks = [
-  { id: 1, title: 'this is a task' },
-  { id: 2, title: 'this is also a task' },
-  { id: 3, title: 'ignore this one', ignore: true },
-  { id: 5, title: 'this one is archived', snooze: true },
-]
-// const defaultTasks = []
+const update = require('react-addons-update')
+
+const defaultTasks = []
 
 module.exports = function(tasks = defaultTasks, action) {
   switch (action.type) {
     case 'TASKS_UPDATE':
-      return action.tasks
+      return update(tasks, { $merge: action.tasks })
     case 'TASKS_SELECT':
       return tasks.map(task => {
         if (task.id === action.task.id) {
