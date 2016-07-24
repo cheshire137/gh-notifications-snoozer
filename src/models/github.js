@@ -11,6 +11,22 @@ class GitHub extends Fetcher {
     return this.get('notifications')
   }
 
+  getPandaRocketTasks() {
+    const urlPath = 'search/issues?q=team=identity-team-panda-rocket'
+    return this.get(urlPath).then(({ items }) => {
+      return items.map(item => {
+        return {
+          title: item.title,
+          body: item.body,
+          state: item.state,
+          createdAt: new Date(item.created_at),
+          updatedAt: new Date(item.updated_at),
+          isPullRequest: !!item.pull_request,
+        }
+      })
+    })
+  }
+
   static getToken() {
     const tokenPath = path.join(__dirname, '..', '..', '.env')
     return fs.readFileSync(tokenPath).toString().trim()
