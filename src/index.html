@@ -15,10 +15,10 @@
     const Redux = require('redux')
 
     const App = require('./components/App')
-    const reducers = require('./reducers/reducer')
+    const reducer = require('./reducers/reducer')
     const GitHub = require('./models/github')
 
-    const store = Redux.createStore(reducers)
+    const store = Redux.createStore(reducer)
     const github = new GitHub()
     github.getPandaRocketTasks().then(tasks => {
       store.dispatch({type: 'TASKS_UPDATE', tasks});
