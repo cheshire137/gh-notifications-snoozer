@@ -1,8 +1,8 @@
-const defaultTasks = {}
+import { combineReducers } from 'redux'
 
-module.exports = function(tasks = defaultTasks, action) {
+function tasks(tasks = [], action) {
   switch (action.type) {
-    case 'TASKS_UPDATE': {
+    case 'TASKS_UPDATE':
       // There is probably a better way to do this.
       // Any old task that isn't in the new tasks is marked as closed
       // Any new task that isn't in the old tasks is added
@@ -11,7 +11,6 @@ module.exports = function(tasks = defaultTasks, action) {
         .filter(({ id }) => !newIds.includes(id))
         .map((task) => Object.assign({}, task, { state: 'closed' }))
       return [...action.tasks, ...closedTasks].sort((a,b) => a.id - b.id)
-    }
     case 'TASKS_SELECT':
       return tasks.map(task => {
         if (task.id === action.task.id) {
@@ -37,3 +36,17 @@ module.exports = function(tasks = defaultTasks, action) {
       return tasks
   }
 }
+
+function settings(settings = {}, action) {
+  switch (action.type) {
+    case 'SETTINGS_LAST_UPDATED':
+      return Object.assign({}, settings, { action })
+    default:
+      return settings
+  }
+}
+
+module.exports = combineReducers({
+  settings,
+  tasks,
+})
