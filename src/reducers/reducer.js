@@ -1,4 +1,4 @@
-const defaultTasks = []
+const defaultTasks = {}
 
 module.exports = function(tasks = defaultTasks, action) {
   switch (action.type) {

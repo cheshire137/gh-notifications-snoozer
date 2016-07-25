@@ -4,7 +4,10 @@ const Redux = require('redux')
 const reducer = require('../../src/reducers/reducer')
 
 describe('reducers', () => {
-  it('uses an empty list as the initial state')
+  it('uses an empty object as the initial state', () => {
+    const store = Redux.createStore(reducer)
+    assert.deepEqual({}, store.getState())
+  })
 
   it('TASKS_UPDATE', () => {
     const initialState = [
