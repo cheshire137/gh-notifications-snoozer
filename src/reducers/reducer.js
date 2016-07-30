@@ -3,14 +3,21 @@ import { combineReducers } from 'redux'
 function tasks(tasks = [], action) {
   switch (action.type) {
     case 'TASKS_UPDATE':
-      // There is probably a better way to do this.
-      // Any old task that isn't in the new tasks is marked as closed
-      // Any new task that isn't in the old tasks is added
-      const newIds = action.tasks.map(({ id }) => id)
-      const closedTasks = tasks
-        .filter(({ id }) => !newIds.includes(id))
-        .map((task) => Object.assign({}, task, { state: 'closed' }))
-      return [...action.tasks, ...closedTasks].sort((a, b) => a.id - b.id)
+      const tasksById = {}
+
+      // Add the existing tasks
+      tasks.forEach(task => (tasksById[task.id] = task))
+
+      // Update tasks with new values and add new tasks
+      action.tasks.forEach(task => {
+        tasksById[task.id] = Object.assign({}, tasksById[task.id], task)
+      })
+
+      const updatedTasks = Object.keys(tasksById)
+        .map(taskId => tasksById[taskId])
+        .sort((a, b) => b.updatedAt - a.updatedAt) // Sort by updatedAt DESC
+
+      return updatedTasks
     case 'TASKS_SELECT':
       return tasks.map(task => {
         if (task.id === action.task.id) {
