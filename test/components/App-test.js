@@ -18,8 +18,7 @@ describe('App', () => {
     global.document = jsdom.jsdom('<!doctype html><html><body></body></html>')
     global.window = global.document.defaultView
 
-    const initialState = []
-    store = Redux.createStore(reducer, initialState)
+    store = Redux.createStore(reducer)
     fetchMock.get(`${Config.githubApiUrl}/notifications`, [])
   })
 
