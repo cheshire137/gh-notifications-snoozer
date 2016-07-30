@@ -33,7 +33,7 @@ class TaskList extends React.Component {
   }
 }
 
-const mapStateToProps = tasks => ({ tasks })
+const mapStateToProps = state => ({ tasks: state.tasks })
 
 TaskList.propTypes = {
   tasks: React.PropTypes.array.isRequired,
