@@ -10,7 +10,7 @@ function tasks(tasks = [], action) {
       const closedTasks = tasks
         .filter(({ id }) => !newIds.includes(id))
         .map((task) => Object.assign({}, task, { state: 'closed' }))
-      return [...action.tasks, ...closedTasks].sort((a,b) => a.id - b.id)
+      return [...action.tasks, ...closedTasks].sort((a, b) => a.id - b.id)
     case 'TASKS_SELECT':
       return tasks.map(task => {
         if (task.id === action.task.id) {
@@ -37,16 +37,6 @@ function tasks(tasks = [], action) {
   }
 }
 
-function settings(settings = {}, action) {
-  switch (action.type) {
-    case 'SETTINGS_LAST_UPDATED':
-      return Object.assign({}, settings, { action })
-    default:
-      return settings
-  }
-}
-
 module.exports = combineReducers({
-  settings,
   tasks,
 })
