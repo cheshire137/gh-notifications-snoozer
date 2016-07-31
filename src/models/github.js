@@ -17,6 +17,7 @@ class GitHub extends Fetcher {
     return this.get(urlPath).then(({ items }) => {
       return items.map(item => {
         return {
+          id: item.id,
           title: item.title,
           body: item.body,
           state: item.state,
