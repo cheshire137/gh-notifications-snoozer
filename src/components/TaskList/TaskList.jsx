@@ -16,12 +16,12 @@ class TaskList extends React.Component {
             id="snooze"
             type="button"
             onClick={() => this.onSnoozeClick()}
-            className="control"
+            className="control button"
           >
             snooze
           </button>
-          <button type="button" className="control">ignore</button>
-          <button type="button" className="control">archive</button>
+          <button type="button" className="control button">ignore</button>
+          <button type="button" className="control button">archive</button>
         </nav>
         <ol className="issues-list">
           {this.props.tasks.map(task =>
