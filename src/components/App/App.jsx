@@ -8,7 +8,7 @@ const TaskList = require('../TaskList')
 class App extends React.Component {
   componentDidMount() {
     const github = new GitHub()
-    github.getPandaRocketTasks().then(tasks => {
+    github.getTasks().then(tasks => {
       this.props.dispatch({ type: 'TASKS_UPDATE', tasks })
     })
   }
