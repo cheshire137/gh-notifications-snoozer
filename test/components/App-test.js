@@ -6,7 +6,6 @@ const ReactRedux = require('react-redux')
 const Redux = require('redux')
 const TestUtils = require('react-addons-test-utils')
 const fetchMock = require('fetch-mock')
-const Config = require('../../src/config.json')
 
 const App = require('../../src/components/App')
 const reducer = require('../../src/reducers/reducer')
@@ -18,9 +17,8 @@ describe('App', () => {
     global.document = jsdom.jsdom('<!doctype html><html><body></body></html>')
     global.window = global.document.defaultView
 
-    const initialState = []
-    store = Redux.createStore(reducer, initialState)
-    fetchMock.get(`${Config.githubApiUrl}/notifications`, [])
+    store = Redux.createStore(reducer)
+    fetchMock.mock('*', {})
   })
 
   after(() => {
@@ -33,6 +31,11 @@ describe('App', () => {
         <App />
       </ReactRedux.Provider>
     )
+
     assert(ReactDOM.findDOMNode(appComponent))
+
+    const fetchedCalls = fetchMock.calls().matched
+    assert.equal(1, fetchedCalls.length, 'Only one fetch call should be made.')
+    assert(fetchedCalls[0][0].match(/\/search\/issues\?/), 'It should be to the search API')
   })
 })

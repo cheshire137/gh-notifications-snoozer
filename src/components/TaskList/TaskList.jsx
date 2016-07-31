@@ -33,11 +33,11 @@ class TaskList extends React.Component {
   }
 }
 
-const mapStateToProps = tasks => ({ tasks })
+const mapStateToProps = state => ({ tasks: state.tasks })
 
 TaskList.propTypes = {
   tasks: React.PropTypes.array.isRequired,
-  dispatch: React.PropTypes.object.isRequired,
+  dispatch: React.PropTypes.func.isRequired,
 }
 
 module.exports = connect(mapStateToProps)(TaskList)

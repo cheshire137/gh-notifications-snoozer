@@ -1,18 +1,23 @@
-// THIS IS DUMMY DATA THAT WILL BE REPLACED BY ACTUAL API CALLS
-const defaultTasks = [
-  { id: 1, title: 'this is a task' },
-  { id: 2, title: 'this is also a task' },
-  { id: 3, title: 'ignore this one', ignore: true },
-  { id: 5, title: 'this one is archived', snooze: true },
-]
-// const defaultTasks = []
+import { combineReducers } from 'redux'
 
-module.exports = function(tasks = defaultTasks, action) {
+function tasks(tasks = [], action) {
   switch (action.type) {
-    case 'TASKS_ADD':
-      return [...tasks, action.task]
     case 'TASKS_UPDATE':
-      return action.tasks
+      const tasksById = {}
+
+      // Add the existing tasks
+      tasks.forEach(task => (tasksById[task.id] = task))
+
+      // Update tasks with new values and add new tasks
+      action.tasks.forEach(task => {
+        tasksById[task.id] = Object.assign({}, tasksById[task.id], task)
+      })
+
+      const updatedTasks = Object.keys(tasksById)
+        .map(taskId => tasksById[taskId])
+        .sort((a, b) => b.updatedAt - a.updatedAt) // Sort by updatedAt DESC
+
+      return updatedTasks
     case 'TASKS_SELECT':
       return tasks.map(task => {
         if (task.id === action.task.id) {
@@ -38,3 +43,7 @@ module.exports = function(tasks = defaultTasks, action) {
       return tasks
   }
 }
+
+module.exports = combineReducers({
+  tasks,
+})

@@ -15,10 +15,11 @@
     const Redux = require('redux')
 
     const App = require('./components/App')
-    const reducers = require('./reducers/reducer')
+    const reducer = require('./reducers/reducer')
+    const store = Redux.createStore(reducer)
 
     ReactDom.render(
-      <ReactRedux.Provider store={Redux.createStore(reducers)}>
+      <ReactRedux.Provider store={store}>
         <App />
       </ReactRedux.Provider>,
       document.getElementById('content')
