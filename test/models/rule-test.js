@@ -1,59 +1,50 @@
 const assert = require('assert')
-const storage = require('electron-json-storage')
+const ElectronConfig = require('electron-config')
+const storage = new ElectronConfig()
 const Rule = require('../../src/models/rule')
 
 describe('Rule', () => {
   describe('store', () => {
-    it('saves the given key/value pair', done => {
+    it('saves the given key/value pair', () => {
       const rule = new Rule('funKey')
-      rule.store('glorious value').then(() => {
-        storage.get('funKey', (error, actual) => {
-          assert.equal('glorious value', actual)
-          storage.clear(() => done())
-        })
-      })
+      rule.store('glorious value')
+      const actual = storage.get('funKey')
+      assert.equal('glorious value', actual)
+      storage.clear()
     })
   })
 
   describe('exists', () => {
-    it('returns true when key exists', done => {
+    it('returns true when key exists', () => {
       const value = 987
-      storage.set('TheBestKey', value, () => {
-        const rule = new Rule('TheBestKey')
-        rule.exists().then(hasKey => {
-          assert(hasKey)
-          storage.clear(() => done())
-        })
-      })
+      storage.set('TheBestKey', value)
+      const rule = new Rule('TheBestKey')
+      assert(rule.exists())
+      storage.clear()
     })
 
-    it('returns false when key does not exist', done => {
+    it('returns false when key does not exist', () => {
       const rule = new Rule('thebestkey')
-      rule.exists().then(hasKey => {
-        assert(!hasKey)
-        storage.clear(() => done())
-      })
+      assert(!rule.exists())
+      storage.clear()
     })
   })
 
   describe('retrieve', () => {
-    it('fetches the specified key when it exists', done => {
+    it('fetches the specified key when it exists', () => {
       const value = { foo: 'bar' }
-      storage.set('a-sample-key', value, () => {
-        const rule = new Rule('a-sample-key')
-        rule.retrieve().then(actual => {
-          assert.deepEqual(value, actual)
-          storage.clear(() => done())
-        })
-      })
+      storage.set('a-sample-key', value)
+      const rule = new Rule('a-sample-key')
+      const actual = rule.retrieve()
+      assert.deepEqual(value, actual)
+      storage.clear()
     })
 
-    it('returns an empty object when the key does not exist', done => {
+    it('returns an empty object when the key does not exist', () => {
       const rule = new Rule('nonexistent_key')
-      rule.retrieve().then(actual => {
-        assert.deepEqual({}, actual)
-        storage.clear(() => done())
-      })
+      const actual = rule.retrieve()
+      assert.deepEqual({}, actual)
+      storage.clear()
     })
   })
 })

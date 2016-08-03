@@ -1,6 +1,7 @@
 'use strict'
 
-const storage = require('electron-json-storage')
+const ElectronConfig = require('electron-config')
+const storage = new ElectronConfig()
 const Rules = require('./rules')
 
 class Rule {
@@ -9,39 +10,19 @@ class Rule {
   }
 
   exists() {
-    return new Promise((resolve, reject) => {
-      storage.has(this.key, (error, hasKey) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(hasKey)
-        }
-      })
-    })
+    return storage.has(this.key)
   }
 
   retrieve() {
-    return new Promise((resolve, reject) => {
-      storage.get(this.key, (error, value) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(value)
-        }
-      })
-    })
+    if (this.exists()) {
+      return storage.get(this.key)
+    }
+    return {}
   }
 
   store(value) {
-    return new Promise((resolve, reject) => {
-      storage.set(this.key, value, (error) => {
-        if (error) {
-          reject(error)
-        } else {
-          Rules.addKey(this.key).then(resolve).catch(reject)
-        }
-      })
-    })
+    storage.set(this.key, value)
+    Rules.addKey(this.key)
   }
 }
 
