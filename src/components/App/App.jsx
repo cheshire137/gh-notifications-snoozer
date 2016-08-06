@@ -76,24 +76,20 @@ class App extends React.Component {
 
     if (this.state.view === 'rules') {
       return (
-        <div className="rules-view">
-          <RuleList
-            rules={this.state.rules}
-            delete={(ruleKey) => this.deleteRule(ruleKey)}
-            addRule={() => this.showNewRuleForm()}
-            cancel={() => this.showTaskList()}
-          />
-        </div>
+        <RuleList
+          rules={this.state.rules}
+          delete={(ruleKey) => this.deleteRule(ruleKey)}
+          addRule={() => this.showNewRuleForm()}
+          cancel={() => this.showTaskList()}
+        />
       )
     }
 
     return (
-      <div className="new-rule-view">
-        <NewRule
-          save={() => this.savedRule()}
-          cancel={() => this.showTaskList()}
-        />
-      </div>
+      <NewRule
+        save={() => this.savedRule()}
+        cancel={() => this.showTaskList()}
+      />
     )
   }
 }
