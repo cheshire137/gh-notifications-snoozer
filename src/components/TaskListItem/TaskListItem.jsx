@@ -50,17 +50,17 @@ class TaskListItem extends React.Component {
 
     return (
       <li className="task-list-item control columns">
-        <div className="column is-2">
-          <span className={this.iconClass()}></span>
+        <div className="column">
+          <span title={task.state} className={this.iconClass()}></span>
         </div>
-        <label className="checkbox column">
+        <label className="checkbox is-8 column">
           <input type="checkbox" onChange={event => this.onChange(event)} />
           <span className="task-list-item-title">{task.title}</span>
         </label>
         <time className="column is-2 has-text-right task-list-item-time">
           {task.updatedAt.toLocaleDateString()}
         </time>
-        <div className="column is-2 has-text-right">
+        <div className="column has-text-right">
           <a href={task.url} onClick={event => this.openExternal(event)}>
             <span className="octicon octicon-link-external"></span>
           </a>
