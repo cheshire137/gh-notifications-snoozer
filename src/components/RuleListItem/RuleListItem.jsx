@@ -15,9 +15,11 @@ class RuleListItem extends React.Component {
             {rule.retrieve()}
           </div>
           <div className="column is-2 has-text-right">
-            <button onClick={() => this.props.delete(this.props.rule)} type="button" className="button">
-              Delete
-            </button>
+            <button
+              onClick={() => this.props.delete(this.props.rule)}
+              type="button"
+              className="button"
+            >Delete</button>
           </div>
         </div>
       </li>

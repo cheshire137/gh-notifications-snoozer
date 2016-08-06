@@ -14,13 +14,11 @@ class Filter extends React.Component {
           <label className="label" htmlFor="rules-select">Filter:</label>
           <span className="select">
             <select id="rules-select" onChange={event => this.changeRule(event)}>
-              {rules.map(ruleKey => {
-                return (
-                  <option key={ruleKey} value={ruleKey}>
-                    {ruleKey}
-                  </option>
-                )
-              })}
+              {rules.map(ruleKey => (
+                <option key={ruleKey} value={ruleKey}>
+                  {ruleKey}
+                </option>
+              ))}
             </select>
           </span>
         </div>

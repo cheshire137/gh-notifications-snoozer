@@ -19,15 +19,13 @@ class RuleList extends React.Component {
           </div>
         </div>
         <ul className="rule-list">
-          {this.props.rules.map(ruleKey => {
-            return (
-              <RuleListItem
-                key={ruleKey}
-                rule={ruleKey}
-                delete={this.props.delete}
-              />
-            )
-          })}
+          {this.props.rules.map(ruleKey => (
+            <RuleListItem
+              key={ruleKey}
+              rule={ruleKey}
+              delete={this.props.delete}
+            />
+          ))}
         </ul>
       </div>
     )
