@@ -21,6 +21,15 @@ class Rules {
     storage.set(rulesStorageKey, newRules)
     return newRules
   }
+
+  static deleteKey(ruleKey) {
+    const existingRules = this.findAll()
+    const index = existingRules.indexOf(ruleKey)
+    const newRules = existingRules.slice(0, index).
+        concat(existingRules.slice(index + 1))
+    storage.set(rulesStorageKey, newRules)
+    return newRules
+  }
 }
 
 module.exports = Rules
