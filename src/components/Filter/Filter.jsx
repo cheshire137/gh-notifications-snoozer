@@ -10,7 +10,7 @@ class Filter extends React.Component {
     const rules = Rules.findAll()
     return (
       <div className="filter columns">
-        <div className="column is-8">
+        <div className="column is-6">
           <label className="label" htmlFor="rules-select">Filter:</label>
           <span className="select">
             <select id="rules-select" onChange={event => this.changeRule(event)}>
@@ -24,7 +24,11 @@ class Filter extends React.Component {
             </select>
           </span>
         </div>
-        <div className="column is-4 has-text-right">
+        <div className="column is-6 has-text-right">
+          <button onClick={this.props.manageRules} type="button" className="is-link button">
+            Manage rules
+            <span className="octicon octicon-chevron-down"></span>
+          </button>
           <button onClick={this.props.addRule} type="button" className="is-link button">
             Add rule
             <span className="octicon octicon-chevron-down"></span>
@@ -38,6 +42,7 @@ class Filter extends React.Component {
 Filter.propTypes = {
   addRule: React.PropTypes.func.isRequired,
   changeRule: React.PropTypes.func.isRequired,
+  manageRules: React.PropTypes.func.isRequired,
 }
 
 module.exports = Filter

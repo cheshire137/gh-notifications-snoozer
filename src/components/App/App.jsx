@@ -6,6 +6,7 @@ const Rules = require('../../models/rules')
 const GitHub = require('../../models/github')
 const Filter = require('../Filter')
 const TaskList = require('../TaskList')
+const RuleList = require('../RuleList')
 const NewRule = require('../NewRule')
 const Config = require('../../config.json')
 
@@ -51,6 +52,10 @@ class App extends React.Component {
     this.loadTasks(query)
   }
 
+  manageRules() {
+    this.setState({ view: 'rules' })
+  }
+
   render() {
     if (this.state.view === 'tasks') {
       return (
@@ -58,8 +63,17 @@ class App extends React.Component {
           <Filter
             addRule={() => this.addRule()}
             changeRule={ruleKey => this.loadRule(ruleKey)}
+            manageRules={() => this.manageRules()}
           />
           <TaskList />
+        </div>
+      )
+    }
+
+    if (this.state.view === 'rules') {
+      return (
+        <div className="rules-view">
+          <RuleList />
         </div>
       )
     }
