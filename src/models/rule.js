@@ -24,6 +24,11 @@ class Rule {
     storage.set(this.key, value)
     Rules.addKey(this.key)
   }
+
+  delete() {
+    storage.delete(this.key)
+    Rules.deleteKey(this.key)
+  }
 }
 
 module.exports = Rule
