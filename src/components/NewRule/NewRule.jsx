@@ -25,35 +25,47 @@ class NewRule extends React.Component {
     this.props.save(key)
   }
 
+  cancel(event) {
+    event.preventDefault()
+    this.props.cancel()
+  }
+
   render() {
     let valueClass = 'input'
     if (this.state.valueHasError) {
       valueClass += ' is-danger'
     }
     return (
-      <form onSubmit={event => this.save(event)}>
-        <label className="label">Issue query:</label>
-        <p className="control">
-          <input
-            type="text"
-            name="ruleValue"
-            className={valueClass}
-            placeholder="@org/team-name"
-          />
-        </p>
-        <label className="label">Rule name: (optional)</label>
-        <p className="control">
-          <input type="text" name="ruleKey" className="input" placeholder="Team mentions" />
-        </p>
-        <p className="control">
-          <button type="submit" className="button is-primary">
-            Save Rule
-          </button>
-          <button type="button" onClick={this.props.cancel} className="button is-link">
-            Cancel
-          </button>
-        </p>
-      </form>
+      <div>
+        <h1 className="title">
+          <a href="#" onClick={event => this.cancel(event)}>Tasks</a>
+          <span> / </span>
+          Add a Filter
+        </h1>
+        <form onSubmit={event => this.save(event)}>
+          <label className="label">Issue query:</label>
+          <p className="control">
+            <input
+              type="text"
+              name="ruleValue"
+              className={valueClass}
+              placeholder="@org/team-name"
+            />
+          </p>
+          <label className="label">Rule name: (optional)</label>
+          <p className="control">
+            <input type="text" name="ruleKey" className="input" placeholder="Team mentions" />
+          </p>
+          <p className="control">
+            <button type="submit" className="button is-primary">
+              Save Filter
+            </button>
+            <button type="button" onClick={this.props.cancel} className="button is-link">
+              Cancel
+            </button>
+          </p>
+        </form>
+      </div>
     )
   }
 }

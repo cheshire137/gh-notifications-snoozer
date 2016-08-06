@@ -24,11 +24,11 @@ class Filter extends React.Component {
         </div>
         <div className="column is-6 has-text-right">
           <button onClick={this.props.manageRules} type="button" className="is-link button">
-            Manage rules
+            Manage filters
             <span className="octicon octicon-chevron-down"></span>
           </button>
           <button onClick={this.props.addRule} type="button" className="is-link button">
-            Add rule
+            Add a filter
             <span className="octicon octicon-chevron-down"></span>
           </button>
         </div>

@@ -2,19 +2,25 @@ const React = require('react')
 const RuleListItem = require('../RuleListItem')
 
 class RuleList extends React.Component {
+  cancel(event) {
+    event.preventDefault()
+    this.props.cancel()
+  }
+
   render() {
     return (
       <div>
         <div className="columns">
-          <div className="column is-3">
-            <button onClick={this.props.cancel} type="button" className="button">
-              <span className="octicon octicon-chevron-left"></span>
-              Back to notifications
-            </button>
+          <div className="column is-6">
+            <h1 className="title">
+              <a href="#" onClick={event => this.cancel(event)}>Tasks</a>
+              <span> / </span>
+              Manage Filters
+            </h1>
           </div>
-          <div className="column is-3">
+          <div className="column is-6 has-text-right">
             <button onClick={this.props.addRule} type="button" className="button">
-              Add rule
+              Add a filter
             </button>
           </div>
         </div>
