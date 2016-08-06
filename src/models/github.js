@@ -23,7 +23,11 @@ class GitHub extends Fetcher {
           state: item.state,
           createdAt: new Date(item.created_at),
           updatedAt: new Date(item.updated_at),
+          closedAt: item.closed_at ? new Date(item.closed_at) : null,
           isPullRequest: !!item.pull_request,
+          repositoryUrl: item.repository_url,
+          url: item.html_url,
+          number: item.number,
         }
       })
     })
