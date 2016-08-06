@@ -1,10 +1,13 @@
 const { connect } = require('react-redux')
 const React = require('react')
 
+const Rule = require('../../models/rule')
+const Rules = require('../../models/rules')
 const GitHub = require('../../models/github')
 const Filter = require('../Filter')
 const TaskList = require('../TaskList')
 const NewRule = require('../NewRule')
+const Config = require('../../config.json')
 
 class App extends React.Component {
   constructor() {
@@ -13,8 +16,17 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    const rules = Rules.findAll()
+    if (rules.length > 0) {
+      this.loadRule(rules[0])
+    } else {
+      this.loadTasks(Config.searchQuery)
+    }
+  }
+
+  loadTasks(query) {
     const github = new GitHub()
-    github.getTasks().then(tasks => {
+    github.getTasks(query).then(tasks => {
       this.props.dispatch({ type: 'TASKS_UPDATE', tasks })
     })
   }
@@ -24,7 +36,8 @@ class App extends React.Component {
   }
 
   savedRule(ruleKey) {
-    console.log('new rule', ruleKey)
+    this.setState({ view: 'tasks' })
+    this.loadRule(ruleKey)
   }
 
   cancelledNewRule() {
@@ -32,7 +45,10 @@ class App extends React.Component {
   }
 
   loadRule(ruleKey) {
-    console.log('load rule', ruleKey)
+    this.props.dispatch({ type: 'TASKS_EMPTY' })
+    const rule = new Rule(ruleKey)
+    const query = rule.retrieve()
+    this.loadTasks(query)
   }
 
   render() {

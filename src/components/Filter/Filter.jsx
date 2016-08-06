@@ -1,20 +1,25 @@
 const React = require('react')
-const Config = require('../../config.json')
 const Rules = require('../../models/rules')
 
 class Filter extends React.Component {
+  changeRule(event) {
+    this.props.changeRule(event.target.value)
+  }
+
   render() {
-    const savedRules = Rules.findAll()
-    console.log('saved rules', savedRules)
-    const rules = savedRules.length > 0 ? savedRules : [Config.searchQuery]
+    const rules = Rules.findAll()
     return (
       <div className="filter columns">
         <div className="column is-8">
           <label className="label" htmlFor="rules-select">Filter:</label>
           <span className="select">
-            <select id="rules-select">
+            <select id="rules-select" onChange={event => this.changeRule(event)}>
               {rules.map(ruleKey => {
-                return <option key={ruleKey}>{ruleKey}</option>
+                return (
+                  <option key={ruleKey} value={ruleKey}>
+                    {ruleKey}
+                  </option>
+                )
               })}
             </select>
           </span>
