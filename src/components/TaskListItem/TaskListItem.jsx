@@ -31,11 +31,15 @@ class TaskListItem extends React.Component {
     }
 
     return (
-      <li>
-        <input type="checkbox" onChange={event => this.onChange(event)} />
-        {task.title}
-        <span>&middot;</span>
-        {task.updated_at}
+      <li className="task-list-item control">
+        <label className="checkbox">
+          <input type="checkbox" onChange={event => this.onChange(event)} />
+          <span className="task-list-item-title">{task.title}</span>
+          <span className="separator">&middot;</span>
+          <time className="task-list-item-time">
+            {task.updatedAt.toLocaleDateString()}
+          </time>
+        </label>
       </li>
     )
   }
