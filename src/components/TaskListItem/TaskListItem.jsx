@@ -31,8 +31,8 @@ class TaskListItem extends React.Component {
     }
 
     return (
-      <li className="task-list-item control">
-        <label className="checkbox">
+      <li className="task-list-item control columns">
+        <label className="checkbox column">
           <input type="checkbox" onChange={event => this.onChange(event)} />
           <span className="task-list-item-title">{task.title}</span>
           <span className="separator">&middot;</span>
