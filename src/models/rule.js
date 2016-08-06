@@ -22,12 +22,12 @@ class Rule {
 
   store(value) {
     storage.set(this.key, value)
-    Rules.addKey(this.key)
+    return Rules.addKey(this.key)
   }
 
   delete() {
     storage.delete(this.key)
-    Rules.deleteKey(this.key)
+    return Rules.deleteKey(this.key)
   }
 }
 

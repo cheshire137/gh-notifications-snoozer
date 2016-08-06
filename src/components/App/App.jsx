@@ -13,13 +13,12 @@ const Config = require('../../config.json')
 class App extends React.Component {
   constructor() {
     super()
-    this.state = { view: 'tasks' }
+    this.state = { view: 'tasks', rules: Rules.findAll() }
   }
 
   componentDidMount() {
-    const rules = Rules.findAll()
-    if (rules.length > 0) {
-      this.loadRule(rules[0])
+    if (this.state.rules.length > 0) {
+      this.loadRule(this.state.rules[0])
     } else {
       this.loadTasks(Config.searchQuery)
     }
@@ -32,16 +31,15 @@ class App extends React.Component {
     })
   }
 
-  addRule() {
+  showNewRuleForm() {
     this.setState({ view: 'new-rule' })
   }
 
-  savedRule(ruleKey) {
-    this.setState({ view: 'tasks' })
-    this.loadRule(ruleKey)
+  savedRule() {
+    this.setState({ view: 'tasks', rules: Rules.findAll() })
   }
 
-  cancelledNewRule() {
+  showTaskList() {
     this.setState({ view: 'tasks' })
   }
 
@@ -56,12 +54,18 @@ class App extends React.Component {
     this.setState({ view: 'rules' })
   }
 
+  deleteRule(ruleKey) {
+    const rule = new Rule(ruleKey)
+    const remainingRules = rule.delete()
+    this.setState({ rules: remainingRules })
+  }
+
   render() {
     if (this.state.view === 'tasks') {
       return (
         <div className="tasks-view">
           <Filter
-            addRule={() => this.addRule()}
+            addRule={() => this.showNewRuleForm()}
             changeRule={ruleKey => this.loadRule(ruleKey)}
             manageRules={() => this.manageRules()}
           />
@@ -73,7 +77,12 @@ class App extends React.Component {
     if (this.state.view === 'rules') {
       return (
         <div className="rules-view">
-          <RuleList />
+          <RuleList
+            rules={this.state.rules}
+            delete={(ruleKey) => this.deleteRule(ruleKey)}
+            addRule={() => this.showNewRuleForm()}
+            cancel={() => this.showTaskList()}
+          />
         </div>
       )
     }
@@ -81,8 +90,8 @@ class App extends React.Component {
     return (
       <div className="new-rule-view">
         <NewRule
-          save={ruleKey => this.savedRule(ruleKey)}
-          cancel={() => this.cancelledNewRule()}
+          save={() => this.savedRule()}
+          cancel={() => this.showTaskList()}
         />
       </div>
     )
