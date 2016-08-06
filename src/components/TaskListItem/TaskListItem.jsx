@@ -30,6 +30,17 @@ class TaskListItem extends React.Component {
     shell.openExternal(task.url)
   }
 
+  iconClass() {
+    const { task } = this.props
+    const iconClasses = ['octicon']
+    if (task.state === 'open') {
+      iconClasses.push('octicon-issue-opened')
+    } else if (task.state === 'closed') {
+      iconClasses.push('octicon-issue-closed')
+    }
+    return iconClasses.join(' ')
+  }
+
   render() {
     const { task } = this.props
 
@@ -39,15 +50,17 @@ class TaskListItem extends React.Component {
 
     return (
       <li className="task-list-item control columns">
+        <div className="column is-2">
+          <span className={this.iconClass()}></span>
+        </div>
         <label className="checkbox column">
           <input type="checkbox" onChange={event => this.onChange(event)} />
           <span className="task-list-item-title">{task.title}</span>
-          <span className="separator">&middot;</span>
-          <time className="task-list-item-time">
-            {task.updatedAt.toLocaleDateString()}
-          </time>
         </label>
-        <div className="column is-one-third has-text-right">
+        <time className="column is-2 has-text-right task-list-item-time">
+          {task.updatedAt.toLocaleDateString()}
+        </time>
+        <div className="column is-2 has-text-right">
           <a href={task.url} onClick={event => this.openExternal(event)}>
             <span className="octicon octicon-link-external"></span>
           </a>
