@@ -1,4 +1,5 @@
 const React = require('react')
+const shell = require('electron').shell
 const { connect } = require('react-redux')
 
 class TaskListItem extends React.Component {
@@ -23,6 +24,12 @@ class TaskListItem extends React.Component {
     return true
   }
 
+  openExternal(event) {
+    event.preventDefault()
+    const { task } = this.props
+    shell.openExternal(task.url)
+  }
+
   render() {
     const { task } = this.props
 
@@ -40,6 +47,11 @@ class TaskListItem extends React.Component {
             {task.updatedAt.toLocaleDateString()}
           </time>
         </label>
+        <div className="column is-one-third has-text-right">
+          <a href={task.url} onClick={event => this.openExternal(event)}>
+            <span className="octicon octicon-link-external"></span>
+          </a>
+        </div>
       </li>
     )
   }
