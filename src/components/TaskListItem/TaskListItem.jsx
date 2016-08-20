@@ -1,4 +1,5 @@
 const React = require('react')
+const shell = require('electron').shell
 const { connect } = require('react-redux')
 
 class TaskListItem extends React.Component {
@@ -23,6 +24,23 @@ class TaskListItem extends React.Component {
     return true
   }
 
+  openExternal(event) {
+    event.preventDefault()
+    const { task } = this.props
+    shell.openExternal(task.url)
+  }
+
+  iconClass() {
+    const { task } = this.props
+    const iconClasses = ['octicon']
+    if (task.state === 'open') {
+      iconClasses.push('octicon-issue-opened')
+    } else if (task.state === 'closed') {
+      iconClasses.push('octicon-issue-closed')
+    }
+    return iconClasses.join(' ')
+  }
+
   render() {
     const { task } = this.props
 
@@ -31,11 +49,22 @@ class TaskListItem extends React.Component {
     }
 
     return (
-      <li>
-        <input type="checkbox" onChange={event => this.onChange(event)} />
-        {task.title}
-        <span>&middot;</span>
-        {task.updated_at}
+      <li className="task-list-item control columns">
+        <div className="column">
+          <span title={task.state} className={this.iconClass()}></span>
+        </div>
+        <label className="checkbox is-8 column">
+          <input type="checkbox" onChange={event => this.onChange(event)} />
+          <span className="task-list-item-title">{task.title}</span>
+        </label>
+        <time className="column is-2 has-text-right task-list-item-time">
+          {task.updatedAt.toLocaleDateString()}
+        </time>
+        <div className="column has-text-right">
+          <a href={task.url} onClick={event => this.openExternal(event)}>
+            <span className="octicon octicon-link-external"></span>
+          </a>
+        </div>
       </li>
     )
   }
