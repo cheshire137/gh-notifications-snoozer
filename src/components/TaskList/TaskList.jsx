@@ -23,7 +23,7 @@ class TaskList extends React.Component {
           <button type="button" className="control button">ignore</button>
           <button type="button" className="control button">archive</button>
         </nav>
-        <ol className="issues-list">
+        <ol className="task-list">
           {this.props.tasks.map(task =>
             <TaskListItem task={task} key={task.id} />
           )}

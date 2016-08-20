@@ -1,6 +1,8 @@
 @import "../../lib/bulma.css";
+@import "https://cdnjs.cloudflare.com/ajax/libs/octicons/3.5.0/octicons.min.css";
 @import "../Filter/Filter.less";
 @import "../TaskList/TaskList.less";
+@import "../TaskListItem/TaskListItem.less";
 @import "../RuleListItem/RuleListItem.less";
 @import "../NewRule/NewRule.less";
 
@@ -11,6 +13,10 @@ body {
 
 #content {
   padding: 20px;
+}
+
+.task-list-item:nth-child(even) {
+  background-color: #f9f9f9;
 }
 
 .issues-list {

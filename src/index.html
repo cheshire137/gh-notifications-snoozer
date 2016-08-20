@@ -7,22 +7,22 @@
   </head>
   <body>
     <div id="content"></div>
+    <script type="text/jsx">
+      const React = require('react')
+      const ReactDom = require('react-dom')
+      const ReactRedux = require('react-redux')
+      const Redux = require('redux')
+
+      const App = require('./components/App')
+      const reducer = require('./reducers/reducer')
+      const store = Redux.createStore(reducer)
+
+      ReactDom.render(
+        <ReactRedux.Provider store={store}>
+          <App />
+        </ReactRedux.Provider>,
+        document.getElementById('content')
+      )
+    </script>
   </body>
-  <script>
-    const React = require('react')
-    const ReactDom = require('react-dom')
-    const ReactRedux = require('react-redux')
-    const Redux = require('redux')
-
-    const App = require('./components/App')
-    const reducer = require('./reducers/reducer')
-    const store = Redux.createStore(reducer)
-
-    ReactDom.render(
-      <ReactRedux.Provider store={store}>
-        <App />
-      </ReactRedux.Provider>,
-      document.getElementById('content')
-    )
-  </script>
 </html>

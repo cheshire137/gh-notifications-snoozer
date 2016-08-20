@@ -12,7 +12,7 @@ class GitHub extends Fetcher {
   }
 
   // https://developer.github.com/v3/search/#search-issues
-  getTasks(query) {
+  getTasks(query=Config.searchQuery) {
     const urlPath = `search/issues?q=${encodeURIComponent(query)}&sort=updated`
     return this.get(urlPath).then(({ items }) => {
       return items.map(item => {
@@ -23,7 +23,11 @@ class GitHub extends Fetcher {
           state: item.state,
           createdAt: new Date(item.created_at),
           updatedAt: new Date(item.updated_at),
+          closedAt: item.closed_at ? new Date(item.closed_at) : null,
           isPullRequest: !!item.pull_request,
+          repositoryUrl: item.repository_url,
+          url: item.html_url,
+          number: item.number,
         }
       })
     })
