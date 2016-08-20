@@ -58,7 +58,7 @@ class TaskListItem extends React.Component {
           <span className="task-list-item-title">{task.title}</span>
         </label>
         <time className="column is-2 has-text-right task-list-item-time">
-          {task.updatedAt.toLocaleDateString()}
+          {new Date(task.updatedAt).toLocaleDateString()}
         </time>
         <div className="column has-text-right">
           <a href={task.url} onClick={event => this.openExternal(event)}>
