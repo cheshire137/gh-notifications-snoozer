@@ -3,6 +3,8 @@
 @import "../Filter/Filter.less";
 @import "../TaskList/TaskList.less";
 @import "../TaskListItem/TaskListItem.less";
+@import "../RuleListItem/RuleListItem.less";
+@import "../NewRule/NewRule.less";
 
 body {
   background-color: #fff;
@@ -15,4 +17,33 @@ body {
 
 .task-list-item:nth-child(even) {
   background-color: #f9f9f9;
+}
+
+.issues-list {
+  list-style: none;
+}
+
+.filter {
+  .label {
+    display: inline-block;
+    line-height: 32px;
+    margin-right: 5px;
+  }
+}
+
+.button.is-primary {
+  margin-right: 5px;
+}
+
+.rule-list-item:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.new-rule-form {
+  margin-bottom: 40px;
+}
+
+.search-query-help li {
+  text-indent: -2em;
+  margin: 0 0 10px 2em;
 }

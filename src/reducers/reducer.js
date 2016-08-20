@@ -2,6 +2,8 @@ import { combineReducers } from 'redux'
 
 function tasks(tasks = [], action) {
   switch (action.type) {
+    case 'TASKS_EMPTY':
+      return []
     case 'TASKS_UPDATE':
       const tasksById = {}
 
