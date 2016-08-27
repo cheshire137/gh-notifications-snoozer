@@ -1,7 +1,42 @@
 import { combineReducers } from 'redux'
+import ElectronConfig from 'electron-config'
+
+const storage = new ElectronConfig()
+const SNOOZED_KEY = 'snoozed'
+const ARCHIVED_KEY = 'archived'
+
+// Gets an identifier for the given task to be used with persisting the task's
+// state to the JSON storage file.
+function taskKey(task) {
+  let type = task.type
+  if (typeof type === 'undefined') {
+    type = task.isPullRequest ? 'pull' : 'issue'
+  }
+  return `${type}-${task.id}`
+}
+
+// Fetch from the JSON storage file the task IDs saved under the given key.
+function getSavedTasks(key) {
+  return storage.has(key) ? storage.get(key) : []
+}
+
+// Persist the given tasks under the given key in the JSON storage file.
+function writeChanges(tasks, key) {
+  const existingTasks = getSavedTasks(key)
+  const newTasks = tasks.map(task => taskKey(task))
+  const allTasks = []
+  existingTasks.concat(newTasks).forEach(str => {
+    if (allTasks.indexOf(str) < 0) {
+      allTasks.push(str)
+    }
+  })
+  storage.set(key, allTasks)
+}
 
 function updateTasks(tasks, action) {
   const tasksById = {}
+  const snoozedTasks = getSavedTasks(SNOOZED_KEY)
+  const archivedTasks = getSavedTasks(ARCHIVED_KEY)
 
   // Add the existing tasks
   tasks.forEach(task => (tasksById[task.id] = task))
@@ -11,9 +46,17 @@ function updateTasks(tasks, action) {
     tasksById[task.id] = Object.assign({}, tasksById[task.id], task)
   })
 
-  const updatedTasks = Object.keys(tasksById)
-    .map(taskId => tasksById[taskId])
-    .sort((a, b) => b.updatedAt - a.updatedAt) // Sort by updatedAt DESC
+  const updatedTasks = Object.keys(tasksById).map(taskId => {
+    const task = tasksById[taskId]
+    const key = taskKey(task)
+    if (snoozedTasks.indexOf(key) > -1) {
+      task.snooze = true
+    }
+    if (archivedTasks.indexOf(key) > -1) {
+      task.archivedAt = storage.get(key)
+    }
+    return task
+  }).sort((a, b) => b.updatedAt - a.updatedAt) // Sort by updatedAt DESC
 
   return updatedTasks
 }
@@ -37,22 +80,32 @@ function deselectTasks(tasks, action) {
 }
 
 function snoozeTasks(tasks) {
-  return tasks.map(task => {
+  const snoozedTasks = []
+  const updatedTasks = tasks.map(task => {
     if (task.isSelected) {
+      snoozedTasks.push(task)
       return Object.assign({}, task, { snooze: true })
     }
     return task
   })
+  writeChanges(snoozedTasks, SNOOZED_KEY)
+  return updatedTasks
 }
 
 function archiveTasks(tasks) {
-  return tasks.map(task => {
+  const archivedTasks = []
+  const updatedTasks = tasks.map(task => {
     if (task.isSelected) {
       const date = new Date()
-      return Object.assign({}, task, { archivedAt: date.toISOString() })
+      const archivedAt = date.toISOString()
+      storage.set(taskKey(task), archivedAt)
+      archivedTasks.push(task)
+      return Object.assign({}, task, { archivedAt })
     }
     return task
   })
+  writeChanges(archivedTasks, ARCHIVED_KEY)
+  return updatedTasks
 }
 
 function tasksReducer(tasks = [], action) {

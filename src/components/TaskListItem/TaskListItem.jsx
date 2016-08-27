@@ -40,7 +40,7 @@ class TaskListItem extends React.Component {
   iconClass() {
     const { task } = this.props
     const iconClasses = ['octicon']
-    if (task.type === 'pull') {
+    if (task.isPullRequest) {
       iconClasses.push('octicon-git-pull-request')
       if (task.state === 'open') {
         iconClasses.push('opened')
