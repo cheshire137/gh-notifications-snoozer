@@ -19,13 +19,13 @@ class GitHub extends Fetcher {
       const repoUrl = item.repository_url
       return {
         id: item.id,
+        type: typeof item.pull_request === 'object' ? 'pull' : 'issue',
         title: item.title,
         body: item.body,
         state: item.state,
         createdAt: item.created_at,
         updatedAt: item.updated_at,
         closedAt: item.closed_at,
-        isPullRequest: !!item.pull_request,
         repositoryApiUrl: repoUrl,
         url: item.html_url,
         number: item.number,

@@ -40,10 +40,19 @@ class TaskListItem extends React.Component {
   iconClass() {
     const { task } = this.props
     const iconClasses = ['octicon']
-    if (task.state === 'open') {
-      iconClasses.push('octicon-issue-opened')
-    } else if (task.state === 'closed') {
-      iconClasses.push('octicon-issue-closed')
+    if (task.type === 'pull') {
+      iconClasses.push('octicon-git-pull-request')
+      if (task.state === 'open') {
+        iconClasses.push('opened')
+      } else if (task.state === 'closed') {
+        iconClasses.push('closed')
+      }
+    } else {
+      if (task.state === 'open') {
+        iconClasses.push('octicon-issue-opened')
+      } else if (task.state === 'closed') {
+        iconClasses.push('octicon-issue-closed')
+      }
     }
     return iconClasses.join(' ')
   }
