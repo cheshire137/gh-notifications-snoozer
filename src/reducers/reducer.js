@@ -48,7 +48,8 @@ function snoozeTasks(tasks) {
 function archiveTasks(tasks) {
   return tasks.map(task => {
     if (task.isSelected) {
-      return Object.assign({}, task, { archive: true })
+      const date = new Date()
+      return Object.assign({}, task, { archivedAt: date.toISOString() })
     }
     return task
   })
