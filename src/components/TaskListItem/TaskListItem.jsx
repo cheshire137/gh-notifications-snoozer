@@ -15,10 +15,17 @@ class TaskListItem extends React.Component {
 
     if (task.ignore) {
       return false
-    } else if (task.snooze) {
+    }
+    if (task.snooze) {
       return false
-    } else if (task.archivedAt > task.updatedAt) {
-      return false
+    }
+
+    if (typeof task.archivedAt === 'string') {
+      const updateDate = new Date(task.updatedAt)
+      const archiveDate = new Date(task.archivedAt)
+      if (archiveDate > updateDate) {
+        return false
+      }
     }
 
     return true
