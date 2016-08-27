@@ -8,12 +8,15 @@ class TaskList extends React.Component {
     this.props.dispatch({ type: 'TASKS_SNOOZE' })
   }
 
+  onArchiveClick() {
+    this.props.dispatch({ type: 'TASKS_ARCHIVE' })
+  }
+
   render() {
     return (
       <div>
         <nav className="controls-container">
           <button
-            id="snooze"
             type="button"
             onClick={() => this.onSnoozeClick()}
             className="control button"
@@ -21,7 +24,13 @@ class TaskList extends React.Component {
             snooze
           </button>
           <button type="button" className="control button">ignore</button>
-          <button type="button" className="control button">archive</button>
+          <button
+            type="button"
+            className="control button"
+            onClick={() => this.onArchiveClick()}
+          >
+            archive
+          </button>
         </nav>
         <ol className="task-list">
           {this.props.tasks.map(task =>

@@ -45,6 +45,15 @@ function snoozeTasks(tasks) {
   })
 }
 
+function archiveTasks(tasks) {
+  return tasks.map(task => {
+    if (task.isSelected) {
+      return Object.assign({}, task, { archive: true })
+    }
+    return task
+  })
+}
+
 function tasksReducer(tasks = [], action) {
   switch (action.type) {
     case 'TASKS_EMPTY':
@@ -57,6 +66,8 @@ function tasksReducer(tasks = [], action) {
       return deselectTasks(tasks, action)
     case 'TASKS_SNOOZE':
       return snoozeTasks(tasks)
+    case 'TASKS_ARCHIVE':
+      return archiveTasks(tasks)
     default:
       return tasks
   }
