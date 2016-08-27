@@ -4,11 +4,13 @@ const { connect } = require('react-redux')
 const TaskListItem = require('../TaskListItem')
 
 class TaskList extends React.Component {
-  onSnoozeClick() {
+  onSnoozeClick(event) {
+    event.currentTarget.blur() // defocus button
     this.props.dispatch({ type: 'TASKS_SNOOZE' })
   }
 
-  onArchiveClick() {
+  onArchiveClick(event) {
+    event.currentTarget.blur() // defocus button
     this.props.dispatch({ type: 'TASKS_ARCHIVE' })
   }
 
@@ -18,7 +20,7 @@ class TaskList extends React.Component {
         <nav className="controls-container">
           <button
             type="button"
-            onClick={() => this.onSnoozeClick()}
+            onClick={e => this.onSnoozeClick(e)}
             className="control button"
           >
             snooze
@@ -27,7 +29,7 @@ class TaskList extends React.Component {
           <button
             type="button"
             className="control button"
-            onClick={() => this.onArchiveClick()}
+            onClick={e => this.onArchiveClick(e)}
           >
             archive
           </button>
