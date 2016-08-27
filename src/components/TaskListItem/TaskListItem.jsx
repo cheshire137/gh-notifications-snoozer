@@ -62,6 +62,9 @@ class TaskListItem extends React.Component {
             />
             <span className="task-list-item-title">{task.title}</span>
           </label>
+          <div className="task-list-item-repository">
+            {task.repository}
+          </div>
         </div>
         <time className="column is-2 has-text-right task-list-item-time">
           {new Date(task.updatedAt).toLocaleDateString()}
