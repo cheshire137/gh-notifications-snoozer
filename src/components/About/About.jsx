@@ -1,8 +1,7 @@
 const { shell } = require('electron')
 const React = require('react')
-const path = require('path')
-const packagePath = path.join(__dirname, '..', '..', '..', 'package.json')
-const packageInfo = require(packagePath)
+const { remote } = require('electron')
+const { app } = remote
 
 class About extends React.Component {
   cancel(event) {
@@ -26,7 +25,7 @@ class About extends React.Component {
           About
         </h1>
         <p>
-          {packageInfo.productName}
+          {app.getName()}
           <span> was built by </span>
           <a
             href="https://github.com/probablycorey"
@@ -39,7 +38,7 @@ class About extends React.Component {
           >@cheshire137</a>.
         </p>
         <p>
-          <strong>Version: </strong> {packageInfo.version}
+          <strong>Version: </strong> {app.getVersion()}
         </p>
       </div>
     )
