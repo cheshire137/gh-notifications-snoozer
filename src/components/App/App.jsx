@@ -5,11 +5,13 @@ const { ipcRenderer } = require('electron')
 const Rule = require('../../models/rule')
 const Rules = require('../../models/rules')
 const GitHub = require('../../models/github')
+const AppMenu = require('../../models/app-menu')
 const Filter = require('../Filter')
 const TaskList = require('../TaskList')
 const RuleList = require('../RuleList')
 const NewRule = require('../NewRule')
 const Config = require('../../config.json')
+const About = require('../About')
 
 class App extends React.Component {
   constructor() {
@@ -24,6 +26,14 @@ class App extends React.Component {
     } else {
       this.loadTasks(Config.searchQuery)
     }
+    this.setupAppMenu()
+  }
+
+  setupAppMenu() {
+    const menu = new AppMenu()
+    menu.on('about-app', () => {
+      this.setState({ view: 'about' })
+    })
   }
 
   loadTasks(query) {
@@ -86,6 +96,14 @@ class App extends React.Component {
           rules={this.state.rules}
           delete={(ruleKey) => this.deleteRule(ruleKey)}
           addRule={() => this.showNewRuleForm()}
+          cancel={() => this.showTaskList()}
+        />
+      )
+    }
+
+    if (this.state.view === 'about') {
+      return (
+        <About
           cancel={() => this.showTaskList()}
         />
       )
