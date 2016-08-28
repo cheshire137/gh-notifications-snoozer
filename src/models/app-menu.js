@@ -3,7 +3,9 @@
 const { remote, shell } = require('electron')
 const { Menu, app } = remote
 const EventEmitter = require('events')
-const Config = require('../config.json')
+const path = require('path')
+const packagePath = path.join(__dirname, '..', '..', 'package.json')
+const packageInfo = require(packagePath)
 
 class AppMenu extends EventEmitter {
   constructor() {
@@ -16,7 +18,7 @@ class AppMenu extends EventEmitter {
     }
     this.bugReportOption = {
       label: 'Report a bug',
-      click() { shell.openExternal(Config.bugReportUrl) },
+      click() { shell.openExternal(packageInfo.bugs.url) },
     }
     this.buildMenu()
     Menu.setApplicationMenu(Menu.buildFromTemplate(this.template))
