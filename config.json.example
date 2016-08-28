@@ -1,4 +1,5 @@
 {
   "githubApiUrl": "https://api.github.com",
-  "searchQuery": ""
+  "searchQuery": "",
+  "bugReportUrl": "https://github.com/cheshire137/gh-notifications-snoozer/issues/new"
 }
