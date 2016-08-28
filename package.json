@@ -32,8 +32,8 @@
     "postinstall": "if [ ! -f src/config.json ]; then cp config.json.example src/config.json; fi; if [ ! -f .env ]; then touch .env; fi",
     "start": "electron src/main.js",
     "style": "eslint -c .eslintrc *.js scripts/* src/*.js src/**/*.jsx test/**/*.js",
-    "test": "npm run-script style && npm run-script unit-tests"
     "unit-tests": "xvfb-maybe electron-mocha --renderer --recursive --compilers js:babel-register test",
+    "test": "npm run-script style && npm run-script unit-tests",
   },
   "repository": {
     "type": "git",
