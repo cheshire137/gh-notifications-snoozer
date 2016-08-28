@@ -1,6 +1,5 @@
-const { shell } = require('electron')
+const { shell, remote } = require('electron')
 const React = require('react')
-const { remote } = require('electron')
 const { app } = remote
 
 class About extends React.Component {

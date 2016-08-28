@@ -12,7 +12,7 @@
       const ReactDom = require('react-dom')
       const ReactRedux = require('react-redux')
       const Redux = require('redux')
-      const Electron = require('electron').remote
+      const { remote } = require('electron')
       const { persistStore, autoRehydrate } = require('redux-persist')
       const { AsyncNodeStorage } = require('redux-persist-node-storage')
 
@@ -20,7 +20,7 @@
       const reducer = require('./reducers/reducer')
       const store = Redux.createStore(reducer, undefined, autoRehydrate())
 
-      const persistDir = Electron.app.getPath('userData')
+      const persistDir = remote.app.getPath('userData')
       const persistOptions = { storage: new AsyncNodeStorage(persistDir) }
       persistStore(store, persistOptions)
 
