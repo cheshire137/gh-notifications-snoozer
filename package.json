@@ -33,7 +33,7 @@
     "start": "electron src/main.js",
     "style": "eslint -c .eslintrc *.js scripts/* src/*.js src/**/*.jsx test/**/*.js",
     "unit-tests": "xvfb-maybe electron-mocha --renderer --recursive --compilers js:babel-register test",
-    "test": "npm run-script style && npm run-script unit-tests",
+    "test": "npm run-script style && npm run-script unit-tests"
   },
   "repository": {
     "type": "git",
