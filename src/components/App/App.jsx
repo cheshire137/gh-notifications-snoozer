@@ -1,5 +1,6 @@
 const { connect } = require('react-redux')
 const React = require('react')
+const { ipcRenderer } = require('electron')
 
 const Rule = require('../../models/rule')
 const Rules = require('../../models/rules')
@@ -17,6 +18,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    ipcRenderer.send('title', 'Notifications')
     if (this.state.rules.length > 0) {
       this.loadRule(this.state.rules[0])
     } else {
@@ -32,14 +34,17 @@ class App extends React.Component {
   }
 
   showNewRuleForm() {
+    ipcRenderer.send('title', 'New Filter')
     this.setState({ view: 'new-rule' })
   }
 
   savedRule() {
+    ipcRenderer.send('title', 'Notifications')
     this.setState({ view: 'tasks', rules: Rules.findAll() })
   }
 
   showTaskList() {
+    ipcRenderer.send('title', 'Notifications')
     this.setState({ view: 'tasks' })
   }
 
@@ -51,6 +56,7 @@ class App extends React.Component {
   }
 
   manageRules() {
+    ipcRenderer.send('title', 'Manage Filters')
     this.setState({ view: 'rules' })
   }
 

@@ -1,5 +1,6 @@
 {
   "name": "gh-notifications-snoozer",
+  "productName": "GitHub Notifications Snoozer",
   "version": "0.0.1",
   "description": "An easier way to deal with github notifications",
   "main": "src/main.js",
