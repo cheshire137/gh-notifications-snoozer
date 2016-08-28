@@ -32,6 +32,7 @@ class App extends React.Component {
   setupAppMenu() {
     const menu = new AppMenu()
     menu.on('about-app', () => {
+      ipcRenderer.send('title', 'About')
       this.setState({ view: 'about' })
     })
   }
