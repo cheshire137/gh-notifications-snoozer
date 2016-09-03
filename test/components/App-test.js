@@ -1,5 +1,4 @@
 const assert = require('assert')
-const jsdom = require('jsdom')
 const React = require('react')
 const ReactDOM = require('react-dom')
 const ReactRedux = require('react-redux')
@@ -14,9 +13,6 @@ describe('App', () => {
   let store
 
   before(() => {
-    global.document = jsdom.jsdom('<!doctype html><html><body></body></html>')
-    global.window = global.document.defaultView
-
     store = Redux.createStore(reducer)
     fetchMock.mock('*', {})
   })

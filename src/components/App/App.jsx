@@ -1,14 +1,17 @@
 const { connect } = require('react-redux')
 const React = require('react')
+const { ipcRenderer } = require('electron')
 
 const Rule = require('../../models/rule')
 const Rules = require('../../models/rules')
 const GitHub = require('../../models/github')
+const AppMenu = require('../../models/app-menu')
 const Filter = require('../Filter')
 const TaskList = require('../TaskList')
 const RuleList = require('../RuleList')
 const NewRule = require('../NewRule')
 const Config = require('../../config.json')
+const About = require('../About')
 
 class App extends React.Component {
   constructor() {
@@ -17,11 +20,21 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    ipcRenderer.send('title', 'Notifications')
     if (this.state.rules.length > 0) {
       this.loadRule(this.state.rules[0])
     } else {
       this.loadTasks(Config.searchQuery)
     }
+    this.setupAppMenu()
+  }
+
+  setupAppMenu() {
+    const menu = new AppMenu()
+    menu.on('about-app', () => {
+      ipcRenderer.send('title', 'About')
+      this.setState({ view: 'about' })
+    })
   }
 
   loadTasks(query) {
@@ -32,14 +45,17 @@ class App extends React.Component {
   }
 
   showNewRuleForm() {
+    ipcRenderer.send('title', 'New Filter')
     this.setState({ view: 'new-rule' })
   }
 
   savedRule() {
+    ipcRenderer.send('title', 'Notifications')
     this.setState({ view: 'tasks', rules: Rules.findAll() })
   }
 
   showTaskList() {
+    ipcRenderer.send('title', 'Notifications')
     this.setState({ view: 'tasks' })
   }
 
@@ -51,6 +67,7 @@ class App extends React.Component {
   }
 
   manageRules() {
+    ipcRenderer.send('title', 'Manage Filters')
     this.setState({ view: 'rules' })
   }
 
@@ -80,6 +97,14 @@ class App extends React.Component {
           rules={this.state.rules}
           delete={(ruleKey) => this.deleteRule(ruleKey)}
           addRule={() => this.showNewRuleForm()}
+          cancel={() => this.showTaskList()}
+        />
+      )
+    }
+
+    if (this.state.view === 'about') {
+      return (
+        <About
           cancel={() => this.showTaskList()}
         />
       )

@@ -1,5 +1,5 @@
 const React = require('react')
-const shell = require('electron').shell
+const { shell } = require('electron')
 const { connect } = require('react-redux')
 
 class TaskListItem extends React.Component {
