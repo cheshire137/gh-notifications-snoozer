@@ -9,7 +9,38 @@ describe('reducers', () => {
     assert.deepEqual({ tasks: [] }, store.getState())
   })
 
-  describe('TASKS_SELECT', () => {})
+  describe('TASKS_SELECT', () => {
+    it('selects specified task', () => {
+      const now = new Date().toISOString()
+      const initialTasks = [
+        { id: 1, key: 'issue-1', title: 'task', updatedAt: now },
+        { id: 2, key: 'pull-2', title: 'more task', updatedAt: now },
+      ]
+
+      const selectedTask = {
+        id: 2,
+        key: 'pull-2',
+        title: 'more task',
+        updatedAt: now,
+      }
+
+      const store = Redux.createStore(reducer, { tasks: initialTasks })
+      store.dispatch({ type: 'TASKS_SELECT', task: selectedTask })
+
+      const expectedTasks = [
+        { id: 1, key: 'issue-1', title: 'task', updatedAt: now },
+        {
+          id: 2,
+          key: 'pull-2',
+          title: 'more task',
+          updatedAt: now,
+          isSelected: true,
+        },
+      ]
+
+      assert.deepEqual(expectedTasks, store.getState().tasks)
+    })
+  })
 
   describe('TASKS_DESELECT', () => {})
 
