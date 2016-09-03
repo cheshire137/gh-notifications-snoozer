@@ -13,21 +13,21 @@ describe('reducers', () => {
     it('updates existing tasks', () => {
       const now = new Date()
       const initialTasks = [
-        { id: 1, title: 'task', updatedAt: now },
-        { id: 2, title: 'more task', updatedAt: now },
+        { id: 1, key: 'issue-1', title: 'task', updatedAt: now },
+        { id: 2, key: 'pull-2', title: 'more task', updatedAt: now },
       ]
 
       const updatedTasks = [
-        { id: 1, title: 'task', updatedAt: now },
-        { id: 2, title: 'updated title', updatedAt: now },
+        { id: 1, key: 'issue-1', title: 'task', updatedAt: now },
+        { id: 2, key: 'pull-2', title: 'updated title', updatedAt: now },
       ]
 
       const store = Redux.createStore(reducer, { tasks: initialTasks })
       store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks })
 
       const expectedTasks = [
-        { id: 1, title: 'task', updatedAt: now },
-        { id: 2, title: 'updated title', updatedAt: now },
+        { id: 1, key: 'issue-1', title: 'task', updatedAt: now },
+        { id: 2, key: 'pull-2', title: 'updated title', updatedAt: now },
       ]
 
       assert.deepEqual(expectedTasks, store.getState().tasks)
@@ -36,19 +36,19 @@ describe('reducers', () => {
     it('adds new tasks', () => {
       const now = new Date()
       const initialTasks = [
-        { id: 1, title: 'task', updatedAt: now },
+        { id: 1, key: 'pull-1', title: 'task', updatedAt: now },
       ]
 
       const updatedTasks = [
-        { id: 2, title: 'new task', updatedAt: now },
+        { id: 2, key: 'pull-2', title: 'new task', updatedAt: now },
       ]
 
       const store = Redux.createStore(reducer, { tasks: initialTasks })
       store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks })
 
       const expectedTasks = [
-        { id: 1, title: 'task', updatedAt: now },
-        { id: 2, title: 'new task', updatedAt: now },
+        { id: 1, key: 'pull-1', title: 'task', updatedAt: now },
+        { id: 2, key: 'pull-2', title: 'new task', updatedAt: now },
       ]
 
       assert.deepEqual(expectedTasks, store.getState().tasks)
@@ -60,22 +60,22 @@ describe('reducers', () => {
       const distantPast = new Date() - 20
 
       const initialTasks = [
-        { id: 1, title: 'task', updatedAt: distantPast },
-        { id: 2, title: 'old task', updatedAt: distantPast },
+        { id: 1, key: 'pull-1', title: 'task', updatedAt: distantPast },
+        { id: 2, key: 'issue-2', title: 'old task', updatedAt: distantPast },
       ]
 
       const updatedTasks = [
-        { id: 2, title: 'updated task', updatedAt: present },
-        { id: 3, title: 'new task', updatedAt: past },
+        { id: 2, key: 'issue-2', title: 'updated task', updatedAt: present },
+        { id: 3, key: 'pull-3', title: 'new task', updatedAt: past },
       ]
 
       const store = Redux.createStore(reducer, { tasks: initialTasks })
       store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks })
 
       const expectedTasks = [
-        { id: 2, title: 'updated task', updatedAt: present },
-        { id: 3, title: 'new task', updatedAt: past },
-        { id: 1, title: 'task', updatedAt: distantPast },
+        { id: 2, key: 'issue-2', title: 'updated task', updatedAt: present },
+        { id: 3, key: 'pull-3', title: 'new task', updatedAt: past },
+        { id: 1, key: 'pull-1', title: 'task', updatedAt: distantPast },
 
       ]
 
