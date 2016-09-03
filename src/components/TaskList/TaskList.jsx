@@ -4,8 +4,14 @@ const { connect } = require('react-redux')
 const TaskListItem = require('../TaskListItem')
 
 class TaskList extends React.Component {
-  onSnoozeClick() {
+  onSnoozeClick(event) {
+    event.currentTarget.blur() // defocus button
     this.props.dispatch({ type: 'TASKS_SNOOZE' })
+  }
+
+  onArchiveClick(event) {
+    event.currentTarget.blur() // defocus button
+    this.props.dispatch({ type: 'TASKS_ARCHIVE' })
   }
 
   render() {
@@ -13,15 +19,20 @@ class TaskList extends React.Component {
       <div>
         <nav className="controls-container">
           <button
-            id="snooze"
             type="button"
-            onClick={() => this.onSnoozeClick()}
+            onClick={e => this.onSnoozeClick(e)}
             className="control button"
           >
             snooze
           </button>
           <button type="button" className="control button">ignore</button>
-          <button type="button" className="control button">archive</button>
+          <button
+            type="button"
+            className="control button"
+            onClick={e => this.onArchiveClick(e)}
+          >
+            archive
+          </button>
         </nav>
         <ol className="task-list">
           {this.props.tasks.map(task =>

@@ -12,25 +12,28 @@ class GitHub extends Fetcher {
   }
 
   // https://developer.github.com/v3/search/#search-issues
-  getTasks(query=Config.searchQuery) {
+  getTasks(query = Config.searchQuery) {
     const urlPath = `search/issues?q=${encodeURIComponent(query)}&sort=updated`
-    return this.get(urlPath).then(({ items }) => {
-      return items.map(item => {
-        return {
-          id: item.id,
-          title: item.title,
-          body: item.body,
-          state: item.state,
-          createdAt: item.created_at,
-          updatedAt: item.updated_at,
-          closedAt: item.closed_at ? item.closed_at : null,
-          isPullRequest: !!item.pull_request,
-          repositoryUrl: item.repository_url,
-          url: item.html_url,
-          number: item.number,
-        }
-      })
+    const repoUrlPrefix = 'https://api.github.com/repos/'
+    return this.get(urlPath).then(({ items }) => items.map(task => {
+      const repoUrl = task.repository_url
+      return {
+        id: task.id,
+        type: typeof task.pull_request === 'object' ? 'pull' : 'issue',
+        title: task.title,
+        body: task.body,
+        state: task.state,
+        createdAt: task.created_at,
+        updatedAt: task.updated_at,
+        closedAt: task.closed_at,
+        isPullRequest: !!task.pull_request,
+        repositoryApiUrl: repoUrl,
+        url: task.html_url,
+        number: task.number,
+        repository: repoUrl.slice(repoUrlPrefix.length),
+      }
     })
+    )
   }
 
   static getToken() {

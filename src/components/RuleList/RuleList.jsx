@@ -24,6 +24,9 @@ class RuleList extends React.Component {
             </button>
           </div>
         </div>
+        {this.props.rules.length < 1 ? (
+          <p>You have not made any filters for managing notifications yet.</p>
+        ) : ''}
         <ul className="rule-list">
           {this.props.rules.map(ruleKey => (
             <RuleListItem

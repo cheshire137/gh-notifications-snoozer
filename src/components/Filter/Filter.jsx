@@ -6,6 +6,12 @@ class Filter extends React.Component {
     this.props.changeRule(event.target.value)
   }
 
+  refresh(event) {
+    event.currentTarget.blur() // defocus button
+    const rule = document.getElementById('rules-select').value
+    this.props.changeRule(rule)
+  }
+
   render() {
     const rules = Rules.findAll()
     return (
@@ -21,6 +27,14 @@ class Filter extends React.Component {
               ))}
             </select>
           </span>
+          <button
+            onClick={e => this.refresh(e)}
+            type="button"
+            title="Refresh list"
+            className="is-link button"
+          >
+            <span className="octicon octicon-sync"></span>
+          </button>
         </div>
         <div className="column is-6 has-text-right">
           <button onClick={this.props.manageRules} type="button" className="is-link button">

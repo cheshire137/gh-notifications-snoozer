@@ -1,12 +1,41 @@
 .task-list-item {
   font-size: 16px;
+
+  .checkbox {
+    color: #333;
+  }
+}
+
+.task-list-item:nth-child(even) {
+  background-color: #f9f9f9;
 }
 
 .task-list-item-time {
   color: #777;
   font-size: 12px;
+  line-height: 22px;
+  word-wrap: break-word;
+  vertical-align: middle;
+  max-width: 95%;
+  display: inline-block;
 }
 
 .task-list-item-title {
   padding-left: 5px;
+}
+
+.octicon-issue-closed,
+.git-pull-request.closed {
+  color: #bd2c00;
+}
+
+.octicon-issue-opened,
+.git-pull-request.opened {
+  color: #6cc644;
+}
+
+.task-list-item-repository {
+  font-size: 12px;
+  margin-left: 20px;
+  color: #767676;
 }
