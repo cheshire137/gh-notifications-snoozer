@@ -17,6 +17,7 @@ class GitHub extends Fetcher {
     const repoUrlPrefix = 'https://api.github.com/repos/'
     return this.get(urlPath).then(({ items }) => items.map(task => {
       const repoUrl = task.repository_url
+      const avatarUrl = `https://github.com/${task.user.login}.png?size=16`
       return {
         id: task.id,
         type: typeof task.pull_request === 'object' ? 'pull' : 'issue',
@@ -33,8 +34,8 @@ class GitHub extends Fetcher {
         repository: repoUrl.slice(repoUrlPrefix.length),
         user: {
           login: task.user.login,
-          avatarUrl: task.user.avatar_url,
           url: task.user.html_url,
+          avatarUrl,
           type: task.user.type,
         },
       }
