@@ -79,21 +79,23 @@ class TaskListItem extends React.Component {
             <span className="task-list-item-title">{task.title}</span>
             <span className="task-list-meta">
               <span>Created </span>
-              {typeof task.user === 'object' ? (
-                <span>
-                  <span>by </span>
-                  <img
-                    src={task.user.avatarUrl}
-                    alt={task.user.login}
-                    className="task-list-item-user-avatar"
-                  />
-                  <span> </span>
-                  <span className="task-list-item-user">
-                    {task.user.login}
-                  </span>
-                </span>
-              ) : ''}
+              <span>by </span>
+              <img
+                src={task.user.avatarUrl}
+                alt={task.user.login}
+                className="task-list-item-user-avatar"
+              />
+              <span> </span>
+              <span className="task-list-item-user">
+                {task.user.login}
+              </span>
               <span> in </span>
+              <img
+                src={task.repositoryOwner.avatarUrl}
+                alt={task.repositoryOwner.login}
+                className="task-list-item-repository-owner-avatar"
+              />
+              <span> </span>
               <span className="task-list-item-repository">
                 {task.repository}
               </span>
