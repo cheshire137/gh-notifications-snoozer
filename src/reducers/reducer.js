@@ -8,11 +8,7 @@ const ARCHIVED_KEY = 'archived'
 // Gets an identifier for the given task to be used with persisting the task's
 // state to the JSON storage file.
 function taskKey(task) {
-  let type = task.type
-  if (typeof type === 'undefined') {
-    type = task.isPullRequest ? 'pull' : 'issue'
-  }
-  return `${type}-${task.id}`
+  return `${task.type}-${task.id}`
 }
 
 // Fetch from the JSON storage file the task IDs saved under the given key.
