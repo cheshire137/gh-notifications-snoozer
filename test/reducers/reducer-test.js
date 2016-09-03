@@ -9,6 +9,14 @@ describe('reducers', () => {
     assert.deepEqual({ tasks: [] }, store.getState())
   })
 
+  describe('TASKS_SELECT', () => {})
+
+  describe('TASKS_DESELECT', () => {})
+
+  describe('TASKS_SNOOZE', () => {})
+
+  describe('TASKS_ARCHIVE', () => {})
+
   describe('TASKS_EMPTY', () => {
     it('empties the tasks list', () => {
       const initialTasks = [
