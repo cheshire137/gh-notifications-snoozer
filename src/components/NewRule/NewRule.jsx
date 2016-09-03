@@ -109,7 +109,7 @@ class NewRule extends React.Component {
             whether they're open or closed.
           </li>
           <li>
-            <code>labels</code> &mdash; Filters issues or pull requests based
+            <code>label</code> &mdash; Filters issues or pull requests based
             on their labels.
           </li>
           <li>
@@ -153,8 +153,30 @@ class NewRule extends React.Component {
             on the quantity of comments.
           </li>
           <li>
-            <code>user</code> or <code>repo</code> &mdash; Limits searches to a
-            specific user or repository.
+            <code>user</code>, <code>org</code>, or <code>repo</code> &mdash;
+            Limits searches to a specific user, organization, or repository.
+          </li>
+          <li>
+            <code>sort</code> &mdash; Choose how to order the results. Valid
+            fields include <code>comments</code>, <code>created</code>,
+            <code> updated</code>, <code>reactions</code>,
+            <code> reactions-+1</code>, <code>reactions--1</code>,
+            <code> reactions-smile</code>, <code>reactions-thinking_face</code>,
+            <code> reactions-heart</code>, <code>reactions-tada</code>, and
+            <code> interactions</code>. Append <code>-desc</code> to sort
+            descending. Defaults to sorting newest first.
+          </li>
+          <li>
+            <code>milestone</code> &mdash; Filter by milestone name, e.g.,
+            <code> milestone:"Brilliant Features"</code>.
+          </li>
+          <li>
+            <code>reactions</code> &mdash; Filter by reaction count, e.g.,
+            <code> reactions:&gt;42</code>.
+          </li>
+          <li>
+            <code>interactions</code> &mdash; Filter by reaction + comment
+            count, e.g., <code>interactions:&lt;10</code>.
           </li>
         </ul>
       </div>
