@@ -49,7 +49,7 @@ class NewRule extends React.Component {
               type="text"
               name="ruleValue"
               className={valueClass}
-              placeholder="e.g., team:org/team-name is:open"
+              placeholder="e.g., team:org/team-name is:open sort:updated-desc"
             />
           </p>
           <label className="label">Filter name: (optional)</label>
@@ -66,6 +66,12 @@ class NewRule extends React.Component {
           </p>
         </form>
         <h2 className="subtitle">Search Query Help</h2>
+        <div className="content">
+          <p>
+            Put <code>-</code> in front of a filter to exclude matching issues
+            and pull requests, e.g., <code>-org:some_organization</code>.
+          </p>
+        </div>
         <ul className="search-query-help">
           <li>
             <code>type</code> &mdash; With this qualifier you can restrict the
