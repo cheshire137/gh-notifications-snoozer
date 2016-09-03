@@ -30,7 +30,7 @@ function getTask(data) {
     repositoryOwner: {
       login: repositoryOwner,
       url: `https://github.com/${repositoryOwner}`,
-      avatarUrl: `https://github.com/${repositoryOwner}.png?size=16`,
+      avatarUrl: `https://github.com/${repositoryOwner}.png?size=30`,
     },
     user: {
       login: data.user.login,

@@ -66,10 +66,17 @@ class TaskListItem extends React.Component {
 
     return (
       <li className="task-list-item control columns">
+        <div className="column task-list-item-repository-owner-column has-text-right">
+          <img
+            src={task.repositoryOwner.avatarUrl}
+            alt={task.repositoryOwner.login}
+            className="task-list-item-repository-owner-avatar"
+          />
+        </div>
         <div className="column has-text-centered">
           <span title={task.state} className={this.iconClass()}></span>
         </div>
-        <div className="column has-text-centered">
+        <div className="column has-text-right">
           <input
             id={task.key}
             type="checkbox"
@@ -93,19 +100,13 @@ class TaskListItem extends React.Component {
                 {task.user.login}
               </span>
               <span> in </span>
-              <img
-                src={task.repositoryOwner.avatarUrl}
-                alt={task.repositoryOwner.login}
-                className="task-list-item-repository-owner-avatar"
-              />
-              <span> </span>
               <span className="task-list-item-repository">
                 {task.repository}
               </span>
             </span>
           </label>
         </div>
-        <time className="column is-2 has-text-right task-list-item-time">
+        <time className="column has-text-right task-list-item-time">
           {new Date(task.updatedAt).toLocaleDateString()}
         </time>
         <div className="column has-text-right">
