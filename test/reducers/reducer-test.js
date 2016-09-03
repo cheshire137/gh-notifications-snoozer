@@ -9,6 +9,24 @@ describe('reducers', () => {
     assert.deepEqual({ tasks: [] }, store.getState())
   })
 
+  describe('TASKS_EMPTY', () => {
+    it('empties the tasks list', () => {
+      const initialTasks = [
+        {
+          id: 1,
+          key: 'issue-1',
+          title: 'task',
+          updatedAt: '2016-06-15T20:14:46Z',
+        },
+      ]
+
+      const store = Redux.createStore(reducer, { tasks: initialTasks })
+      store.dispatch({ type: 'TASKS_EMPTY' })
+
+      assert.deepEqual([], store.getState().tasks)
+    })
+  })
+
   describe('TASKS_UPDATE', () => {
     it('updates existing tasks', () => {
       const now = new Date().toISOString()
