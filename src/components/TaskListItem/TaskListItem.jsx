@@ -69,13 +69,16 @@ class TaskListItem extends React.Component {
         <div className="column has-text-centered">
           <span title={task.state} className={this.iconClass()}></span>
         </div>
+        <div className="column has-text-centered">
+          <input
+            id={task.key}
+            type="checkbox"
+            className="task-list-item-checkbox"
+            onChange={event => this.onChange(event)}
+          />
+        </div>
         <div className="is-8 column">
-          <label className="checkbox">
-            <input
-              type="checkbox"
-              className="task-list-item-checkbox"
-              onChange={event => this.onChange(event)}
-            />
+          <label className="checkbox" htmlFor={task.key}>
             <span className="task-list-item-title">{task.title}</span>
             <span className="task-list-meta">
               <span>Created </span>
