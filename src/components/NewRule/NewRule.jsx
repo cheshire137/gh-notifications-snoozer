@@ -115,7 +115,7 @@ class NewRule extends React.Component {
           <li>
             <code>no</code> &mdash; Filters items missing certain metadata,
             such as <code>label</code>, <code>milestone</code>, or
-            <code>assignee</code>.
+            <code> assignee</code>.
           </li>
           <li>
             <code>language</code> &mdash; Searches for issues or pull requests
@@ -124,7 +124,7 @@ class NewRule extends React.Component {
           <li>
             <code>is</code> &mdash; Searches for items within repositories that
             match a certain state, such as <code>open</code>,
-            <code>closed</code>, or <code>merged</code>
+            <code> closed</code>, or <code>merged</code>
           </li>
           <li>
             <code>created</code> or <code>updated</code> &mdash; Filters issues
