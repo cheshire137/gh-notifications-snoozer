@@ -2,6 +2,8 @@ const React = require('react')
 const { shell } = require('electron')
 const { connect } = require('react-redux')
 
+const MS_PER_DAY = 1000 * 60 * 60 * 24
+
 class TaskListItem extends React.Component {
   onChange(event) {
     const { task } = this.props
@@ -10,20 +12,33 @@ class TaskListItem extends React.Component {
     this.props.dispatch({ type, task })
   }
 
+  daysBetween(a, b) {
+    const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate())
+    const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate())
+    return Math.floor((utc2 - utc1) / MS_PER_DAY)
+  }
+
   isVisible() {
     const { task } = this.props
 
     if (task.ignore) {
       return false
     }
-    if (task.snooze) {
-      return false
+
+    if (typeof task.snoozedAt === 'string') {
+      const currentDate = new Date()
+      const snoozeDate = new Date(task.snoozedAt)
+      if (this.daysBetween(snoozeDate, currentDate) < 1) {
+        // Snoozed within the last day, keep it hidden
+        return false
+      }
     }
 
     if (typeof task.archivedAt === 'string') {
       const updateDate = new Date(task.updatedAt)
       const archiveDate = new Date(task.archivedAt)
       if (archiveDate > updateDate) {
+        // Has not been updated since it was archived, keep it hidden
         return false
       }
     }
