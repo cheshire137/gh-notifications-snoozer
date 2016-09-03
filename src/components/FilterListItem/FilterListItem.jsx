@@ -2,7 +2,7 @@ const React = require('react')
 
 const Rule = require('../../models/rule')
 
-class RuleListItem extends React.Component {
+class FilterListItem extends React.Component {
   render() {
     const rule = new Rule(this.props.rule)
     return (
@@ -27,9 +27,9 @@ class RuleListItem extends React.Component {
   }
 }
 
-RuleListItem.propTypes = {
+FilterListItem.propTypes = {
   rule: React.PropTypes.string.isRequired,
   delete: React.PropTypes.func.isRequired,
 }
 
-module.exports = RuleListItem
+module.exports = FilterListItem

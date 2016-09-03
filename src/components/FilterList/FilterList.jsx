@@ -1,7 +1,7 @@
 const React = require('react')
-const RuleListItem = require('../RuleListItem')
+const FilterListItem = require('../FilterListItem')
 
-class RuleList extends React.Component {
+class FilterList extends React.Component {
   cancel(event) {
     event.preventDefault()
     this.props.cancel()
@@ -29,7 +29,7 @@ class RuleList extends React.Component {
         ) : ''}
         <ul className="rule-list">
           {this.props.rules.map(ruleKey => (
-            <RuleListItem
+            <FilterListItem
               key={ruleKey}
               rule={ruleKey}
               delete={this.props.delete}
@@ -41,11 +41,11 @@ class RuleList extends React.Component {
   }
 }
 
-RuleList.propTypes = {
+FilterList.propTypes = {
   rules: React.PropTypes.array.isRequired,
   delete: React.PropTypes.func.isRequired,
   addRule: React.PropTypes.func.isRequired,
   cancel: React.PropTypes.func.isRequired,
 }
 
-module.exports = RuleList
+module.exports = FilterList

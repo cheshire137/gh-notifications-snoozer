@@ -8,8 +8,8 @@ const GitHub = require('../../models/github')
 const AppMenu = require('../../models/app-menu')
 const Filter = require('../Filter')
 const TaskList = require('../TaskList')
-const RuleList = require('../RuleList')
-const NewRule = require('../NewRule')
+const FilterList = require('../FilterList')
+const NewFilter = require('../NewFilter')
 const Config = require('../../config.json')
 const About = require('../About')
 
@@ -44,7 +44,7 @@ class App extends React.Component {
     })
   }
 
-  showNewRuleForm() {
+  showNewFilterForm() {
     ipcRenderer.send('title', 'New Filter')
     this.setState({ view: 'new-rule' })
   }
@@ -82,7 +82,7 @@ class App extends React.Component {
       return (
         <div className="tasks-view">
           <Filter
-            addRule={() => this.showNewRuleForm()}
+            addRule={() => this.showNewFilterForm()}
             changeRule={ruleKey => this.loadRule(ruleKey)}
             manageRules={() => this.manageRules()}
           />
@@ -93,10 +93,10 @@ class App extends React.Component {
 
     if (this.state.view === 'rules') {
       return (
-        <RuleList
+        <FilterList
           rules={this.state.rules}
           delete={(ruleKey) => this.deleteRule(ruleKey)}
-          addRule={() => this.showNewRuleForm()}
+          addRule={() => this.showNewFilterForm()}
           cancel={() => this.showTaskList()}
         />
       )
@@ -111,7 +111,7 @@ class App extends React.Component {
     }
 
     return (
-      <NewRule
+      <NewFilter
         save={() => this.savedRule()}
         cancel={() => this.showTaskList()}
       />

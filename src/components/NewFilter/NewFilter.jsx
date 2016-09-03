@@ -1,7 +1,7 @@
 const React = require('react')
 const Rule = require('../../models/rule')
 
-class NewRule extends React.Component {
+class NewFilter extends React.Component {
   constructor() {
     super()
     this.state = { valueHasError: false }
@@ -162,9 +162,9 @@ class NewRule extends React.Component {
   }
 }
 
-NewRule.propTypes = {
+NewFilter.propTypes = {
   save: React.PropTypes.func.isRequired,
   cancel: React.PropTypes.func.isRequired,
 }
 
-module.exports = NewRule
+module.exports = NewFilter
