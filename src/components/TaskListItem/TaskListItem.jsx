@@ -66,16 +66,6 @@ class TaskListItem extends React.Component {
 
     return (
       <li className="task-list-item control columns">
-        <div className="column task-list-item-repository-owner-column has-text-right">
-          <img
-            src={task.repositoryOwner.avatarUrl}
-            alt={task.repositoryOwner.login}
-            className="task-list-item-repository-owner-avatar"
-          />
-        </div>
-        <div className="column has-text-centered">
-          <span title={task.state} className={this.iconClass()}></span>
-        </div>
         <div className="column has-text-right">
           <input
             id={task.key}
@@ -84,8 +74,22 @@ class TaskListItem extends React.Component {
             onChange={event => this.onChange(event)}
           />
         </div>
-        <div className="is-8 column">
+        <div className="column has-text-centered">
+          <label className="checkbox task-list-item-state-label" htmlFor={task.key}>
+            <span title={task.state} className={this.iconClass()}></span>
+          </label>
+        </div>
+        <div className="column task-list-item-repository-owner-column has-text-right">
           <label className="checkbox" htmlFor={task.key}>
+            <img
+              src={task.repositoryOwner.avatarUrl}
+              alt={task.repositoryOwner.login}
+              className="task-list-item-repository-owner-avatar"
+            />
+          </label>
+        </div>
+        <div className="is-8 column">
+          <label className="checkbox main-label" htmlFor={task.key}>
             <span className="task-list-item-title">{task.title}</span>
             <span className="task-list-meta">
               <span>Created </span>
@@ -106,9 +110,13 @@ class TaskListItem extends React.Component {
             </span>
           </label>
         </div>
-        <time className="column has-text-right task-list-item-time">
-          {new Date(task.updatedAt).toLocaleDateString()}
-        </time>
+        <div className="column has-text-right task-list-item-time-column">
+          <label className="checkbox" htmlFor={task.key}>
+            <time className="task-list-item-time">
+              {new Date(task.updatedAt).toLocaleDateString()}
+            </time>
+          </label>
+        </div>
         <div className="column has-text-right">
           <a href={task.url} onClick={event => this.openExternal(event)}>
             <span className="octicon octicon-link-external"></span>
