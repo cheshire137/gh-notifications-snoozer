@@ -31,6 +31,12 @@ class GitHub extends Fetcher {
         url: task.html_url,
         number: task.number,
         repository: repoUrl.slice(repoUrlPrefix.length),
+        user: {
+          login: task.user.login,
+          avatarUrl: task.user.avatar_url,
+          url: task.user.html_url,
+          type: task.user.type,
+        },
       }
     })
     )
