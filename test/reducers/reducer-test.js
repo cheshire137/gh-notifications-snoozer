@@ -11,7 +11,7 @@ describe('reducers', () => {
 
   describe('TASKS_UPDATE', () => {
     it('updates existing tasks', () => {
-      const now = new Date()
+      const now = new Date().toISOString()
       const initialTasks = [
         { id: 1, key: 'issue-1', title: 'task', updatedAt: now },
         { id: 2, key: 'pull-2', title: 'more task', updatedAt: now },
@@ -34,7 +34,7 @@ describe('reducers', () => {
     })
 
     it('adds new tasks', () => {
-      const now = new Date()
+      const now = new Date().toISOString()
       const initialTasks = [
         { id: 1, key: 'pull-1', title: 'task', updatedAt: now },
       ]
