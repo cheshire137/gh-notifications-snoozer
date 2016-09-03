@@ -16,27 +16,27 @@ function taskKey(task) {
 }
 
 // Fetch from the JSON storage file the task IDs saved under the given key.
-function getSavedTasks(key) {
+function getSavedTaskKeys(key) {
   return storage.has(key) ? storage.get(key) : []
 }
 
 // Persist the given tasks under the given key in the JSON storage file.
-function writeChanges(tasks, key) {
-  const existingTasks = getSavedTasks(key)
-  const newTasks = tasks.map(task => taskKey(task))
-  const allTasks = []
-  existingTasks.concat(newTasks).forEach(str => {
-    if (allTasks.indexOf(str) < 0) {
-      allTasks.push(str)
+function writeChanges(tasks, typeKey) {
+  const existingTaskKeys = getSavedTaskKeys(typeKey)
+  const newTaskKeys = tasks.map(task => taskKey(task))
+  const allTaskKeys = []
+  existingTaskKeys.concat(newTaskKeys).forEach(key => {
+    if (allTaskKeys.indexOf(key) < 0) {
+      allTaskKeys.push(key)
     }
   })
-  storage.set(key, allTasks)
+  storage.set(typeKey, allTaskKeys)
 }
 
 function updateTasks(tasks, action) {
   const tasksById = {}
-  const snoozedTasks = getSavedTasks(SNOOZED_KEY)
-  const archivedTasks = getSavedTasks(ARCHIVED_KEY)
+  const snoozedTasks = getSavedTaskKeys(SNOOZED_KEY)
+  const archivedTasks = getSavedTaskKeys(ARCHIVED_KEY)
 
   // Add the existing tasks
   tasks.forEach(task => (tasksById[task.id] = task))
