@@ -49,7 +49,7 @@ class GitHub extends Fetcher {
 
   // https://developer.github.com/v3/search/#search-issues
   getTasks(query = Config.searchQuery) {
-    const urlPath = `search/issues?q=${encodeURIComponent(query)}&sort=updated`
+    const urlPath = `search/issues?q=${encodeURIComponent(query)}`
     return this.get(urlPath).then(({ items }) => items.map(d => getTask(d)))
   }
 
