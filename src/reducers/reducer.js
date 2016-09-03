@@ -5,12 +5,6 @@ const storage = new ElectronConfig()
 const SNOOZED_KEY = 'snoozed'
 const ARCHIVED_KEY = 'archived'
 
-// Gets an identifier for the given task to be used with persisting the task's
-// state to the JSON storage file.
-function taskKey(task) {
-  return `${task.type}-${task.id}`
-}
-
 // Fetch from the JSON storage file the task IDs saved under the given key.
 function getSavedTaskKeys(key) {
   return storage.has(key) ? storage.get(key) : []
@@ -19,7 +13,7 @@ function getSavedTaskKeys(key) {
 // Persist the given tasks under the given key in the JSON storage file.
 function writeChanges(tasks, typeKey) {
   const existingTaskKeys = getSavedTaskKeys(typeKey)
-  const newTaskKeys = tasks.map(task => taskKey(task))
+  const newTaskKeys = tasks.map(task => task.key)
   const allTaskKeys = []
   existingTaskKeys.concat(newTaskKeys).forEach(key => {
     if (allTaskKeys.indexOf(key) < 0) {
@@ -30,21 +24,20 @@ function writeChanges(tasks, typeKey) {
 }
 
 function updateTasks(tasks, action) {
-  const tasksById = {}
+  const tasksByKey = {}
   const snoozedTasks = getSavedTaskKeys(SNOOZED_KEY)
   const archivedTasks = getSavedTaskKeys(ARCHIVED_KEY)
 
   // Add the existing tasks
-  tasks.forEach(task => (tasksById[task.id] = task))
+  tasks.forEach(task => (tasksByKey[task.key] = task))
 
   // Update tasks with new values and add new tasks
   action.tasks.forEach(task => {
-    tasksById[task.id] = Object.assign({}, tasksById[task.id], task)
+    tasksByKey[task.key] = Object.assign({}, tasksByKey[task.key], task)
   })
 
-  const updatedTasks = Object.keys(tasksById).map(taskId => {
-    const task = tasksById[taskId]
-    const key = taskKey(task)
+  const updatedTasks = Object.keys(tasksByKey).map(key => {
+    const task = tasksByKey[key]
     if (snoozedTasks.indexOf(key) > -1) {
       task.snooze = true
     }
@@ -59,7 +52,7 @@ function updateTasks(tasks, action) {
 
 function selectTasks(tasks, action) {
   return tasks.map(task => {
-    if (task.id === action.task.id) {
+    if (task.key === action.task.key) {
       return Object.assign({}, task, { isSelected: true })
     }
     return task
@@ -68,7 +61,7 @@ function selectTasks(tasks, action) {
 
 function deselectTasks(tasks, action) {
   return tasks.map(task => {
-    if (task.id === action.task.id) {
+    if (task.key === action.task.key) {
       return Object.assign({}, task, { isSelected: false })
     }
     return task
@@ -94,7 +87,7 @@ function archiveTasks(tasks) {
     if (task.isSelected) {
       const date = new Date()
       const archivedAt = date.toISOString()
-      storage.set(taskKey(task), archivedAt)
+      storage.set(task.key, archivedAt)
       archivedTasks.push(task)
       return Object.assign({}, task, { archivedAt })
     }

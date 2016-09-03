@@ -11,9 +11,11 @@ function getTask(data) {
   const repoUrl = data.repository_url
   const repository = repoUrl.slice(repoUrlPrefix.length)
   const repositoryOwner = repository.split('/')[0]
+  const type = typeof data.pull_request === 'object' ? 'pull' : 'issue'
   return {
+    key: `${type}-${data.id}`,
     id: data.id,
-    type: typeof data.pull_request === 'object' ? 'pull' : 'issue',
+    type,
     title: data.title,
     body: data.body,
     state: data.state,
