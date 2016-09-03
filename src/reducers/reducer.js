@@ -39,7 +39,7 @@ function updateTasks(tasks, action) {
   const updatedTasks = Object.keys(tasksByKey).map(key => {
     const task = tasksByKey[key]
     if (snoozedTasks.indexOf(key) > -1) {
-      task.snooze = true
+      task.snoozedAt = storage.get(key)
     }
     if (archivedTasks.indexOf(key) > -1) {
       task.archivedAt = storage.get(key)
@@ -68,12 +68,19 @@ function deselectTasks(tasks, action) {
   })
 }
 
+function currentTimeString() {
+  const date = new Date()
+  return date.toISOString()
+}
+
 function snoozeTasks(tasks) {
   const snoozedTasks = []
   const updatedTasks = tasks.map(task => {
     if (task.isSelected) {
+      const snoozedAt = currentTimeString()
+      storage.set(task.key, snoozedAt)
       snoozedTasks.push(task)
-      return Object.assign({}, task, { snooze: true })
+      return Object.assign({}, task, { snoozedAt, archivedAt: null })
     }
     return task
   })
@@ -85,11 +92,10 @@ function archiveTasks(tasks) {
   const archivedTasks = []
   const updatedTasks = tasks.map(task => {
     if (task.isSelected) {
-      const date = new Date()
-      const archivedAt = date.toISOString()
+      const archivedAt = currentTimeString()
       storage.set(task.key, archivedAt)
       archivedTasks.push(task)
-      return Object.assign({}, task, { archivedAt })
+      return Object.assign({}, task, { archivedAt, snoozedAt: null })
     }
     return task
   })
