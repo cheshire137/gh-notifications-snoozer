@@ -45,7 +45,7 @@ function updateTasks(tasks, action) {
       task.archivedAt = storage.get(key)
     }
     return task
-  }).sort((a, b) => b.updatedAt - a.updatedAt) // Sort by updatedAt DESC
+  })
 
   return updatedTasks
 }
