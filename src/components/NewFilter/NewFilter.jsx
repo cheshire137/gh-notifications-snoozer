@@ -49,7 +49,7 @@ class NewFilter extends React.Component {
               type="text"
               name="filterValue"
               className={valueClass}
-              placeholder="e.g., team:org/team-name is:open"
+              placeholder="e.g., team:org/team-name is:open sort:updated-desc"
             />
           </p>
           <label className="label">Filter name: (optional)</label>
@@ -73,6 +73,12 @@ class NewFilter extends React.Component {
           </p>
         </form>
         <h2 className="subtitle">Search Query Help</h2>
+        <div className="content">
+          <p>
+            Put <code>-</code> in front of a filter to exclude matching issues
+            and pull requests, e.g., <code>-org:some_organization</code>.
+          </p>
+        </div>
         <ul className="search-query-help">
           <li>
             <code>type</code> &mdash; With this qualifier you can restrict the
@@ -116,13 +122,13 @@ class NewFilter extends React.Component {
             whether they're open or closed.
           </li>
           <li>
-            <code>labels</code> &mdash; Filters issues or pull requests based
+            <code>label</code> &mdash; Filters issues or pull requests based
             on their labels.
           </li>
           <li>
             <code>no</code> &mdash; Filters items missing certain metadata,
             such as <code>label</code>, <code>milestone</code>, or
-            <code>assignee</code>.
+            <code> assignee</code>.
           </li>
           <li>
             <code>language</code> &mdash; Searches for issues or pull requests
@@ -131,7 +137,7 @@ class NewFilter extends React.Component {
           <li>
             <code>is</code> &mdash; Searches for items within repositories that
             match a certain state, such as <code>open</code>,
-            <code>closed</code>, or <code>merged</code>
+            <code> closed</code>, or <code>merged</code>
           </li>
           <li>
             <code>created</code> or <code>updated</code> &mdash; Filters issues
@@ -160,8 +166,30 @@ class NewFilter extends React.Component {
             on the quantity of comments.
           </li>
           <li>
-            <code>user</code> or <code>repo</code> &mdash; Limits searches to a
-            specific user or repository.
+            <code>user</code>, <code>org</code>, or <code>repo</code> &mdash;
+            Limits searches to a specific user, organization, or repository.
+          </li>
+          <li>
+            <code>sort</code> &mdash; Choose how to order the results. Valid
+            fields include <code>comments</code>, <code>created</code>,
+            <code> updated</code>, <code>reactions</code>,
+            <code> reactions-+1</code>, <code>reactions--1</code>,
+            <code> reactions-smile</code>, <code>reactions-thinking_face</code>,
+            <code> reactions-heart</code>, <code>reactions-tada</code>, and
+            <code> interactions</code>. Append <code>-desc</code> to sort
+            descending. Defaults to sorting newest first.
+          </li>
+          <li>
+            <code>milestone</code> &mdash; Filter by milestone name, e.g.,
+            <code> milestone:"Brilliant Features"</code>.
+          </li>
+          <li>
+            <code>reactions</code> &mdash; Filter by reaction count, e.g.,
+            <code> reactions:&gt;42</code>.
+          </li>
+          <li>
+            <code>interactions</code> &mdash; Filter by reaction + comment
+            count, e.g., <code>interactions:&lt;10</code>.
           </li>
         </ul>
       </div>

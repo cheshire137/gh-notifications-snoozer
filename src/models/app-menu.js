@@ -32,11 +32,32 @@ class AppMenu extends EventEmitter {
     }
   }
 
+  getEditMenu() {
+    return {
+      label: 'Edit',
+      submenu: [
+        { label: 'Undo', accelerator: 'CmdOrCtrl+Z', selector: 'undo:' },
+        { label: 'Redo', accelerator: 'Shift+CmdOrCtrl+Z', selector: 'redo:' },
+        { type: 'separator' },
+        { label: 'Cut', accelerator: 'CmdOrCtrl+X', selector: 'cut:' },
+        { label: 'Copy', accelerator: 'CmdOrCtrl+C', selector: 'copy:' },
+        { label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:' },
+        {
+          label: 'Select All',
+          accelerator: 'CmdOrCtrl+A',
+          selector: 'selectAll:',
+        },
+      ],
+    }
+  }
+
   buildOSXMenu() {
     this.template.push({
       label: app.getName(),
       submenu: [
         this.aboutOption,
+        // { label: 'About', selector: 'orderFrontStandardAboutPanel:' },
+        { type: 'separator' },
         {
           label: 'Quit',
           accelerator: 'Command+Q',
@@ -44,6 +65,7 @@ class AppMenu extends EventEmitter {
         },
       ],
     })
+    this.template.push(this.getEditMenu())
     this.template.push({
       label: 'Help',
       role: 'help',
@@ -64,6 +86,7 @@ class AppMenu extends EventEmitter {
         },
       ],
     })
+    this.template.push(this.getEditMenu())
     this.template.push({
       label: 'Help',
       submenu: [

@@ -5,65 +5,54 @@ const storage = new ElectronConfig()
 const SNOOZED_KEY = 'snoozed'
 const ARCHIVED_KEY = 'archived'
 
-// Gets an identifier for the given task to be used with persisting the task's
-// state to the JSON storage file.
-function taskKey(task) {
-  let type = task.type
-  if (typeof type === 'undefined') {
-    type = task.isPullRequest ? 'pull' : 'issue'
-  }
-  return `${type}-${task.id}`
-}
-
 // Fetch from the JSON storage file the task IDs saved under the given key.
-function getSavedTasks(key) {
+function getSavedTaskKeys(key) {
   return storage.has(key) ? storage.get(key) : []
 }
 
 // Persist the given tasks under the given key in the JSON storage file.
-function writeChanges(tasks, key) {
-  const existingTasks = getSavedTasks(key)
-  const newTasks = tasks.map(task => taskKey(task))
-  const allTasks = []
-  existingTasks.concat(newTasks).forEach(str => {
-    if (allTasks.indexOf(str) < 0) {
-      allTasks.push(str)
+function writeChanges(tasks, typeKey) {
+  const existingTaskKeys = getSavedTaskKeys(typeKey)
+  const newTaskKeys = tasks.map(task => task.key)
+  const allTaskKeys = []
+  existingTaskKeys.concat(newTaskKeys).forEach(key => {
+    if (allTaskKeys.indexOf(key) < 0) {
+      allTaskKeys.push(key)
     }
   })
-  storage.set(key, allTasks)
+  storage.set(typeKey, allTaskKeys)
 }
 
 function updateTasks(tasks, action) {
-  const tasksById = {}
-  const snoozedTasks = getSavedTasks(SNOOZED_KEY)
-  const archivedTasks = getSavedTasks(ARCHIVED_KEY)
+  const tasksByKey = {}
+  const snoozedTasks = getSavedTaskKeys(SNOOZED_KEY)
+  const archivedTasks = getSavedTaskKeys(ARCHIVED_KEY)
 
   // Add the existing tasks
-  tasks.forEach(task => (tasksById[task.id] = task))
+  tasks.forEach(task => (tasksByKey[task.key] = task))
 
   // Update tasks with new values and add new tasks
   action.tasks.forEach(task => {
-    tasksById[task.id] = Object.assign({}, tasksById[task.id], task)
+    tasksByKey[task.key] = Object.assign({}, tasksByKey[task.key], task)
   })
 
-  const updatedTasks = Object.keys(tasksById).map(taskId => {
-    const task = tasksById[taskId]
-    const key = taskKey(task)
+  const updatedTasks = Object.keys(tasksByKey).map(key => {
+    const task = tasksByKey[key]
     if (snoozedTasks.indexOf(key) > -1) {
-      task.snooze = true
+      task.snoozedAt = storage.get(key)
     }
     if (archivedTasks.indexOf(key) > -1) {
       task.archivedAt = storage.get(key)
     }
     return task
-  }).sort((a, b) => b.updatedAt - a.updatedAt) // Sort by updatedAt DESC
+  })
 
   return updatedTasks
 }
 
 function selectTasks(tasks, action) {
   return tasks.map(task => {
-    if (task.id === action.task.id) {
+    if (task.key === action.task.key) {
       return Object.assign({}, task, { isSelected: true })
     }
     return task
@@ -72,19 +61,26 @@ function selectTasks(tasks, action) {
 
 function deselectTasks(tasks, action) {
   return tasks.map(task => {
-    if (task.id === action.task.id) {
+    if (task.key === action.task.key) {
       return Object.assign({}, task, { isSelected: false })
     }
     return task
   })
 }
 
+function currentTimeString() {
+  const date = new Date()
+  return date.toISOString()
+}
+
 function snoozeTasks(tasks) {
   const snoozedTasks = []
   const updatedTasks = tasks.map(task => {
     if (task.isSelected) {
+      const snoozedAt = currentTimeString()
+      storage.set(task.key, snoozedAt)
       snoozedTasks.push(task)
-      return Object.assign({}, task, { snooze: true })
+      return Object.assign({}, task, { snoozedAt, archivedAt: null })
     }
     return task
   })
@@ -96,11 +92,10 @@ function archiveTasks(tasks) {
   const archivedTasks = []
   const updatedTasks = tasks.map(task => {
     if (task.isSelected) {
-      const date = new Date()
-      const archivedAt = date.toISOString()
-      storage.set(taskKey(task), archivedAt)
+      const archivedAt = currentTimeString()
+      storage.set(task.key, archivedAt)
       archivedTasks.push(task)
-      return Object.assign({}, task, { archivedAt })
+      return Object.assign({}, task, { archivedAt, snoozedAt: null })
     }
     return task
   })

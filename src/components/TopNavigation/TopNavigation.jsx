@@ -1,7 +1,7 @@
 const React = require('react')
 const Filters = require('../../models/filters')
 
-class Filter extends React.Component {
+class TopNavigation extends React.Component {
   changeFilter(event) {
     this.props.changeFilter(event.target.value)
   }
@@ -39,28 +39,22 @@ class Filter extends React.Component {
             onClick={this.props.manageFilters}
             type="button"
             className="is-link button"
-          >
-            Manage filters
-            <span className="octicon octicon-chevron-down"></span>
-          </button>
+          >Manage filters</button>
           <button
             onClick={this.props.addFilter}
             type="button"
             className="is-link button"
-          >
-            Add a filter
-            <span className="octicon octicon-chevron-down"></span>
-          </button>
+          >Add a filter</button>
         </div>
       </div>
     )
   }
 }
 
-Filter.propTypes = {
+TopNavigation.propTypes = {
   addFilter: React.PropTypes.func.isRequired,
   changeFilter: React.PropTypes.func.isRequired,
   manageFilters: React.PropTypes.func.isRequired,
 }
 
-module.exports = Filter
+module.exports = TopNavigation

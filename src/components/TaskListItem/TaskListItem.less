@@ -1,27 +1,44 @@
 .task-list-item {
   font-size: 16px;
 
-  .checkbox {
+  .checkbox.main-label {
     color: #333;
   }
+
+  .checkbox {
+    display: block;
+  }
+}
+
+input.task-list-item-checkbox[type="checkbox"] {
+  line-height: 32px;
+  vertical-align: bottom;
+  display: inline-block;
 }
 
 .task-list-item:nth-child(even) {
   background-color: #f9f9f9;
 }
 
+.task-list-item-time-column {
+  flex: none;
+  width: 11.66667%;
+}
+
 .task-list-item-time {
   color: #777;
   font-size: 12px;
-  line-height: 22px;
-  word-wrap: break-word;
-  vertical-align: middle;
-  max-width: 95%;
-  display: inline-block;
+}
+
+.task-list-item-state-label {
+  .octicon {
+    vertical-align: top;
+    font-size: 23px;
+    line-height: 32px;
+  }
 }
 
 .task-list-item-title {
-  padding-left: 5px;
 }
 
 .octicon-issue-closed,
@@ -34,8 +51,35 @@
   color: #6cc644;
 }
 
-.task-list-item-repository {
+.task-list-meta {
   font-size: 12px;
-  margin-left: 20px;
+  margin-top: 5px;
+  display: block;
   color: #767676;
+}
+
+.task-list-item-repository {
+}
+
+.task-list-item-user {
+}
+
+.task-list-item-repository-owner-column {
+  flex: none;
+  width: 7.33333%;
+}
+
+.task-list-item-user-avatar,
+.task-list-item-repository-owner-avatar {
+  display: inline-block;
+  vertical-align: top;
+  border-radius: 100%;
+}
+
+.task-list-item-user-avatar {
+  width: 16px;
+}
+
+.task-list-item-repository-owner-avatar {
+  width: 30px;
 }
