@@ -41,6 +41,11 @@ function getTask(data) {
 }
 
 class GitHub extends Fetcher {
+  constructor(token) {
+    super()
+    this.token = token
+  }
+
   // https://developer.github.com/v3/activity/notifications/#list-your-notifications
   getNotifications() {
     return this.get('notifications')
@@ -59,11 +64,10 @@ class GitHub extends Fetcher {
 
   get(relativeUrl) {
     const url = `${Config.githubApiUrl}/${relativeUrl}`
-    const token = GitHubAuth.getToken()
     const options = {
       headers: {
         Accept: 'application/vnd.github.v3+json',
-        Authorization: `token ${token}`,
+        Authorization: `token ${this.token || GitHubAuth.getToken()}`,
       },
     }
     return super.get(url, options)
