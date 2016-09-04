@@ -2,16 +2,19 @@ const { connect } = require('react-redux')
 const React = require('react')
 const { ipcRenderer } = require('electron')
 
+const Config = require('../../config.json')
+
 const Filter = require('../../models/filter')
 const Filters = require('../../models/filters')
 const GitHub = require('../../models/github')
 const AppMenu = require('../../models/app-menu')
+const GitHubAuth = require('../../models/github-auth')
+
 const TopNavigation = require('../TopNavigation')
 const TaskList = require('../TaskList')
 const FilterList = require('../FilterList')
 const NewFilter = require('../NewFilter')
 const EditFilter = require('../EditFilter')
-const Config = require('../../config.json')
 const About = require('../About')
 
 class App extends React.Component {
@@ -22,10 +25,12 @@ class App extends React.Component {
 
   componentDidMount() {
     ipcRenderer.send('title', 'Notifications')
-    if (this.state.filters.length > 0) {
-      this.loadFilter(this.state.filters[0])
-    } else {
-      this.loadTasks(Config.searchQuery)
+    if (GitHubAuth.isAuthenticated()) {
+      if (this.state.filters.length > 0) {
+        this.loadFilter(this.state.filters[0])
+      } else {
+        this.loadTasks(Config.searchQuery)
+      }
     }
     this.setupAppMenu()
   }
