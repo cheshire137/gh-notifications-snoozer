@@ -8,6 +8,7 @@ const fetchMock = require('fetch-mock')
 
 const App = require('../../src/components/App')
 const reducer = require('../../src/reducers/reducer')
+const GitHubAuth = require('../../src/models/github-auth')
 
 describe('App', () => {
   let store
@@ -29,9 +30,31 @@ describe('App', () => {
     )
 
     assert(ReactDOM.findDOMNode(appComponent))
+  })
+
+  it('does not make request without a token', () => {
+    TestUtils.renderIntoDocument(
+      <ReactRedux.Provider store={store}>
+        <App />
+      </ReactRedux.Provider>
+    )
+
+    const fetchedCalls = fetchMock.calls().matched
+    assert.equal(0, fetchedCalls.length, 'No fetch calls should be made.')
+  })
+
+  it('fetches user when auth token is set', () => {
+    GitHubAuth.setToken('test-whee')
+
+    TestUtils.renderIntoDocument(
+      <ReactRedux.Provider store={store}>
+        <App />
+      </ReactRedux.Provider>
+    )
 
     const fetchedCalls = fetchMock.calls().matched
     assert.equal(1, fetchedCalls.length, 'Only one fetch call should be made.')
-    assert(fetchedCalls[0][0].match(/\/search\/issues\?/), 'It should be to the search API')
+    assert(fetchedCalls[0][0].match(/\/user/),
+           'Fetch call should be to the user API')
   })
 })
