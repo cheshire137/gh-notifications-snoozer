@@ -1,10 +1,11 @@
 @import "../../lib/bulma.css";
 @import "https://cdnjs.cloudflare.com/ajax/libs/octicons/3.5.0/octicons.min.css";
-@import "../Filter/Filter.less";
+@import "../TopNavigation/TopNavigation.less";
+@import "../NewFilter/NewFilter.less";
+@import "../FilterList/FilterList.less";
+@import "../FilterListItem/FilterListItem.less";
 @import "../TaskList/TaskList.less";
 @import "../TaskListItem/TaskListItem.less";
-@import "../RuleListItem/RuleListItem.less";
-@import "../NewRule/NewRule.less";
 
 body {
   background-color: #fff;
@@ -15,22 +16,6 @@ body {
   padding: 20px;
 }
 
-.issues-list {
-  list-style: none;
-}
-
-.filter {
-  .label {
-    display: inline-block;
-    line-height: 32px;
-    margin-right: 5px;
-  }
-}
-
 .button.is-primary {
   margin-right: 5px;
-}
-
-.rule-list-item:nth-child(even) {
-  background-color: #f9f9f9;
 }

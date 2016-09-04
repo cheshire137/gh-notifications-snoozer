@@ -2,9 +2,9 @@
 
 const ElectronConfig = require('electron-config')
 const storage = new ElectronConfig()
-const Rules = require('./rules')
+const Filters = require('./filters')
 
-class Rule {
+class Filter {
   constructor(key) {
     this.key = key
   }
@@ -22,13 +22,13 @@ class Rule {
 
   store(value) {
     storage.set(this.key, value)
-    return Rules.addKey(this.key)
+    return Filters.addKey(this.key)
   }
 
   delete() {
     storage.delete(this.key)
-    return Rules.deleteKey(this.key)
+    return Filters.deleteKey(this.key)
   }
 }
 
-module.exports = Rule
+module.exports = Filter

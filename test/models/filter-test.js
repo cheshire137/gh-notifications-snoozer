@@ -1,13 +1,13 @@
 const assert = require('assert')
 const ElectronConfig = require('electron-config')
 const storage = new ElectronConfig()
-const Rule = require('../../src/models/rule')
+const Filter = require('../../src/models/filter')
 
-describe('Rule', () => {
+describe('Filter', () => {
   describe('store', () => {
     it('saves the given key/value pair', () => {
-      const rule = new Rule('funKey')
-      rule.store('glorious value')
+      const filter = new Filter('funKey')
+      filter.store('glorious value')
       const actual = storage.get('funKey')
       assert.equal('glorious value', actual)
       storage.clear()
@@ -18,14 +18,14 @@ describe('Rule', () => {
     it('returns true when key exists', () => {
       const value = 987
       storage.set('TheBestKey', value)
-      const rule = new Rule('TheBestKey')
-      assert(rule.exists())
+      const filter = new Filter('TheBestKey')
+      assert(filter.exists())
       storage.clear()
     })
 
     it('returns false when key does not exist', () => {
-      const rule = new Rule('thebestkey')
-      assert(!rule.exists())
+      const filter = new Filter('thebestkey')
+      assert(!filter.exists())
       storage.clear()
     })
   })
@@ -34,15 +34,15 @@ describe('Rule', () => {
     it('fetches the specified key when it exists', () => {
       const value = { foo: 'bar' }
       storage.set('a-sample-key', value)
-      const rule = new Rule('a-sample-key')
-      const actual = rule.retrieve()
+      const filter = new Filter('a-sample-key')
+      const actual = filter.retrieve()
       assert.deepEqual(value, actual)
       storage.clear()
     })
 
     it('returns an empty object when the key does not exist', () => {
-      const rule = new Rule('nonexistent_key')
-      const actual = rule.retrieve()
+      const filter = new Filter('nonexistent_key')
+      const actual = filter.retrieve()
       assert.deepEqual({}, actual)
       storage.clear()
     })
