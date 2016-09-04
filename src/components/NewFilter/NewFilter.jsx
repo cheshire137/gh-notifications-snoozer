@@ -1,7 +1,7 @@
 const React = require('react')
-const Rule = require('../../models/rule')
+const Filter = require('../../models/filter')
 
-class NewRule extends React.Component {
+class NewFilter extends React.Component {
   constructor() {
     super()
     this.state = { valueHasError: false }
@@ -10,18 +10,18 @@ class NewRule extends React.Component {
   save(event) {
     event.preventDefault()
     const form = event.target
-    const value = form.ruleValue.value.trim()
+    const value = form.filterValue.value.trim()
     if (value.length < 1) {
       this.setState({ valueHasError: true })
       return
     }
     this.setState({ valueHasError: false })
-    let key = form.ruleKey.value.trim()
+    let key = form.filterKey.value.trim()
     if (key.length < 1) {
       key = value
     }
-    const rule = new Rule(key)
-    rule.store(value)
+    const filter = new Filter(key)
+    filter.store(value)
     this.props.save(key)
   }
 
@@ -42,27 +42,34 @@ class NewRule extends React.Component {
           <span> / </span>
           Add a Filter
         </h1>
-        <form className="new-rule-form" onSubmit={event => this.save(event)}>
+        <form className="new-filter-form" onSubmit={event => this.save(event)}>
           <label className="label">Search query:</label>
           <p className="control">
             <input
               type="text"
-              name="ruleValue"
+              name="filterValue"
               className={valueClass}
               placeholder="e.g., team:org/team-name is:open"
             />
           </p>
           <label className="label">Filter name: (optional)</label>
           <p className="control">
-            <input type="text" name="ruleKey" className="input" placeholder="e.g., Team mentions" />
+            <input
+              type="text"
+              name="filterKey"
+              className="input"
+              placeholder="e.g., Team mentions"
+            />
           </p>
           <p className="control">
             <button type="submit" className="button is-primary">
               Save Filter
             </button>
-            <button type="button" onClick={this.props.cancel} className="button is-link">
-              Cancel
-            </button>
+            <button
+              type="button"
+              onClick={this.props.cancel}
+              className="button is-link"
+            >Cancel</button>
           </p>
         </form>
         <h2 className="subtitle">Search Query Help</h2>
@@ -162,9 +169,9 @@ class NewRule extends React.Component {
   }
 }
 
-NewRule.propTypes = {
+NewFilter.propTypes = {
   save: React.PropTypes.func.isRequired,
   cancel: React.PropTypes.func.isRequired,
 }
 
-module.exports = NewRule
+module.exports = NewFilter

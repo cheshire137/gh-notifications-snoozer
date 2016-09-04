@@ -2,7 +2,9 @@
 
 [![Build status](https://travis-ci.org/cheshire137/gh-notifications-snoozer.svg?branch=master)](https://travis-ci.org/cheshire137/gh-notifications-snoozer)
 
-Lists and rules and snoozing PRs, oh my!
+Lists and filters and snoozing pull requests, oh my! This is an app for managing
+your GitHub notifications by way of filtering issues and pull requests that are
+of interest to you.
 
 ## How to Develop
 
