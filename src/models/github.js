@@ -52,6 +52,11 @@ class GitHub extends Fetcher {
     return this.get(urlPath).then(({ items }) => items.map(d => getTask(d)))
   }
 
+  // https://developer.github.com/v3/users/#get-the-authenticated-user
+  getCurrentUser() {
+    return this.get('user')
+  }
+
   get(relativeUrl) {
     const url = `${Config.githubApiUrl}/${relativeUrl}`
     const token = GitHubAuth.getToken()
