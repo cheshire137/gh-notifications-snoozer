@@ -39,7 +39,7 @@ class TaskList extends React.Component {
         </nav>
         <ol className="task-list">
           {this.props.tasks.map(task =>
-            <TaskListItem task={task} key={task.id} />
+            <TaskListItem {...task} key={task.storageKey} />
           )}
         </ol>
       </div>
