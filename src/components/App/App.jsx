@@ -42,6 +42,14 @@ class App extends React.Component {
       ipcRenderer.send('title', 'About')
       this.setState({ view: 'about' })
     })
+    menu.on('authenticate', () => {
+      this.showAuth()
+    })
+  }
+
+  showAuth() {
+    ipcRenderer.send('title', 'Authenticate')
+    this.setState({ view: 'auth' })
   }
 
   loadTasks(query) {
