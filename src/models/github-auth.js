@@ -17,6 +17,10 @@ class GitHubAuth {
   static getToken() {
     return storage.get(KEY)
   }
+
+  static path() {
+    return storage.path
+  }
 }
 
 module.exports = GitHubAuth
