@@ -13,7 +13,7 @@ function getSavedTaskKeys(key) {
 // Persist the given tasks under the given key in the JSON storage file.
 function writeChanges(tasks, typeKey) {
   const existingTaskKeys = getSavedTaskKeys(typeKey)
-  const newTaskKeys = tasks.map(task => task.key)
+  const newTaskKeys = tasks.map(task => task.storageKey)
   const allTaskKeys = []
   existingTaskKeys.concat(newTaskKeys).forEach(key => {
     if (allTaskKeys.indexOf(key) < 0) {
@@ -29,11 +29,13 @@ function updateTasks(tasks, action) {
   const archivedTasks = getSavedTaskKeys(ARCHIVED_KEY)
 
   // Add the existing tasks
-  tasks.forEach(task => (tasksByKey[task.key] = task))
+  tasks.forEach(task => (tasksByKey[task.storageKey] = task))
 
   // Update tasks with new values and add new tasks
   action.tasks.forEach(task => {
-    tasksByKey[task.key] = Object.assign({}, tasksByKey[task.key], task)
+    tasksByKey[task.storageKey] = Object.assign({},
+                                                tasksByKey[task.storageKey],
+                                                task)
   })
 
   const updatedTasks = Object.keys(tasksByKey).map(key => {
@@ -52,7 +54,7 @@ function updateTasks(tasks, action) {
 
 function selectTasks(tasks, action) {
   return tasks.map(task => {
-    if (task.key === action.task.key) {
+    if (task.storageKey === action.task.storageKey) {
       return Object.assign({}, task, { isSelected: true })
     }
     return task
@@ -61,7 +63,7 @@ function selectTasks(tasks, action) {
 
 function deselectTasks(tasks, action) {
   return tasks.map(task => {
-    if (task.key === action.task.key) {
+    if (task.storageKey === action.task.storageKey) {
       return Object.assign({}, task, { isSelected: false })
     }
     return task
@@ -78,7 +80,7 @@ function snoozeTasks(tasks) {
   const updatedTasks = tasks.map(task => {
     if (task.isSelected) {
       const snoozedAt = currentTimeString()
-      storage.set(task.key, snoozedAt)
+      storage.set(task.storageKey, snoozedAt)
       snoozedTasks.push(task)
       return Object.assign({}, task, { snoozedAt, archivedAt: null })
     }
@@ -93,7 +95,7 @@ function archiveTasks(tasks) {
   const updatedTasks = tasks.map(task => {
     if (task.isSelected) {
       const archivedAt = currentTimeString()
-      storage.set(task.key, archivedAt)
+      storage.set(task.storageKey, archivedAt)
       archivedTasks.push(task)
       return Object.assign({}, task, { archivedAt, snoozedAt: null })
     }

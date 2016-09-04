@@ -12,7 +12,7 @@ function getTask(data) {
   const repositoryOwner = repository.split('/')[0]
   const type = typeof data.pull_request === 'object' ? 'pull' : 'issue'
   return {
-    key: `${type}-${data.id}`,
+    storageKey: `${type}-${data.id}`,
     id: data.id,
     type,
     title: data.title,
