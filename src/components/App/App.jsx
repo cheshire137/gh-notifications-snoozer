@@ -16,6 +16,7 @@ const FilterList = require('../FilterList')
 const NewFilter = require('../NewFilter')
 const EditFilter = require('../EditFilter')
 const About = require('../About')
+const Auth = require('../Auth')
 
 class App extends React.Component {
   constructor() {
@@ -88,7 +89,23 @@ class App extends React.Component {
     this.setState({ filter, view: 'edit-filter' })
   }
 
+  finishedWithAuth(user) {
+    if (typeof user === 'object') {
+      this.setState({ user })
+    }
+    this.showTaskList()
+  }
+
   render() {
+    if (this.state.view === 'auth' || !GitHubAuth.isAuthenticated()) {
+      return (
+        <Auth
+          done={user => this.finishedWithAuth(user)}
+          isAuthenticated={GitHubAuth.isAuthenticated()}
+        />
+      )
+    }
+
     if (this.state.view === 'tasks') {
       return (
         <div className="tasks-view">
@@ -97,6 +114,11 @@ class App extends React.Component {
             changeFilter={key => this.loadFilter(key)}
             manageFilters={() => this.manageFilters()}
           />
+          {typeof this.state.user === 'object' ? (
+            <p className="notification is-success">
+              Signed in as <strong>{this.state.user.login}</strong>.
+            </p>
+          ) : ''}
           <TaskList />
         </div>
       )
