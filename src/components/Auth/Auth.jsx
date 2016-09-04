@@ -2,49 +2,65 @@ const React = require('react')
 const shell = require('electron').shell
 
 const GitHubAuth = require('../../models/github-auth')
+const GitHub = require('../../models/github')
 
 class Auth extends React.Component {
   constructor() {
     super()
-    this.state = { tokenHasError: false }
+    this.state = { tokenHasError: false, token: GitHubAuth.getToken() || '' }
   }
 
   save(event) {
     event.preventDefault()
-    const form = event.target
-    const value = form.token.value.trim()
-    if (value.length < 1) {
-      this.setState({ tokenHasError: true })
+    if (this.state.token.length < 1) {
+      this.setState({ tokenHasError: true, error: 'Cannot be blank' })
       return
     }
-    this.setState({ tokenHasError: false })
-    GitHubAuth.setToken(value)
-    this.props.save()
+    const github = new GitHub(this.state.token)
+    github.getCurrentUser().then(user => {
+      this.setState({ tokenHasError: false, error: null })
+      GitHubAuth.setToken(this.state.token)
+      this.props.done(user)
+    }).catch(error => {
+      this.setState({ tokenHasError: true, error: error.message })
+    })
+  }
+
+  updateToken(event) {
+    this.setState({
+      token: event.currentTarget.value,
+      tokenHasError: false,
+      error: null,
+    })
   }
 
   openLink(event) {
     event.preventDefault()
-    event.target.blur()
+    event.currentTarget.blur()
     shell.openExternal(event.currentTarget.href)
   }
 
   cancel(event) {
     event.preventDefault()
-    if (typeof this.props.cancel === 'function') {
-      this.props.cancel()
+    event.currentTarget.blur()
+    this.props.done()
+  }
+
+  inputClass() {
+    let css = 'input'
+    if (this.state.tokenHasError) {
+      css += ' is-danger'
     }
+    return css
   }
 
   render() {
-    let valueClass = 'input'
-    if (this.state.tokenHasError) {
-      valueClass += ' is-danger'
-    }
+    const authFile = GitHubAuth.path()
     return (
       <div className="auth-container">
         <div className="auth-top-navigation">
           <h1 className="title">
-            {typeof this.props.cancel === 'function' ? (
+            {this.props.isAuthenticated ? (
               <span>
                 <a href="#" onClick={event => this.cancel(event)}>Tasks</a>
                 <span> / </span>
@@ -53,22 +69,51 @@ class Auth extends React.Component {
             Authenticate
           </h1>
         </div>
+        {this.props.isAuthenticated ? (
+          <p className="notification is-success">
+            You are authenticated. Your GitHub token is stored in
+            <code> {authFile}</code>.
+          </p>
+        ) : ''}
         <form className="auth-form" onSubmit={event => this.save(event)}>
           <p>
             You must provide a GitHub personal access token.
             <a
               href="https://github.com/settings/tokens/new"
               onClick={event => this.openLink(event)}
-            >Create a token</a>
-            with the <code>repo</code> scope.
+            > Create a token </a>
+            with the <code>repo</code> scope:
           </p>
-          <label className="label">Your token:</label>
-          <p className="control">
-            <input
-              type="text"
-              name="token"
-              className={valueClass}
+          <p>
+            <img
+              className="scope-screenshot"
+              src="components/Auth/scope-screenshot.png"
+              alt="Repo scope"
             />
+          </p>
+          {this.state.tokenHasError ? (
+            <p className="notification is-danger">
+              {this.state.error}
+            </p>
+          ) : ''}
+          <div className="control is-horizontal">
+            <div className="control-label">
+              <label className="label">Your token:</label>
+            </div>
+            <p className="control is-fullwidth has-icon">
+              <input
+                type="text"
+                name="token"
+                className={this.inputClass()}
+                value={this.state.token}
+                onChange={event => this.updateToken(event)}
+                autoFocus="autofocus"
+              />
+              <span className="fa octicon octicon-key"></span>
+            </p>
+          </div>
+          <p className="help">
+            Your token will be stored in <code>{authFile}</code>.
           </p>
           <p className="control">
             <button type="submit" className="button is-primary">
@@ -82,8 +127,8 @@ class Auth extends React.Component {
 }
 
 Auth.propTypes = {
-  save: React.PropTypes.func.isRequired,
-  cancel: React.PropTypes.func,
+  done: React.PropTypes.func.isRequired,
+  isAuthenticated: React.PropTypes.bool.isRequired,
 }
 
 module.exports = Auth
