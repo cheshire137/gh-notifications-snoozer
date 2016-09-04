@@ -14,6 +14,10 @@ class GitHubAuth {
     storage.set(KEY, token)
   }
 
+  static deleteToken() {
+    storage.delete(KEY)
+  }
+
   static getToken() {
     return storage.get(KEY)
   }
