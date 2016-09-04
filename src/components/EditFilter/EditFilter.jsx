@@ -2,27 +2,33 @@ const React = require('react')
 const Filter = require('../../models/filter')
 const FilterHelp = require('../FilterHelp')
 
-class NewFilter extends React.Component {
-  constructor() {
-    super()
-    this.state = { valueHasError: false }
+class EditFilter extends React.Component {
+  constructor(props) {
+    super(props)
+    const { filter } = props
+    this.state = {
+      valueHasError: false,
+      key: filter.key,
+      value: filter.retrieve(),
+    }
   }
 
   save(event) {
     event.preventDefault()
-    const form = event.target
-    const value = form.filterValue.value.trim()
-    if (value.length < 1) {
+    if (this.state.value.length < 1) {
       this.setState({ valueHasError: true })
       return
     }
     this.setState({ valueHasError: false })
-    let key = form.filterKey.value.trim()
+    let key = this.state.key.trim()
     if (key.length < 1) {
-      key = value
+      key = this.state.value
     }
     const filter = new Filter(key)
-    filter.store(value)
+    filter.store(this.state.value)
+    if (this.props.filter.key !== key) {
+      this.props.delete(this.props.filter.key)
+    }
     this.props.save(key)
   }
 
@@ -31,38 +37,56 @@ class NewFilter extends React.Component {
     this.props.cancel()
   }
 
+  valueChanged(event) {
+    this.setState({ value: event.target.value })
+  }
+
+  keyChanged(event) {
+    this.setState({ key: event.target.value })
+  }
+
   render() {
     let valueClass = 'input'
     if (this.state.valueHasError) {
       valueClass += ' is-danger'
     }
     return (
-      <div className="new-filter-container">
-        <div className="columns new-filter-top-navigation">
+      <div>
+        <div className="columns edit-filter-top-navigation">
           <div className="column is-7">
             <h1 className="title">
-              <a href="#" onClick={event => this.cancel(event)}>Tasks</a>
+              <a href="#" onClick={event => this.cancel(event)}>
+                Manage Filters
+              </a>
               <span> / </span>
-              Add a Filter
+              Edit Filter
             </h1>
           </div>
           <div className="column is-5 has-text-right">
             <button
-              onClick={this.props.manageFilters}
+              onClick={event => this.cancel(event)}
               type="button"
               className="is-link button"
               title="Manage filters"
             ><span className="octicon octicon-three-bars"></span></button>
+            <button
+              onClick={this.props.addFilter}
+              type="button"
+              className="is-link button"
+              title="Add a filter"
+            ><span className="octicon octicon-plus"></span></button>
           </div>
         </div>
-        <form className="new-filter-form" onSubmit={event => this.save(event)}>
+        <form className="edit-filter-form" onSubmit={event => this.save(event)}>
           <label className="label">Search query:</label>
           <p className="control">
             <input
               type="text"
               name="filterValue"
               className={valueClass}
-              placeholder="e.g., team:org/team-name is:open sort:updated-desc"
+              value={this.state.value}
+              onChange={e => this.valueChanged(e)}
+              placeholder="e.g., team:org/team-name is:open"
             />
           </p>
           <label className="label">Filter name: (optional)</label>
@@ -71,6 +95,8 @@ class NewFilter extends React.Component {
               type="text"
               name="filterKey"
               className="input"
+              value={this.state.key}
+              onChange={e => this.keyChanged(e)}
               placeholder="e.g., Team mentions"
             />
           </p>
@@ -91,10 +117,12 @@ class NewFilter extends React.Component {
   }
 }
 
-NewFilter.propTypes = {
+EditFilter.propTypes = {
+  filter: React.PropTypes.object.isRequired,
   save: React.PropTypes.func.isRequired,
   cancel: React.PropTypes.func.isRequired,
-  manageFilters: React.PropTypes.func.isRequired,
+  addFilter: React.PropTypes.func.isRequired,
+  delete: React.PropTypes.func.isRequired,
 }
 
-module.exports = NewFilter
+module.exports = EditFilter

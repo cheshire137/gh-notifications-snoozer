@@ -10,6 +10,7 @@ const TopNavigation = require('../TopNavigation')
 const TaskList = require('../TaskList')
 const FilterList = require('../FilterList')
 const NewFilter = require('../NewFilter')
+const EditFilter = require('../EditFilter')
 const Config = require('../../config.json')
 const About = require('../About')
 
@@ -77,6 +78,11 @@ class App extends React.Component {
     this.setState({ filters: remainingFilters })
   }
 
+  editFilter(key) {
+    const filter = new Filter(key)
+    this.setState({ filter, view: 'edit-filter' })
+  }
+
   render() {
     if (this.state.view === 'tasks') {
       return (
@@ -96,8 +102,21 @@ class App extends React.Component {
         <FilterList
           filters={this.state.filters}
           delete={key => this.deleteFilter(key)}
+          edit={key => this.editFilter(key)}
           addFilter={() => this.showNewFilterForm()}
           cancel={() => this.showTaskList()}
+        />
+      )
+    }
+
+    if (this.state.view === 'edit-filter') {
+      return (
+        <EditFilter
+          filter={this.state.filter}
+          save={() => this.savedFilter()}
+          addFilter={() => this.showNewFilterForm()}
+          cancel={() => this.manageFilters()}
+          delete={key => this.deleteFilter(key)}
         />
       )
     }
@@ -114,6 +133,7 @@ class App extends React.Component {
       <NewFilter
         save={() => this.savedFilter()}
         cancel={() => this.showTaskList()}
+        manageFilters={() => this.manageFilters()}
       />
     )
   }

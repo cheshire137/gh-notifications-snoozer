@@ -16,7 +16,7 @@ class TopNavigation extends React.Component {
     const rules = Filters.findAll()
     return (
       <div className="top-navigation columns">
-        <div className="column is-6">
+        <div className="column is-10">
           <label className="label" htmlFor="filters-menu">Filter:</label>
           <span className="select">
             <select id="filters-menu" onChange={event => this.changeFilter(event)}>
@@ -34,17 +34,19 @@ class TopNavigation extends React.Component {
             <span className="octicon octicon-sync"></span>
           </button>
         </div>
-        <div className="column is-6 has-text-right">
+        <div className="column is-2 has-text-right">
           <button
             onClick={this.props.manageFilters}
             type="button"
             className="is-link button"
-          >Manage filters</button>
+            title="Manage filters"
+          ><span className="octicon octicon-three-bars"></span></button>
           <button
             onClick={this.props.addFilter}
             type="button"
             className="is-link button"
-          >Add a filter</button>
+            title="Add a filter"
+          ><span className="octicon octicon-plus"></span></button>
         </div>
       </div>
     )

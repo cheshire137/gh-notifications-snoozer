@@ -17,22 +17,25 @@ class TaskList extends React.Component {
   render() {
     return (
       <div>
-        <nav className="controls-container">
+        <nav className="controls-container has-text-right">
+          <label className="label">With selected:</label>
           <button
             type="button"
             onClick={e => this.onSnoozeClick(e)}
-            className="control button"
-          >
-            snooze
-          </button>
-          <button type="button" className="control button">ignore</button>
+            className="control button is-link"
+            title="Snooze selected"
+          >😴</button>
           <button
             type="button"
-            className="control button"
+            className="control button is-link"
             onClick={e => this.onArchiveClick(e)}
-          >
-            archive
-          </button>
+            title="Archive selected"
+          >📥</button>
+          <button
+            type="button"
+            className="control button is-link"
+            title="Ignore selected"
+          >❌</button>
         </nav>
         <ol className="task-list">
           {this.props.tasks.map(task =>
