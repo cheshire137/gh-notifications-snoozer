@@ -2,11 +2,11 @@ const { connect } = require('react-redux')
 const React = require('react')
 const { ipcRenderer } = require('electron')
 
-const Rule = require('../../models/rule')
-const Rules = require('../../models/rules')
+const Filter = require('../../models/filter')
+const Filters = require('../../models/filters')
 const GitHub = require('../../models/github')
 const AppMenu = require('../../models/app-menu')
-const Filter = require('../Filter')
+const TopNavigation = require('../TopNavigation')
 const TaskList = require('../TaskList')
 const FilterList = require('../FilterList')
 const NewFilter = require('../NewFilter')
@@ -16,13 +16,13 @@ const About = require('../About')
 class App extends React.Component {
   constructor() {
     super()
-    this.state = { view: 'tasks', rules: Rules.findAll() }
+    this.state = { view: 'tasks', filters: Filters.findAll() }
   }
 
   componentDidMount() {
     ipcRenderer.send('title', 'Notifications')
-    if (this.state.rules.length > 0) {
-      this.loadRule(this.state.rules[0])
+    if (this.state.filters.length > 0) {
+      this.loadFilter(this.state.filters[0])
     } else {
       this.loadTasks(Config.searchQuery)
     }
@@ -46,12 +46,12 @@ class App extends React.Component {
 
   showNewFilterForm() {
     ipcRenderer.send('title', 'New Filter')
-    this.setState({ view: 'new-rule' })
+    this.setState({ view: 'new-filter' })
   }
 
-  savedRule() {
+  savedFilter() {
     ipcRenderer.send('title', 'Notifications')
-    this.setState({ view: 'tasks', rules: Rules.findAll() })
+    this.setState({ view: 'tasks', filters: Filters.findAll() })
   }
 
   showTaskList() {
@@ -59,44 +59,44 @@ class App extends React.Component {
     this.setState({ view: 'tasks' })
   }
 
-  loadRule(ruleKey) {
+  loadFilter(key) {
     this.props.dispatch({ type: 'TASKS_EMPTY' })
-    const rule = new Rule(ruleKey)
-    const query = rule.retrieve()
+    const filter = new Filter(key)
+    const query = filter.retrieve()
     this.loadTasks(query)
   }
 
-  manageRules() {
+  manageFilters() {
     ipcRenderer.send('title', 'Manage Filters')
-    this.setState({ view: 'rules' })
+    this.setState({ view: 'filters' })
   }
 
-  deleteRule(ruleKey) {
-    const rule = new Rule(ruleKey)
-    const remainingRules = rule.delete()
-    this.setState({ rules: remainingRules })
+  deleteFilter(key) {
+    const filter = new Filter(key)
+    const remainingFilters = filter.delete()
+    this.setState({ filters: remainingFilters })
   }
 
   render() {
     if (this.state.view === 'tasks') {
       return (
         <div className="tasks-view">
-          <Filter
-            addRule={() => this.showNewFilterForm()}
-            changeRule={ruleKey => this.loadRule(ruleKey)}
-            manageRules={() => this.manageRules()}
+          <TopNavigation
+            addFilter={() => this.showNewFilterForm()}
+            changeFilter={key => this.loadFilter(key)}
+            manageFilters={() => this.manageFilters()}
           />
           <TaskList />
         </div>
       )
     }
 
-    if (this.state.view === 'rules') {
+    if (this.state.view === 'filters') {
       return (
         <FilterList
-          rules={this.state.rules}
-          delete={(ruleKey) => this.deleteRule(ruleKey)}
-          addRule={() => this.showNewFilterForm()}
+          filters={this.state.filters}
+          delete={key => this.deleteFilter(key)}
+          addFilter={() => this.showNewFilterForm()}
           cancel={() => this.showTaskList()}
         />
       )
@@ -112,7 +112,7 @@ class App extends React.Component {
 
     return (
       <NewFilter
-        save={() => this.savedRule()}
+        save={() => this.savedFilter()}
         cancel={() => this.showTaskList()}
       />
     )

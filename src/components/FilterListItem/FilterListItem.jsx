@@ -1,22 +1,22 @@
 const React = require('react')
 
-const Rule = require('../../models/rule')
+const Filter = require('../../models/filter')
 
 class FilterListItem extends React.Component {
   render() {
-    const rule = new Rule(this.props.rule)
+    const filter = new Filter(this.props.filter)
     return (
-      <li className="rule-list-item">
+      <li className="filter-list-item">
         <div className="columns">
-          <div className="column rule-key is-3">
-            {rule.key}
+          <div className="column filter-key is-3">
+            {filter.key}
           </div>
           <div className="column is-7">
-            {rule.retrieve()}
+            {filter.retrieve()}
           </div>
           <div className="column is-2 has-text-right">
             <button
-              onClick={() => this.props.delete(this.props.rule)}
+              onClick={() => this.props.delete(this.props.filter)}
               type="button"
               className="button"
             >Delete</button>
@@ -28,7 +28,7 @@ class FilterListItem extends React.Component {
 }
 
 FilterListItem.propTypes = {
-  rule: React.PropTypes.string.isRequired,
+  filter: React.PropTypes.string.isRequired,
   delete: React.PropTypes.func.isRequired,
 }
 

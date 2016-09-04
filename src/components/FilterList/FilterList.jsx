@@ -19,32 +19,35 @@ class FilterList extends React.Component {
             </h1>
           </div>
           <div className="column is-6 has-text-right">
-            <button onClick={this.props.addRule} type="button" className="button">
-              Add a filter
-            </button>
+            <button
+              onClick={this.props.addFilter}
+              type="button"
+              className="button"
+            >Add a filter</button>
           </div>
         </div>
-        {this.props.rules.length < 1 ? (
+        {this.props.filters.length < 1 ? (
           <p>You have not made any filters for managing notifications yet.</p>
-        ) : ''}
-        <ul className="rule-list">
-          {this.props.rules.map(ruleKey => (
-            <FilterListItem
-              key={ruleKey}
-              rule={ruleKey}
-              delete={this.props.delete}
-            />
-          ))}
-        </ul>
+        ) : (
+          <ul className="filter-list">
+            {this.props.filters.map(key => (
+              <FilterListItem
+                key={key}
+                filter={key}
+                delete={this.props.delete}
+              />
+            ))}
+          </ul>
+        )}
       </div>
     )
   }
 }
 
 FilterList.propTypes = {
-  rules: React.PropTypes.array.isRequired,
+  filters: React.PropTypes.array.isRequired,
   delete: React.PropTypes.func.isRequired,
-  addRule: React.PropTypes.func.isRequired,
+  addFilter: React.PropTypes.func.isRequired,
   cancel: React.PropTypes.func.isRequired,
 }
 
