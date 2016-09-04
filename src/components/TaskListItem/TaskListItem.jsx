@@ -74,7 +74,7 @@ class TaskListItem extends React.Component {
 
   render() {
     const { updatedAt, repository, title, repositoryOwner, user, storageKey,
-            url, state } = this.props
+            url, state, repositoryOwnerAvatar, userAvatar } = this.props
 
     if (!this.isVisible()) {
       return null
@@ -98,8 +98,8 @@ class TaskListItem extends React.Component {
         <div className="column task-list-item-repository-owner-column has-text-right">
           <label className="checkbox" htmlFor={storageKey}>
             <img
-              src={repositoryOwner.avatarUrl}
-              alt={repositoryOwner.login}
+              src={repositoryOwnerAvatar}
+              alt={repositoryOwner}
               className="task-list-item-repository-owner-avatar"
             />
           </label>
@@ -111,13 +111,13 @@ class TaskListItem extends React.Component {
               <span>Created </span>
               <span>by </span>
               <img
-                src={user.avatarUrl}
-                alt={user.login}
+                src={userAvatar}
+                alt={user}
                 className="task-list-item-user-avatar"
               />
               <span> </span>
               <span className="task-list-item-user">
-                {user.login}
+                {user}
               </span>
               <span> in </span>
               <span className="task-list-item-repository">
@@ -151,8 +151,12 @@ TaskListItem.propTypes = {
   url: React.PropTypes.string.isRequired,
   storageKey: React.PropTypes.string.isRequired,
   title: React.PropTypes.string.isRequired,
-  user: React.PropTypes.object.isRequired,
-  repositoryOwner: React.PropTypes.object.isRequired,
+  user: React.PropTypes.string.isRequired,
+  userAvatar: React.PropTypes.string.isRequired,
+  userUrl: React.PropTypes.string,
+  repositoryOwner: React.PropTypes.string.isRequired,
+  repositoryOwnerUrl: React.PropTypes.string,
+  repositoryOwnerAvatar: React.PropTypes.string.isRequired,
   dispatch: React.PropTypes.func.isRequired,
   state: React.PropTypes.string.isRequired,
   repository: React.PropTypes.string.isRequired,

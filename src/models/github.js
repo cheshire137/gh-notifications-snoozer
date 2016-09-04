@@ -26,17 +26,13 @@ function getTask(data) {
     url: data.html_url,
     number: data.number,
     repository,
-    repositoryOwner: {
-      login: repositoryOwner,
-      url: `https://github.com/${repositoryOwner}`,
-      avatarUrl: `https://github.com/${repositoryOwner}.png?size=30`,
-    },
-    user: {
-      login: data.user.login,
-      url: data.user.html_url,
-      avatarUrl: `https://github.com/${data.user.login}.png?size=16`,
-      type: data.user.type,
-    },
+    repositoryOwner,
+    repositoryOwnerUrl: `https://github.com/${repositoryOwner}`,
+    repositoryOwnerAvatar: `https://github.com/${repositoryOwner}.png?size=30`,
+    user: data.user.login,
+    userUrl: data.user.html_url,
+    userAvatar: `https://github.com/${data.user.login}.png?size=16`,
+    userType: data.user.type,
   }
 }
 
