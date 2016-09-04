@@ -2,6 +2,7 @@
 
 const Config = require('../config.json')
 const Fetcher = require('./fetcher')
+const GitHubAuth = require('./github-auth')
 
 const repoUrlPrefix = 'https://api.github.com/repos/'
 
@@ -53,7 +54,7 @@ class GitHub extends Fetcher {
 
   get(relativeUrl) {
     const url = `${Config.githubApiUrl}/${relativeUrl}`
-    const token = GitHub.getToken()
+    const token = GitHubAuth.getToken()
     const options = {
       headers: {
         Accept: 'application/vnd.github.v3+json',
