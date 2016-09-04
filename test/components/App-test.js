@@ -9,6 +9,8 @@ const fetchMock = require('fetch-mock')
 const App = require('../../src/components/App')
 const reducer = require('../../src/reducers/reducer')
 const GitHubAuth = require('../../src/models/github-auth')
+const Filter = require('../../src/models/filter')
+const Config = require('../../src/config.json')
 
 function renderPage(store) {
   return TestUtils.renderIntoDocument(
@@ -21,35 +23,64 @@ function renderPage(store) {
 describe('App', () => {
   let store
 
-  before(() => {
-    store = Redux.createStore(reducer)
-    fetchMock.mock('*', {})
+  describe('when valid auth token is not set', () => {
+    before(() => {
+      store = Redux.createStore(reducer)
+      fetchMock.mock('*', {})
+    })
+
+    after(() => {
+      fetchMock.restore()
+    })
+
+    it('renders', () => {
+      const appComponent = renderPage(store)
+      assert(ReactDOM.findDOMNode(appComponent))
+    })
+
+    it('does not make request without a token', () => {
+      renderPage(store)
+
+      const fetchedCalls = fetchMock.calls().matched
+      assert.equal(0, fetchedCalls.length, 'No fetch calls should be made.')
+    })
+
+    it('fetches user when auth token is set', () => {
+      GitHubAuth.setToken('test-whee')
+
+      renderPage(store)
+
+      const fetchedCalls = fetchMock.calls().matched
+      assert.equal(1, fetchedCalls.length, 'Only one fetch call should be made')
+      assert(fetchedCalls[0][0].match(/\/user/),
+             'Fetch call should be to the user API')
+    })
   })
 
-  after(() => {
-    fetchMock.restore()
-  })
+  describe('when valid auth token is set', () => {
+    before(() => {
+      store = Redux.createStore(reducer)
+      GitHubAuth.setToken('test-whee')
+      fetchMock.get(`${Config.githubApiUrl}/user`, { login: 'testuser123' })
+      fetchMock.get(`${Config.githubApiUrl}/search/issues?q=cats`, [])
+    })
 
-  it('renders', () => {
-    const appComponent = renderPage(store)
-    assert(ReactDOM.findDOMNode(appComponent))
-  })
+    after(() => {
+      fetchMock.restore()
+    })
 
-  it('does not make request without a token', () => {
-    renderPage(store)
+    it('fetches user and issues when filter exists', () => {
+      const filter = new Filter('Cool name')
+      filter.store('cats')
 
-    const fetchedCalls = fetchMock.calls().matched
-    assert.equal(0, fetchedCalls.length, 'No fetch calls should be made.')
-  })
+      renderPage(store)
 
-  it('fetches user when auth token is set', () => {
-    GitHubAuth.setToken('test-whee')
-
-    renderPage(store)
-
-    const fetchedCalls = fetchMock.calls().matched
-    assert.equal(1, fetchedCalls.length, 'Only one fetch call should be made.')
-    assert(fetchedCalls[0][0].match(/\/user/),
-           'Fetch call should be to the user API')
+      const fetchedCalls = fetchMock.calls().matched
+      assert.equal(2, fetchedCalls.length, 'Two fetch calls should be made')
+      assert(fetchedCalls[0][0].match(/\/search\/issues/),
+             'Fetch call should be to the user API')
+      assert(fetchedCalls[1][0].match(/\/user/),
+             'Fetch call should be to the user API')
+    })
   })
 })
