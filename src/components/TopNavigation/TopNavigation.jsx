@@ -3,7 +3,11 @@ const Filters = require('../../models/filters')
 
 class TopNavigation extends React.Component {
   changeFilter(event) {
-    this.props.changeFilter(event.target.value)
+    const filter = event.target.value
+    if (filter === '') {
+      return
+    }
+    this.props.changeFilter(filter)
   }
 
   refresh(event) {
@@ -20,6 +24,7 @@ class TopNavigation extends React.Component {
           <span className="nav-item">
             <span className="select">
               <select id="filters-menu" onChange={event => this.changeFilter(event)}>
+                <option value="">Choose a filter</option>
                 {rules.map(key => (
                   <option key={key} value={key}>{key}</option>
                 ))}
