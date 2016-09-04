@@ -62,7 +62,7 @@ class NewFilter extends React.Component {
               type="text"
               name="filterValue"
               className={valueClass}
-              placeholder="e.g., team:org/team-name is:open"
+              placeholder="e.g., team:org/team-name is:open sort:updated-desc"
             />
           </p>
           <label className="label">Filter name: (optional)</label>

@@ -1,7 +1,7 @@
 const React = require('react')
 const Filters = require('../../models/filters')
 
-class Filter extends React.Component {
+class TopNavigation extends React.Component {
   changeFilter(event) {
     this.props.changeFilter(event.target.value)
   }
@@ -53,10 +53,10 @@ class Filter extends React.Component {
   }
 }
 
-Filter.propTypes = {
+TopNavigation.propTypes = {
   addFilter: React.PropTypes.func.isRequired,
   changeFilter: React.PropTypes.func.isRequired,
   manageFilters: React.PropTypes.func.isRequired,
 }
 
-module.exports = Filter
+module.exports = TopNavigation
