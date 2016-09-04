@@ -32,6 +32,7 @@ class App extends React.Component {
       } else {
         this.loadTasks(Config.searchQuery)
       }
+      this.loadUser()
     }
     this.setupAppMenu()
   }
@@ -56,6 +57,16 @@ class App extends React.Component {
     const github = new GitHub()
     github.getTasks(query).then(tasks => {
       this.props.dispatch({ type: 'TASKS_UPDATE', tasks })
+    })
+  }
+
+  loadUser() {
+    const github = new GitHub()
+    github.getCurrentUser().then(user => {
+      this.setState({ user })
+    }).catch(error => {
+      console.error('failed to load user', error)
+      GitHubAuth.deleteToken()
     })
   }
 
@@ -121,12 +132,9 @@ class App extends React.Component {
             addFilter={() => this.showNewFilterForm()}
             changeFilter={key => this.loadFilter(key)}
             manageFilters={() => this.manageFilters()}
+            user={this.state.user}
+            showAuth={() => this.showAuth()}
           />
-          {typeof this.state.user === 'object' ? (
-            <p className="notification is-success">
-              Signed in as <strong>{this.state.user.login}</strong>.
-            </p>
-          ) : ''}
           <TaskList />
         </div>
       )
