@@ -16,10 +16,21 @@ class FilterListItem extends React.Component {
           </div>
           <div className="column is-2 has-text-right">
             <button
+              onClick={() => this.props.edit(this.props.filter)}
+              type="button"
+              className="button is-link"
+              title="Edit filter"
+            >
+              <span className="octicon octicon-pencil"></span>
+            </button>
+            <button
               onClick={() => this.props.delete(this.props.filter)}
               type="button"
-              className="button"
-            >Delete</button>
+              className="button is-link"
+              title="Delete filter"
+            >
+              <span className="octicon octicon-trashcan"></span>
+            </button>
           </div>
         </div>
       </li>
@@ -30,6 +41,7 @@ class FilterListItem extends React.Component {
 FilterListItem.propTypes = {
   filter: React.PropTypes.string.isRequired,
   delete: React.PropTypes.func.isRequired,
+  edit: React.PropTypes.func.isRequired,
 }
 
 module.exports = FilterListItem

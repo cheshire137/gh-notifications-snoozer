@@ -35,6 +35,7 @@ class FilterList extends React.Component {
                 key={key}
                 filter={key}
                 delete={this.props.delete}
+                edit={this.props.edit}
               />
             ))}
           </ul>
@@ -47,6 +48,7 @@ class FilterList extends React.Component {
 FilterList.propTypes = {
   filters: React.PropTypes.array.isRequired,
   delete: React.PropTypes.func.isRequired,
+  edit: React.PropTypes.func.isRequired,
   addFilter: React.PropTypes.func.isRequired,
   cancel: React.PropTypes.func.isRequired,
 }
