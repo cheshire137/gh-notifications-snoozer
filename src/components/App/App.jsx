@@ -121,6 +121,7 @@ class App extends React.Component {
         <Auth
           done={user => this.finishedWithAuth(user)}
           isAuthenticated={GitHubAuth.isAuthenticated()}
+          user={this.state.user}
         />
       )
     }

@@ -71,8 +71,12 @@ class Auth extends React.Component {
         </div>
         {this.props.isAuthenticated ? (
           <p className="notification is-success">
-            You are authenticated. Your GitHub token is stored in
-            <code> {authFile}</code>.
+            You are
+            {typeof this.props.user === 'object' ? (
+              <span> authenticated as
+                <strong> {this.props.user.login}</strong>.
+              </span>
+            ) : ' authenticated.'}
           </p>
         ) : ''}
         <form className="auth-form" onSubmit={event => this.save(event)}>
@@ -113,12 +117,21 @@ class Auth extends React.Component {
             </p>
           </div>
           <p className="help">
-            Your token will be stored in <code>{authFile}</code>.
+            Your token
+            {this.props.isAuthenticated ? ' is stored ' : ' will be stored '}
+            in: <code>{authFile}</code>
           </p>
           <p className="control">
             <button type="submit" className="button is-primary">
               Save Token
             </button>
+            {this.props.isAuthenticated ? (
+              <button
+                type="button"
+                onClick={this.props.done}
+                className="button is-link"
+              >Cancel</button>
+            ) : ''}
           </p>
         </form>
       </div>
@@ -129,6 +142,7 @@ class Auth extends React.Component {
 Auth.propTypes = {
   done: React.PropTypes.func.isRequired,
   isAuthenticated: React.PropTypes.bool.isRequired,
+  user: React.PropTypes.object,
 }
 
 module.exports = Auth
