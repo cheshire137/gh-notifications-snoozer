@@ -1,0 +1,6 @@
+{
+  "name": "FilterHelp",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./FilterHelp.jsx"
+}

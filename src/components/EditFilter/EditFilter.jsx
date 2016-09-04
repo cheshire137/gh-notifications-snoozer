@@ -1,5 +1,6 @@
 const React = require('react')
 const Filter = require('../../models/filter')
+const FilterHelp = require('../FilterHelp')
 
 class EditFilter extends React.Component {
   constructor(props) {
@@ -110,6 +111,7 @@ class EditFilter extends React.Component {
             >Cancel</button>
           </p>
         </form>
+        <FilterHelp />
       </div>
     )
   }
