@@ -6,14 +6,6 @@ const fetchMock = require('fetch-mock')
 const Config = require('../../src/config.json')
 
 describe('GitHub', () => {
-  describe('getToken', () => {
-    it('returns contents of .env file', () => {
-      const tokenPath = path.join(__dirname, '..', '..', '.env')
-      const expected = fs.readFileSync(tokenPath).toString().trim()
-      assert.equal(expected, GitHub.getToken())
-    })
-  })
-
   describe('getNotifications', () => {
     const notifications = [{
       id: '153473891',

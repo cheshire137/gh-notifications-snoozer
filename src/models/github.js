@@ -1,7 +1,5 @@
 'use strict'
 
-const fs = require('fs')
-const path = require('path')
 const Config = require('../config.json')
 const Fetcher = require('./fetcher')
 
@@ -51,11 +49,6 @@ class GitHub extends Fetcher {
   getTasks(query = Config.searchQuery) {
     const urlPath = `search/issues?q=${encodeURIComponent(query)}`
     return this.get(urlPath).then(({ items }) => items.map(d => getTask(d)))
-  }
-
-  static getToken() {
-    const tokenPath = path.join(__dirname, '..', '..', '.env')
-    return fs.readFileSync(tokenPath).toString().trim()
   }
 
   get(relativeUrl) {
