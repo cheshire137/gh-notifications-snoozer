@@ -5,7 +5,7 @@ const storage = new ElectronConfig()
 
 const KEY = 'token'
 
-class Auth {
+class GitHubAuth {
   isAuthenticated() {
     return storage.has(KEY)
   }
@@ -19,4 +19,4 @@ class Auth {
   }
 }
 
-module.exports = Auth
+module.exports = GitHubAuth
