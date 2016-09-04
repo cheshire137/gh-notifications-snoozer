@@ -7,30 +7,49 @@ const GitHub = require('../../models/github')
 class Auth extends React.Component {
   constructor() {
     super()
-    this.state = { tokenHasError: false, token: GitHubAuth.getToken() || '' }
+    const token = GitHubAuth.getToken() || ''
+    this.state = {
+      tokenHasError: false,
+      token,
+      disabledButton: token.length < 1,
+    }
   }
 
   save(event) {
     event.preventDefault()
     if (this.state.token.length < 1) {
-      this.setState({ tokenHasError: true, error: 'Cannot be blank' })
+      this.setState({
+        tokenHasError: true,
+        error: 'Cannot be blank',
+        disabledButton: true,
+      })
       return
     }
     const github = new GitHub(this.state.token)
     github.getCurrentUser().then(user => {
-      this.setState({ tokenHasError: false, error: null })
+      this.setState({
+        tokenHasError: false,
+        error: null,
+        disabledButton: false,
+      })
       GitHubAuth.setToken(this.state.token)
       this.props.done(user)
     }).catch(error => {
-      this.setState({ tokenHasError: true, error: error.message })
+      this.setState({
+        tokenHasError: true,
+        error: error.message,
+        disabledButton: false,
+      })
     })
   }
 
   updateToken(event) {
+    const token = event.currentTarget.value
     this.setState({
-      token: event.currentTarget.value,
+      token,
       tokenHasError: false,
       error: null,
+      disabledButton: token.length < 1,
     })
   }
 
@@ -43,7 +62,7 @@ class Auth extends React.Component {
   cancel(event) {
     event.preventDefault()
     event.currentTarget.blur()
-    this.props.done()
+    this.props.done(this.props.user)
   }
 
   inputClass() {
@@ -52,6 +71,19 @@ class Auth extends React.Component {
       css += ' is-danger'
     }
     return css
+  }
+
+  deleteToken(event) {
+    event.preventDefault()
+    event.currentTarget.blur()
+    GitHubAuth.deleteToken()
+    this.setState({
+      token: '',
+      tokenHasError: false,
+      error: null,
+      disabledButton: true,
+    })
+    this.props.done()
   }
 
   render() {
@@ -75,31 +107,29 @@ class Auth extends React.Component {
             {typeof this.props.user === 'object' ? (
               <span> authenticated as
                 <strong> {this.props.user.login}</strong>.
+                <span> </span>
+                <a
+                  href="#"
+                  onClick={event => this.deleteToken(event)}
+                >Log out</a>
               </span>
             ) : ' authenticated.'}
           </p>
         ) : ''}
         <form className="auth-form" onSubmit={event => this.save(event)}>
-          <p>
-            You must provide a GitHub personal access token.
-            <a
-              href="https://github.com/settings/tokens/new"
-              onClick={event => this.openLink(event)}
-            > Create a token </a>
-            with the <code>repo</code> scope:
-          </p>
-          <p>
-            <img
-              className="scope-screenshot"
-              src="components/Auth/scope-screenshot.png"
-              alt="Repo scope"
-            />
-          </p>
           {this.state.tokenHasError ? (
             <p className="notification is-danger">
               {this.state.error}
             </p>
           ) : ''}
+          <p className="control">
+            You must provide a GitHub personal access token.
+            <a
+              href="https://github.com/settings/tokens/new"
+              onClick={event => this.openLink(event)}
+            > Create a token </a>
+            with the <code>repo</code> scope and paste it below.
+          </p>
           <div className="control is-horizontal">
             <div className="control-label">
               <label className="label">Your token:</label>
@@ -122,9 +152,11 @@ class Auth extends React.Component {
             in: <code>{authFile}</code>
           </p>
           <p className="control">
-            <button type="submit" className="button is-primary">
-              Save Token
-            </button>
+            <button
+              type="submit"
+              className="button is-primary"
+              disabled={this.state.disabledButton}
+            >Save Token</button>
             {this.props.isAuthenticated ? (
               <button
                 type="button"
@@ -132,6 +164,15 @@ class Auth extends React.Component {
                 className="button is-link"
               >Cancel</button>
             ) : ''}
+          </p>
+          <hr />
+          <h2 className="subtitle">Token Scope</h2>
+          <p>
+            <img
+              className="scope-screenshot"
+              src="components/Auth/scope-screenshot.png"
+              alt="Repo scope"
+            />
           </p>
         </form>
       </div>

@@ -4,6 +4,7 @@
 .auth-top-navigation {
   border-bottom: 1px solid rgba(211, 214, 219, 0.5);
   margin-bottom: 15px;
+  padding-bottom: 15px;
 }
 
 .help code {
@@ -19,8 +20,6 @@
   padding: 10px;
   border: 1px solid rgba(211, 214, 219, 0.5);
   border-radius: 2px;
-  display: block;
-  margin: 10px auto;
 }
 
 .notification {
@@ -28,6 +27,15 @@
     background-color: inherit;
     color: inherit;
     padding: 0;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+
+    &:focus, &:hover {
+      text-decoration: none;
+    }
   }
 
   strong {

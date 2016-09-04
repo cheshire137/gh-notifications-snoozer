@@ -111,9 +111,7 @@ class App extends React.Component {
   }
 
   finishedWithAuth(user) {
-    if (typeof user === 'object') {
-      this.setState({ user })
-    }
+    this.setState({ user })
     this.showTaskList()
   }
 
