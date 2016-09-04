@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux'
 import ElectronConfig from 'electron-config'
 
-const storage = new ElectronConfig()
+const configName = process.env.NODE_ENV === 'test' ? 'config-test' : 'config'
+const storage = new ElectronConfig({ name: configName })
 const SNOOZED_KEY = 'snoozed'
 const ARCHIVED_KEY = 'archived'
 
