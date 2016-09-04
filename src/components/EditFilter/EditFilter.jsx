@@ -51,12 +51,32 @@ class EditFilter extends React.Component {
     }
     return (
       <div>
-        <h1 className="title">
-          <a href="#" onClick={event => this.cancel(event)}>Tasks</a>
-          <span> / </span>
-          Edit Filter
-        </h1>
-        <form className="new-filter-form" onSubmit={event => this.save(event)}>
+        <div className="columns edit-filter-top-navigation">
+          <div className="column is-7">
+            <h1 className="title">
+              <a href="#" onClick={event => this.cancel(event)}>
+                Manage Filters
+              </a>
+              <span> / </span>
+              Edit Filter
+            </h1>
+          </div>
+          <div className="column is-5 has-text-right">
+            <button
+              onClick={event => this.cancel(event)}
+              type="button"
+              className="is-link button"
+              title="Manage filters"
+            ><span className="octicon octicon-three-bars"></span></button>
+            <button
+              onClick={this.props.addFilter}
+              type="button"
+              className="is-link button"
+              title="Add a filter"
+            ><span className="octicon octicon-plus"></span></button>
+          </div>
+        </div>
+        <form className="edit-filter-form" onSubmit={event => this.save(event)}>
           <label className="label">Search query:</label>
           <p className="control">
             <input
@@ -99,6 +119,7 @@ EditFilter.propTypes = {
   filter: React.PropTypes.object.isRequired,
   save: React.PropTypes.func.isRequired,
   cancel: React.PropTypes.func.isRequired,
+  addFilter: React.PropTypes.func.isRequired,
   delete: React.PropTypes.func.isRequired,
 }
 

@@ -114,6 +114,7 @@ class App extends React.Component {
         <EditFilter
           filter={this.state.filter}
           save={() => this.savedFilter()}
+          addFilter={() => this.showNewFilterForm()}
           cancel={() => this.manageFilters()}
           delete={key => this.deleteFilter(key)}
         />
@@ -132,6 +133,7 @@ class App extends React.Component {
       <NewFilter
         save={() => this.savedFilter()}
         cancel={() => this.showTaskList()}
+        manageFilters={() => this.manageFilters()}
       />
     )
   }

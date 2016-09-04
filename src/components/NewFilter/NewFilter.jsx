@@ -36,12 +36,24 @@ class NewFilter extends React.Component {
       valueClass += ' is-danger'
     }
     return (
-      <div>
-        <h1 className="title">
-          <a href="#" onClick={event => this.cancel(event)}>Tasks</a>
-          <span> / </span>
-          Add a Filter
-        </h1>
+      <div className="new-filter-container">
+        <div className="columns new-filter-top-navigation">
+          <div className="column is-7">
+            <h1 className="title">
+              <a href="#" onClick={event => this.cancel(event)}>Tasks</a>
+              <span> / </span>
+              Add a Filter
+            </h1>
+          </div>
+          <div className="column is-5 has-text-right">
+            <button
+              onClick={this.props.manageFilters}
+              type="button"
+              className="is-link button"
+              title="Manage filters"
+            ><span className="octicon octicon-three-bars"></span></button>
+          </div>
+        </div>
         <form className="new-filter-form" onSubmit={event => this.save(event)}>
           <label className="label">Search query:</label>
           <p className="control">
@@ -172,6 +184,7 @@ class NewFilter extends React.Component {
 NewFilter.propTypes = {
   save: React.PropTypes.func.isRequired,
   cancel: React.PropTypes.func.isRequired,
+  manageFilters: React.PropTypes.func.isRequired,
 }
 
 module.exports = NewFilter

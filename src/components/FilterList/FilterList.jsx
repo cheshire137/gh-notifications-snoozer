@@ -9,25 +9,29 @@ class FilterList extends React.Component {
 
   render() {
     return (
-      <div>
-        <div className="columns">
-          <div className="column is-6">
+      <div className="filter-list-container">
+        <div className="columns filter-list-top-navigation">
+          <div className="column is-7">
             <h1 className="title">
               <a href="#" onClick={event => this.cancel(event)}>Tasks</a>
               <span> / </span>
               Manage Filters
             </h1>
           </div>
-          <div className="column is-6 has-text-right">
+          <div className="column is-5 has-text-right">
             <button
               onClick={this.props.addFilter}
               type="button"
-              className="button"
-            >Add a filter</button>
+              className="button is-link"
+              title="Add a filter"
+            ><span className="octicon octicon-plus"></span></button>
           </div>
         </div>
         {this.props.filters.length < 1 ? (
-          <p>You have not made any filters for managing notifications yet.</p>
+          <p>
+            You have not added any filters yet. Use filters to manage which
+            issues and pull requests are displayed.
+          </p>
         ) : (
           <ul className="filter-list">
             {this.props.filters.map(key => (
