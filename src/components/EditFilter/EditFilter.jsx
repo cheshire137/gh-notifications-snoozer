@@ -14,18 +14,20 @@ class EditFilter extends React.Component {
 
   save(event) {
     event.preventDefault()
-    const form = event.target
     if (this.state.value.length < 1) {
       this.setState({ valueHasError: true })
       return
     }
     this.setState({ valueHasError: false })
-    let key = form.filterKey.value.trim()
+    let key = this.state.key.trim()
     if (key.length < 1) {
       key = this.state.value
     }
     const filter = new Filter(key)
     filter.store(this.state.value)
+    if (this.props.filter.key !== key) {
+      this.props.delete(this.props.filter.key)
+    }
     this.props.save(key)
   }
 
@@ -35,11 +37,11 @@ class EditFilter extends React.Component {
   }
 
   valueChanged(event) {
-    this.setState({ value: event.target.value.trim() })
+    this.setState({ value: event.target.value })
   }
 
   keyChanged(event) {
-    this.setState({ key: event.target.value.trim() })
+    this.setState({ key: event.target.value })
   }
 
   render() {
@@ -97,6 +99,7 @@ EditFilter.propTypes = {
   filter: React.PropTypes.object.isRequired,
   save: React.PropTypes.func.isRequired,
   cancel: React.PropTypes.func.isRequired,
+  delete: React.PropTypes.func.isRequired,
 }
 
 module.exports = EditFilter

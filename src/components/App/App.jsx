@@ -115,6 +115,7 @@ class App extends React.Component {
           filter={this.state.filter}
           save={() => this.savedFilter()}
           cancel={() => this.manageFilters()}
+          delete={key => this.deleteFilter(key)}
         />
       )
     }
