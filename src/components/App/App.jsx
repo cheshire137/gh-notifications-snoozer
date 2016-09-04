@@ -2,8 +2,6 @@ const { connect } = require('react-redux')
 const React = require('react')
 const { ipcRenderer } = require('electron')
 
-const Config = require('../../config.json')
-
 const Filter = require('../../models/filter')
 const Filters = require('../../models/filters')
 const GitHub = require('../../models/github')
@@ -26,26 +24,30 @@ class App extends React.Component {
 
   componentDidMount() {
     ipcRenderer.send('title', 'Notifications')
+    this.setupAppMenu()
     if (GitHubAuth.isAuthenticated()) {
       if (this.state.filters.length > 0) {
         this.loadFilter(this.state.filters[0])
       } else {
-        this.loadTasks(Config.searchQuery)
+        this.manageFilters()
       }
       this.loadUser()
     }
-    this.setupAppMenu()
   }
 
   setupAppMenu() {
     const menu = new AppMenu()
     menu.on('about-app', () => {
-      ipcRenderer.send('title', 'About')
-      this.setState({ view: 'about' })
+      this.showAbout()
     })
     menu.on('authenticate', () => {
       this.showAuth()
     })
+  }
+
+  showAbout() {
+    ipcRenderer.send('title', 'About')
+    this.setState({ view: 'about' })
   }
 
   showAuth() {
