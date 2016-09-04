@@ -6,15 +6,15 @@ const storage = new ElectronConfig()
 const KEY = 'token'
 
 class GitHubAuth {
-  isAuthenticated() {
+  static isAuthenticated() {
     return storage.has(KEY)
   }
 
-  setToken(token) {
+  static setToken(token) {
     storage.set(KEY, token)
   }
 
-  getToken() {
+  static getToken() {
     return storage.get(KEY)
   }
 }
