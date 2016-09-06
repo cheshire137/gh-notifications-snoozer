@@ -1,9 +1,8 @@
 'use strict'
 
-const fs = require('fs')
-const path = require('path')
 const Config = require('../config.json')
 const Fetcher = require('./fetcher')
+const GitHubAuth = require('./github-auth')
 
 const repoUrlPrefix = 'https://api.github.com/repos/'
 
@@ -13,7 +12,7 @@ function getTask(data) {
   const repositoryOwner = repository.split('/')[0]
   const type = typeof data.pull_request === 'object' ? 'pull' : 'issue'
   return {
-    key: `${type}-${data.id}`,
+    storageKey: `${type}-${data.id}`,
     id: data.id,
     type,
     title: data.title,
@@ -27,21 +26,22 @@ function getTask(data) {
     url: data.html_url,
     number: data.number,
     repository,
-    repositoryOwner: {
-      login: repositoryOwner,
-      url: `https://github.com/${repositoryOwner}`,
-      avatarUrl: `https://github.com/${repositoryOwner}.png?size=30`,
-    },
-    user: {
-      login: data.user.login,
-      url: data.user.html_url,
-      avatarUrl: `https://github.com/${data.user.login}.png?size=16`,
-      type: data.user.type,
-    },
+    repositoryOwner,
+    repositoryOwnerUrl: `https://github.com/${repositoryOwner}`,
+    repositoryOwnerAvatar: `https://github.com/${repositoryOwner}.png?size=30`,
+    user: data.user.login,
+    userUrl: data.user.html_url,
+    userAvatar: `https://github.com/${data.user.login}.png?size=16`,
+    userType: data.user.type,
   }
 }
 
 class GitHub extends Fetcher {
+  constructor(token) {
+    super()
+    this.token = token
+  }
+
   // https://developer.github.com/v3/activity/notifications/#list-your-notifications
   getNotifications() {
     return this.get('notifications')
@@ -53,18 +53,17 @@ class GitHub extends Fetcher {
     return this.get(urlPath).then(({ items }) => items.map(d => getTask(d)))
   }
 
-  static getToken() {
-    const tokenPath = path.join(__dirname, '..', '..', '.env')
-    return fs.readFileSync(tokenPath).toString().trim()
+  // https://developer.github.com/v3/users/#get-the-authenticated-user
+  getCurrentUser() {
+    return this.get('user')
   }
 
   get(relativeUrl) {
     const url = `${Config.githubApiUrl}/${relativeUrl}`
-    const token = GitHub.getToken()
     const options = {
       headers: {
         Accept: 'application/vnd.github.v3+json',
-        Authorization: `token ${token}`,
+        Authorization: `token ${this.token || GitHubAuth.getToken()}`,
       },
     }
     return super.get(url, options)

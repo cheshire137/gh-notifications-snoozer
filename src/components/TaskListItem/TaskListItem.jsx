@@ -6,10 +6,10 @@ const MS_PER_DAY = 1000 * 60 * 60 * 24
 
 class TaskListItem extends React.Component {
   onChange(event) {
-    const { task } = this.props
+    const { storageKey } = this.props
     const type = event.target.checked ? 'TASKS_SELECT' : 'TASKS_DESELECT'
 
-    this.props.dispatch({ type, task })
+    this.props.dispatch({ type, task: { storageKey } })
   }
 
   daysBetween(a, b) {
@@ -19,24 +19,24 @@ class TaskListItem extends React.Component {
   }
 
   isVisible() {
-    const { task } = this.props
+    const { ignore, snoozedAt, archivedAt, updatedAt } = this.props
 
-    if (task.ignore) {
+    if (ignore) {
       return false
     }
 
-    if (typeof task.snoozedAt === 'string') {
+    if (typeof snoozedAt === 'string') {
       const currentDate = new Date()
-      const snoozeDate = new Date(task.snoozedAt)
+      const snoozeDate = new Date(snoozedAt)
       if (this.daysBetween(snoozeDate, currentDate) < 1) {
         // Snoozed within the last day, keep it hidden
         return false
       }
     }
 
-    if (typeof task.archivedAt === 'string') {
-      const updateDate = new Date(task.updatedAt)
-      const archiveDate = new Date(task.archivedAt)
+    if (typeof archivedAt === 'string') {
+      const updateDate = new Date(updatedAt)
+      const archiveDate = new Date(archivedAt)
       if (archiveDate > updateDate) {
         // Has not been updated since it was archived, keep it hidden
         return false
@@ -48,24 +48,24 @@ class TaskListItem extends React.Component {
 
   openExternal(event) {
     event.preventDefault()
-    const { task } = this.props
-    shell.openExternal(task.url)
+    const { url } = this.props
+    shell.openExternal(url)
   }
 
   iconClass() {
-    const { task } = this.props
+    const { state, isPullRequest } = this.props
     const iconClasses = ['octicon']
-    if (task.isPullRequest) {
+    if (isPullRequest) {
       iconClasses.push('octicon-git-pull-request')
-      if (task.state === 'open') {
+      if (state === 'open') {
         iconClasses.push('opened')
-      } else if (task.state === 'closed') {
+      } else if (state === 'closed') {
         iconClasses.push('closed')
       }
     } else {
-      if (task.state === 'open') {
+      if (state === 'open') {
         iconClasses.push('octicon-issue-opened')
-      } else if (task.state === 'closed') {
+      } else if (state === 'closed') {
         iconClasses.push('octicon-issue-closed')
       }
     }
@@ -73,7 +73,8 @@ class TaskListItem extends React.Component {
   }
 
   render() {
-    const { task } = this.props
+    const { updatedAt, repository, title, repositoryOwner, user, storageKey,
+            url, state, repositoryOwnerAvatar, userAvatar } = this.props
 
     if (!this.isVisible()) {
       return null
@@ -83,57 +84,57 @@ class TaskListItem extends React.Component {
       <li className="task-list-item control columns">
         <div className="column has-text-right">
           <input
-            id={task.key}
+            id={storageKey}
             type="checkbox"
             className="task-list-item-checkbox"
             onChange={event => this.onChange(event)}
           />
         </div>
         <div className="column has-text-centered">
-          <label className="checkbox task-list-item-state-label" htmlFor={task.key}>
-            <span title={task.state} className={this.iconClass()}></span>
+          <label className="checkbox task-list-item-state-label" htmlFor={storageKey}>
+            <span title={state} className={this.iconClass()}></span>
           </label>
         </div>
         <div className="column task-list-item-repository-owner-column has-text-right">
-          <label className="checkbox" htmlFor={task.key}>
+          <label className="checkbox" htmlFor={storageKey}>
             <img
-              src={task.repositoryOwner.avatarUrl}
-              alt={task.repositoryOwner.login}
+              src={repositoryOwnerAvatar}
+              alt={repositoryOwner}
               className="task-list-item-repository-owner-avatar"
             />
           </label>
         </div>
         <div className="is-8 column">
-          <label className="checkbox main-label" htmlFor={task.key}>
-            <span className="task-list-item-title">{task.title}</span>
+          <label className="checkbox main-label" htmlFor={storageKey}>
+            <span className="task-list-item-title">{title}</span>
             <span className="task-list-meta">
               <span>Created </span>
               <span>by </span>
               <img
-                src={task.user.avatarUrl}
-                alt={task.user.login}
+                src={userAvatar}
+                alt={user}
                 className="task-list-item-user-avatar"
               />
               <span> </span>
               <span className="task-list-item-user">
-                {task.user.login}
+                {user}
               </span>
               <span> in </span>
               <span className="task-list-item-repository">
-                {task.repository}
+                {repository}
               </span>
             </span>
           </label>
         </div>
         <div className="column has-text-right task-list-item-time-column">
-          <label className="checkbox" htmlFor={task.key}>
+          <label className="checkbox" htmlFor={storageKey}>
             <time className="task-list-item-time">
-              {new Date(task.updatedAt).toLocaleDateString()}
+              {new Date(updatedAt).toLocaleDateString()}
             </time>
           </label>
         </div>
         <div className="column has-text-right">
-          <a href={task.url} onClick={event => this.openExternal(event)}>
+          <a href={url} onClick={event => this.openExternal(event)}>
             <span className="octicon octicon-link-external"></span>
           </a>
         </div>
@@ -143,8 +144,23 @@ class TaskListItem extends React.Component {
 }
 
 TaskListItem.propTypes = {
-  task: React.PropTypes.object.isRequired,
+  ignore: React.PropTypes.bool,
+  snoozedAt: React.PropTypes.string,
+  archivedAt: React.PropTypes.string,
+  updatedAt: React.PropTypes.string.isRequired,
+  url: React.PropTypes.string.isRequired,
+  storageKey: React.PropTypes.string.isRequired,
+  title: React.PropTypes.string.isRequired,
+  user: React.PropTypes.string.isRequired,
+  userAvatar: React.PropTypes.string.isRequired,
+  userUrl: React.PropTypes.string,
+  repositoryOwner: React.PropTypes.string.isRequired,
+  repositoryOwnerUrl: React.PropTypes.string,
+  repositoryOwnerAvatar: React.PropTypes.string.isRequired,
   dispatch: React.PropTypes.func.isRequired,
+  state: React.PropTypes.string.isRequired,
+  repository: React.PropTypes.string.isRequired,
+  isPullRequest: React.PropTypes.bool.isRequired,
 }
 
 module.exports = connect()(TaskListItem)

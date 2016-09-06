@@ -6,13 +6,15 @@ const Filter = require('../../models/filter')
 const Filters = require('../../models/filters')
 const GitHub = require('../../models/github')
 const AppMenu = require('../../models/app-menu')
+const GitHubAuth = require('../../models/github-auth')
+
 const TopNavigation = require('../TopNavigation')
 const TaskList = require('../TaskList')
 const FilterList = require('../FilterList')
 const NewFilter = require('../NewFilter')
 const EditFilter = require('../EditFilter')
-const Config = require('../../config.json')
 const About = require('../About')
+const Auth = require('../Auth')
 
 class App extends React.Component {
   constructor() {
@@ -22,26 +24,51 @@ class App extends React.Component {
 
   componentDidMount() {
     ipcRenderer.send('title', 'Notifications')
-    if (this.state.filters.length > 0) {
-      this.loadFilter(this.state.filters[0])
-    } else {
-      this.loadTasks(Config.searchQuery)
-    }
     this.setupAppMenu()
+    if (GitHubAuth.isAuthenticated()) {
+      if (this.state.filters.length > 0) {
+        this.loadFilter(this.state.filters[0])
+      } else {
+        this.manageFilters()
+      }
+      this.loadUser()
+    }
   }
 
   setupAppMenu() {
     const menu = new AppMenu()
     menu.on('about-app', () => {
-      ipcRenderer.send('title', 'About')
-      this.setState({ view: 'about' })
+      this.showAbout()
     })
+    menu.on('authenticate', () => {
+      this.showAuth()
+    })
+  }
+
+  showAbout() {
+    ipcRenderer.send('title', 'About')
+    this.setState({ view: 'about' })
+  }
+
+  showAuth() {
+    ipcRenderer.send('title', 'Authenticate')
+    this.setState({ view: 'auth' })
   }
 
   loadTasks(query) {
     const github = new GitHub()
     github.getTasks(query).then(tasks => {
       this.props.dispatch({ type: 'TASKS_UPDATE', tasks })
+    })
+  }
+
+  loadUser() {
+    const github = new GitHub()
+    github.getCurrentUser().then(user => {
+      this.setState({ user })
+    }).catch(error => {
+      console.error('failed to load user', error)
+      GitHubAuth.deleteToken()
     })
   }
 
@@ -83,7 +110,22 @@ class App extends React.Component {
     this.setState({ filter, view: 'edit-filter' })
   }
 
+  finishedWithAuth(user) {
+    this.setState({ user })
+    this.showTaskList()
+  }
+
   render() {
+    if (this.state.view === 'auth' || !GitHubAuth.isAuthenticated()) {
+      return (
+        <Auth
+          done={user => this.finishedWithAuth(user)}
+          isAuthenticated={GitHubAuth.isAuthenticated()}
+          user={this.state.user}
+        />
+      )
+    }
+
     if (this.state.view === 'tasks') {
       return (
         <div className="tasks-view">
@@ -91,6 +133,8 @@ class App extends React.Component {
             addFilter={() => this.showNewFilterForm()}
             changeFilter={key => this.loadFilter(key)}
             manageFilters={() => this.manageFilters()}
+            user={this.state.user}
+            showAuth={() => this.showAuth()}
           />
           <TaskList />
         </div>
