@@ -5,7 +5,7 @@ const { ipcRenderer } = require('electron')
 const Filter = require('../../models/filter')
 const Filters = require('../../models/filters')
 const GitHub = require('../../models/github')
-const AppMenu = require('../../models/app-menu')
+const AppMenu = require('../../models/AppMenu')
 const GitHubAuth = require('../../models/github-auth')
 const LastFilter = require('../../models/last-filter')
 
