@@ -210,4 +210,4 @@ Auth.propTypes = {
   user: React.PropTypes.object,
 }
 
-module.exports = hookUpStickyNav(Auth)
+module.exports = hookUpStickyNav(Auth, 'auth-top-navigation')

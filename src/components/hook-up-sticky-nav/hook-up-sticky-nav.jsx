@@ -1,6 +1,6 @@
 const React = require('react')
 
-function hookUpStickyNav(Component) {
+function hookUpStickyNav(Component, navID) {
   class StickyNav extends React.Component {
     componentDidMount() {
       window.addEventListener('scroll', this.handleScroll)
@@ -13,7 +13,7 @@ function hookUpStickyNav(Component) {
     handleScroll() {
       const doc = document.documentElement
       const top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0)
-      const nav = document.getElementById('auth-top-navigation')
+      const nav = document.getElementById(navID)
       nav.style.top = `${top}px`
       nav.classList.toggle('has-shadow', top > 0)
     }
