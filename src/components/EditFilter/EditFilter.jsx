@@ -68,7 +68,7 @@ class EditFilter extends React.Component {
               type="button"
               className="is-link button"
               title="Manage filters"
-            ><span className="octicon octicon-three-bars"></span></button>
+            ><span className="octicon octicon-beaker"></span></button>
             <button
               onClick={this.props.addFilter}
               type="button"

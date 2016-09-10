@@ -52,7 +52,7 @@ class NewFilter extends React.Component {
               type="button"
               className="is-link button"
               title="Manage filters"
-            ><span className="octicon octicon-three-bars"></span></button>
+            ><span className="octicon octicon-beaker"></span></button>
           </div>
         </div>
         <form className="new-filter-form" onSubmit={event => this.save(event)}>
