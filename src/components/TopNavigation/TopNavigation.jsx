@@ -1,5 +1,7 @@
 const React = require('react')
+
 const Filters = require('../../models/filters')
+const LastFilter = require('../../models/last-filter')
 
 class TopNavigation extends React.Component {
   changeFilter(event) {
@@ -18,12 +20,17 @@ class TopNavigation extends React.Component {
 
   render() {
     const rules = Filters.findAll()
+    const lastFilterKey = LastFilter.retrieve()
     return (
       <nav className="top-navigation nav">
         <div className="nav-left">
           <span className="nav-item">
             <span className="select">
-              <select id="filters-menu" onChange={event => this.changeFilter(event)}>
+              <select
+                id="filters-menu"
+                onChange={event => this.changeFilter(event)}
+                defaultValue={lastFilterKey}
+              >
                 <option value="">Choose a filter</option>
                 {rules.map(key => (
                   <option key={key} value={key}>{key}</option>
