@@ -3,6 +3,7 @@ const shell = require('electron').shell
 
 const GitHubAuth = require('../../models/github-auth')
 const GitHub = require('../../models/github')
+const hookUpStickyNav = require('../hook-up-sticky-nav')
 
 class Auth extends React.Component {
   constructor() {
@@ -13,22 +14,6 @@ class Auth extends React.Component {
       token,
       disabledButton: token.length < 1,
     }
-  }
-
-  componentDidMount() {
-    window.addEventListener('scroll', this.handleScroll)
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll)
-  }
-
-  handleScroll() {
-    const doc = document.documentElement
-    const top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0)
-    const nav = document.getElementById('auth-top-navigation')
-    nav.style.top = `${top}px`
-    nav.classList.toggle('has-shadow', top > 0)
   }
 
   save(event) {
@@ -198,7 +183,7 @@ class Auth extends React.Component {
               {this.props.isAuthenticated ? (
                 <button
                   type="button"
-                  onClick={this.props.done}
+                  onClick={e => this.cancel(e)}
                   className="button is-link"
                 >Cancel</button>
               ) : ''}
@@ -225,4 +210,4 @@ Auth.propTypes = {
   user: React.PropTypes.object,
 }
 
-module.exports = Auth
+module.exports = hookUpStickyNav(Auth)
