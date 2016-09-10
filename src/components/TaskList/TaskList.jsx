@@ -57,17 +57,15 @@ class TaskList extends React.Component {
           </div>
 
           <div className="nav-right">
-            {typeof this.props.user === 'object' ? (
-              <span className="nav-item">
+            <span className="nav-item">
+              {typeof this.props.user === 'object' ? (
                 <button
                   onClick={this.props.showAuth}
                   type="button"
                   className="is-link button"
                   title="Authenticate"
                 >{this.props.user.login}</button>
-              </span>
-            ) : ''}
-            <span className="nav-item">
+              ) : ''}
               <button
                 onClick={this.props.manageFilters}
                 type="button"

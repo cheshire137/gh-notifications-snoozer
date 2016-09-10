@@ -1,6 +1,7 @@
 const React = require('react')
 const Filter = require('../../models/filter')
 const FilterHelp = require('../FilterHelp')
+const hookUpStickyNav = require('../hook-up-sticky-nav')
 
 class EditFilter extends React.Component {
   constructor(props) {
@@ -52,17 +53,18 @@ class EditFilter extends React.Component {
     }
     return (
       <div>
-        <div className="columns edit-filter-top-navigation">
-          <div className="column is-7">
+        <nav className="nav top-nav" id="edit-filter-top-navigation">
+          <div className="nav-left">
             <h1 className="title">
-              <a href="#" onClick={event => this.cancel(event)}>
-                Manage Filters
-              </a>
+              <a
+                href="#"
+                onClick={event => this.cancel(event)}
+              >Manage Filters</a>
               <span> / </span>
-              Edit Filter
+              Edit
             </h1>
           </div>
-          <div className="column is-5 has-text-right">
+          <div className="nav-right">
             <button
               onClick={event => this.cancel(event)}
               type="button"
@@ -70,48 +72,50 @@ class EditFilter extends React.Component {
               title="Manage filters"
             ><span className="octicon octicon-beaker"></span></button>
             <button
-              onClick={this.props.addFilter}
+              onClick={() => this.props.addFilter()}
               type="button"
               className="is-link button"
               title="Add a filter"
             ><span className="octicon octicon-plus"></span></button>
           </div>
+        </nav>
+        <div className="edit-filter-container">
+          <form className="edit-filter-form" onSubmit={event => this.save(event)}>
+            <label className="label">Search query:</label>
+            <p className="control">
+              <input
+                type="text"
+                name="filterValue"
+                className={valueClass}
+                value={this.state.value}
+                onChange={e => this.valueChanged(e)}
+                placeholder="e.g., team:org/team-name is:open"
+              />
+            </p>
+            <label className="label">Filter name: (optional)</label>
+            <p className="control">
+              <input
+                type="text"
+                name="filterKey"
+                className="input"
+                value={this.state.key}
+                onChange={e => this.keyChanged(e)}
+                placeholder="e.g., Team mentions"
+              />
+            </p>
+            <p className="control">
+              <button type="submit" className="button is-primary">
+                Save Filter
+              </button>
+              <button
+                type="button"
+                onClick={e => this.cancel(e)}
+                className="button is-link"
+              >Cancel</button>
+            </p>
+          </form>
+          <FilterHelp />
         </div>
-        <form className="edit-filter-form" onSubmit={event => this.save(event)}>
-          <label className="label">Search query:</label>
-          <p className="control">
-            <input
-              type="text"
-              name="filterValue"
-              className={valueClass}
-              value={this.state.value}
-              onChange={e => this.valueChanged(e)}
-              placeholder="e.g., team:org/team-name is:open"
-            />
-          </p>
-          <label className="label">Filter name: (optional)</label>
-          <p className="control">
-            <input
-              type="text"
-              name="filterKey"
-              className="input"
-              value={this.state.key}
-              onChange={e => this.keyChanged(e)}
-              placeholder="e.g., Team mentions"
-            />
-          </p>
-          <p className="control">
-            <button type="submit" className="button is-primary">
-              Save Filter
-            </button>
-            <button
-              type="button"
-              onClick={this.props.cancel}
-              className="button is-link"
-            >Cancel</button>
-          </p>
-        </form>
-        <FilterHelp />
       </div>
     )
   }
@@ -125,4 +129,4 @@ EditFilter.propTypes = {
   delete: React.PropTypes.func.isRequired,
 }
 
-module.exports = EditFilter
+module.exports = hookUpStickyNav(EditFilter, 'edit-filter-top-navigation')
