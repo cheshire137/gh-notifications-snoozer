@@ -49,7 +49,9 @@ function updateTasks(tasks, action) {
     if (archivedTasks.indexOf(key) > -1) {
       task.archivedAt = storage.get(key)
     }
-    task.ignore = ignoredTasks.indexOf(key) > -1
+    if (ignoredTasks.indexOf(key) > -1) {
+      task.ignore = true
+    }
     return task
   })
 
