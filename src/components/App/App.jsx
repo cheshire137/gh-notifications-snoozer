@@ -60,6 +60,8 @@ class App extends React.Component {
     const github = new GitHub()
     github.getTasks(query).then(tasks => {
       this.props.dispatch({ type: 'TASKS_UPDATE', tasks })
+    }).catch(err => {
+      console.error('failed to get tasks from GitHub', err)
     })
   }
 
