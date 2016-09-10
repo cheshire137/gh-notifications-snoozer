@@ -3,7 +3,7 @@
 const ElectronConfig = require('electron-config')
 const configName = process.env.NODE_ENV === 'test' ? 'config-test' : 'config'
 const storage = new ElectronConfig({ name: configName })
-const Filters = require('./filters')
+const Filters = require('./Filters')
 
 class Filter {
   constructor(key) {

@@ -2,9 +2,9 @@ const React = require('react')
 const { connect } = require('react-redux')
 
 const TaskListItem = require('../TaskListItem')
-const hookUpStickyNav = require('../hook-up-sticky-nav')
-const Filters = require('../../models/filters')
-const LastFilter = require('../../models/last-filter')
+const hookUpStickyNav = require('../hookUpStickyNav')
+const Filters = require('../../models/Filters')
+const LastFilter = require('../../models/LastFilter')
 
 class TaskList extends React.Component {
   onSnoozeClick(event) {

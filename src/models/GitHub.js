@@ -1,8 +1,8 @@
 'use strict'
 
 const Config = require('../config.json')
-const Fetcher = require('./fetcher')
-const GitHubAuth = require('./github-auth')
+const Fetcher = require('./Fetcher')
+const GitHubAuth = require('./GitHubAuth')
 
 const repoUrlPrefix = 'https://api.github.com/repos/'
 
