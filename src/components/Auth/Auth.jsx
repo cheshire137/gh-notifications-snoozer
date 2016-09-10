@@ -15,6 +15,22 @@ class Auth extends React.Component {
     }
   }
 
+  componentDidMount() {
+    window.addEventListener('scroll', this.handleScroll)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.handleScroll)
+  }
+
+  handleScroll() {
+    const doc = document.documentElement
+    const top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0)
+    const nav = document.getElementById('auth-top-navigation')
+    nav.style.top = `${top}px`
+    nav.classList.toggle('has-shadow', top > 0)
+  }
+
   save(event) {
     event.preventDefault()
     if (this.state.token.length < 1) {
@@ -86,95 +102,118 @@ class Auth extends React.Component {
     this.props.done()
   }
 
+  authSuccessMessage() {
+    if (!this.props.isAuthenticated) {
+      return ''
+    }
+    return (
+      <p className="notification is-success">
+        You are
+        {typeof this.props.user === 'object' ? (
+          <span> authenticated as
+            <strong> {this.props.user.login}</strong>.
+            <span> </span>
+            <a
+              href="#"
+              onClick={event => this.deleteToken(event)}
+            >Log out</a>
+          </span>
+        ) : ' authenticated.'}
+      </p>
+    )
+  }
+
+  tokenErrorMessage() {
+    if (!this.state.tokenHasError) {
+      return ''
+    }
+    return (
+      <p className="notification is-danger">
+        {this.state.error}
+      </p>
+    )
+  }
+
+  tasksBackLink() {
+    if (!this.props.isAuthenticated) {
+      return ''
+    }
+    return (
+      <span>
+        <a href="#" onClick={event => this.cancel(event)}>Tasks</a>
+        <span> / </span>
+      </span>
+    )
+  }
+
   render() {
     const authFile = GitHubAuth.path()
     return (
-      <div className="auth-container">
-        <div className="auth-top-navigation">
+      <div>
+        <nav id="auth-top-navigation" className="nav top-nav">
           <h1 className="title">
-            {this.props.isAuthenticated ? (
-              <span>
-                <a href="#" onClick={event => this.cancel(event)}>Tasks</a>
-                <span> / </span>
-              </span>
-            ) : ''}
+            {this.tasksBackLink()}
             Authenticate
           </h1>
-        </div>
-        {this.props.isAuthenticated ? (
-          <p className="notification is-success">
-            You are
-            {typeof this.props.user === 'object' ? (
-              <span> authenticated as
-                <strong> {this.props.user.login}</strong>.
-                <span> </span>
-                <a
-                  href="#"
-                  onClick={event => this.deleteToken(event)}
-                >Log out</a>
-              </span>
-            ) : ' authenticated.'}
-          </p>
-        ) : ''}
-        <form className="auth-form" onSubmit={event => this.save(event)}>
-          {this.state.tokenHasError ? (
-            <p className="notification is-danger">
-              {this.state.error}
+        </nav>
+        <div className="auth-container">
+          {this.authSuccessMessage()}
+          <form className="auth-form" onSubmit={event => this.save(event)}>
+            {this.tokenErrorMessage()}
+            <p className="control">
+              You must provide a GitHub personal access token.
+              <a
+                href="https://github.com/settings/tokens/new"
+                onClick={event => this.openLink(event)}
+              > Create a token </a>
+              with the <code>repo</code> scope and paste it below.
             </p>
-          ) : ''}
-          <p className="control">
-            You must provide a GitHub personal access token.
-            <a
-              href="https://github.com/settings/tokens/new"
-              onClick={event => this.openLink(event)}
-            > Create a token </a>
-            with the <code>repo</code> scope and paste it below.
-          </p>
-          <div className="control is-horizontal">
-            <div className="control-label">
-              <label className="label">Your token:</label>
+            <div className="control is-horizontal">
+              <div className="control-label">
+                <label className="label">Your token:</label>
+              </div>
+              <p className="control is-fullwidth has-icon">
+                <input
+                  type="text"
+                  name="token"
+                  className={this.inputClass()}
+                  value={this.state.token}
+                  onChange={event => this.updateToken(event)}
+                  autoFocus="autofocus"
+                />
+                <span className="fa octicon octicon-key"></span>
+              </p>
             </div>
-            <p className="control is-fullwidth has-icon">
-              <input
-                type="text"
-                name="token"
-                className={this.inputClass()}
-                value={this.state.token}
-                onChange={event => this.updateToken(event)}
-                autoFocus="autofocus"
-              />
-              <span className="fa octicon octicon-key"></span>
+            <p className="help">
+              Your token
+              {this.props.isAuthenticated ? ' is stored ' : ' will be stored '}
+              in: <code>{authFile}</code>
             </p>
-          </div>
-          <p className="help">
-            Your token
-            {this.props.isAuthenticated ? ' is stored ' : ' will be stored '}
-            in: <code>{authFile}</code>
-          </p>
-          <p className="control">
-            <button
-              type="submit"
-              className="button is-primary"
-              disabled={this.state.disabledButton}
-            >Save Token</button>
-            {this.props.isAuthenticated ? (
+            <p className="control">
               <button
-                type="button"
-                onClick={this.props.done}
-                className="button is-link"
-              >Cancel</button>
-            ) : ''}
-          </p>
-          <hr />
-          <h2 className="subtitle">Token Scope</h2>
-          <p>
-            <img
-              className="scope-screenshot"
-              src="components/Auth/scope-screenshot.png"
-              alt="Repo scope"
-            />
-          </p>
-        </form>
+                type="submit"
+                className="button is-primary"
+                disabled={this.state.disabledButton}
+              >Save Token</button>
+              {this.props.isAuthenticated ? (
+                <button
+                  type="button"
+                  onClick={this.props.done}
+                  className="button is-link"
+                >Cancel</button>
+              ) : ''}
+            </p>
+            <hr />
+            <h2 className="subtitle">Token Scope</h2>
+            <p>
+              <img
+                className="scope-screenshot"
+                src="components/Auth/scope-screenshot.png"
+                alt="Repo scope"
+              />
+            </p>
+          </form>
+        </div>
       </div>
     )
   }
