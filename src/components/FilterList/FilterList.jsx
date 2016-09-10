@@ -1,6 +1,6 @@
 const React = require('react')
 const FilterListItem = require('../FilterListItem')
-const hookUpStickyNav = require('../hook-up-sticky-nav')
+const hookUpStickyNav = require('../hookUpStickyNav')
 
 class FilterList extends React.Component {
   cancel(event) {

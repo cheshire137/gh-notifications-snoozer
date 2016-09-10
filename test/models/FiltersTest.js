@@ -1,7 +1,7 @@
 const assert = require('assert')
 const ElectronConfig = require('electron-config')
 const storage = new ElectronConfig({ name: 'config-test' })
-const Filters = require('../../src/models/filters')
+const Filters = require('../../src/models/Filters')
 
 describe('Filters', () => {
   describe('findAll', () => {

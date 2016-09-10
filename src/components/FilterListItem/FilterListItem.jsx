@@ -1,6 +1,6 @@
 const React = require('react')
 
-const Filter = require('../../models/filter')
+const Filter = require('../../models/Filter')
 
 class FilterListItem extends React.Component {
   render() {

@@ -1,5 +1,5 @@
 const assert = require('assert')
-const GitHub = require('../../src/models/github')
+const GitHub = require('../../src/models/GitHub')
 const fetchMock = require('fetch-mock')
 const Config = require('../../src/config.json')
 
