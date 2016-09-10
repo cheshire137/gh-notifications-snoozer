@@ -9,25 +9,6 @@ describe('reducers', () => {
     assert.deepEqual({ tasks: [] }, store.getState())
   })
 
-  describe('TASKS_IGNORE', () => {
-    it('ignores selected task', () => {
-      const initialTasks = [
-        { id: 1, storageKey: 'issue-5', isSelected: true },
-        { id: 2, storageKey: 'pull-2' },
-      ]
-
-      const store = Redux.createStore(reducer, { tasks: initialTasks })
-      store.dispatch({ type: 'TASKS_IGNORE' })
-
-      const expectedTasks = [
-        { id: 1, storageKey: 'issue-5', isSelected: true, ignore: true },
-        { id: 2, storageKey: 'pull-2' },
-      ]
-
-      assert.deepEqual(expectedTasks, store.getState().tasks)
-    })
-  })
-
   describe('TASKS_SELECT', () => {
     it('selects specified task', () => {
       const now = new Date().toISOString()
@@ -90,6 +71,24 @@ describe('reducers', () => {
   })
 
   describe('TASKS_SNOOZE', () => {})
+  describe('TASKS_IGNORE', () => {
+    it('ignores selected task', () => {
+      const initialTasks = [
+        { id: 5, storageKey: 'issue-5', isSelected: true },
+        { id: 2, storageKey: 'pull-2' },
+      ]
+
+      const store = Redux.createStore(reducer, { tasks: initialTasks })
+      store.dispatch({ type: 'TASKS_IGNORE' })
+
+      const expectedTasks = [
+        { id: 5, storageKey: 'issue-5', isSelected: true, ignore: true },
+        { id: 2, storageKey: 'pull-2' },
+      ]
+
+      assert.deepEqual(expectedTasks, store.getState().tasks)
+    })
+  })
 
   describe('TASKS_ARCHIVE', () => {})
 
