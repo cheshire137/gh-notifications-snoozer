@@ -3,7 +3,7 @@ const shell = require('electron').shell
 
 const GitHubAuth = require('../../models/github-auth')
 const GitHub = require('../../models/github')
-const hookUpStickyNav = require('../hook-up-sticky-nav')
+const hookUpStickyNav = require('../hookUpStickyNav')
 
 class Auth extends React.Component {
   constructor() {
