@@ -2,7 +2,7 @@ const { connect } = require('react-redux')
 const React = require('react')
 const { ipcRenderer } = require('electron')
 
-const Filter = require('../../models/filter')
+const Filter = require('../../models/Filter')
 const Filters = require('../../models/filters')
 const GitHub = require('../../models/github')
 const AppMenu = require('../../models/AppMenu')

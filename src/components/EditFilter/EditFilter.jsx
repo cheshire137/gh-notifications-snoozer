@@ -1,5 +1,5 @@
 const React = require('react')
-const Filter = require('../../models/filter')
+const Filter = require('../../models/Filter')
 const FilterHelp = require('../FilterHelp')
 const hookUpStickyNav = require('../hookUpStickyNav')
 
