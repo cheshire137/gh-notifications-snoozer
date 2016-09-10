@@ -99,6 +99,7 @@ class TaskList extends React.Component {
             >😴</button>
             <button
               type="button"
+              id="archive-button"
               className="control button is-link"
               onClick={e => this.onArchiveClick(e)}
               title="Archive selected"
