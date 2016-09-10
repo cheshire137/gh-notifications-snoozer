@@ -10,6 +10,7 @@ const App = require('../../src/components/App')
 const reducer = require('../../src/reducers/reducer')
 const GitHubAuth = require('../../src/models/github-auth')
 const Filter = require('../../src/models/filter')
+const LastFilter = require('../../src/models/last-filter')
 const Config = require('../../src/config.json')
 
 function renderPage(store) {
@@ -72,6 +73,7 @@ describe('App', () => {
     it('fetches user and issues when filter exists', () => {
       const filter = new Filter('Cool name')
       filter.store('cats')
+      LastFilter.save('Cool name')
 
       renderPage(store)
 
