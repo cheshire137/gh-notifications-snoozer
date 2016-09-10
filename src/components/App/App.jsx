@@ -3,7 +3,7 @@ const React = require('react')
 const { ipcRenderer } = require('electron')
 
 const Filter = require('../../models/Filter')
-const Filters = require('../../models/filters')
+const Filters = require('../../models/Filters')
 const GitHub = require('../../models/github')
 const AppMenu = require('../../models/AppMenu')
 const GitHubAuth = require('../../models/github-auth')
