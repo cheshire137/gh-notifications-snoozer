@@ -74,7 +74,17 @@ describe('TaskList', () => {
   })
 
   context('when the snooze button is clicked', () => {
-    it('hides selected tasks')
+    it('hides selected tasks', () => {
+      store.dispatch({ type: 'TASKS_SELECT', task: {
+        storageKey: 'pull-163031382',
+      } })
+
+      TestUtils.Simulate.click(renderedDOM().querySelector('#snooze-button'))
+
+      const taskListItems = renderedDOM().querySelectorAll('.task-list-item')
+      assert.equal(0, taskListItems.length)
+    })
+
     it("updates the selected task's `snooze_until` field")
     it('shows the tasks again, starting at midnight of the next day')
   })

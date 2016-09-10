@@ -94,6 +94,7 @@ class TaskList extends React.Component {
               type="button"
               onClick={e => this.onSnoozeClick(e)}
               className="control button is-link"
+              id="snooze-button"
               title="Snooze selected"
             >😴</button>
             <button
