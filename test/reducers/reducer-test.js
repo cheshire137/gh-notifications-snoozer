@@ -109,11 +109,32 @@ describe('reducers', () => {
       assert(actual[1].isSelected)
       assert.equal('string', typeof actual[1].snoozedAt)
       assert(storage.has('pull-12'))
+      assert.equal(storage.get('pull-12'), actual[1].snoozedAt)
       assert(storage.get('snoozed').indexOf('pull-12') > -1)
     })
   })
 
-  describe('TASKS_ARCHIVE', () => {})
+  describe('TASKS_ARCHIVE', () => {
+    it('archives the selected task', () => {
+      storage.clear()
+
+      const initialTasks = [
+        { id: 35, storageKey: 'issue-35' },
+        { id: 22, storageKey: 'pull-22', isSelected: true },
+      ]
+
+      const store = Redux.createStore(reducer, { tasks: initialTasks })
+      store.dispatch({ type: 'TASKS_ARCHIVE' })
+
+      const actual = store.getState().tasks
+      assert.equal(2, actual.length)
+      assert(actual[1].isSelected)
+      assert.equal('string', typeof actual[1].archivedAt)
+      assert(storage.has('pull-22'))
+      assert.equal(storage.get('pull-22'), actual[1].archivedAt)
+      assert(storage.get('archived').indexOf('pull-22') > -1)
+    })
+  })
 
   describe('TASKS_EMPTY', () => {
     it('empties the tasks list', () => {
