@@ -75,18 +75,24 @@ describe('TaskList', () => {
   })
 
   context('when the snooze button is clicked', () => {
-    it('hides selected tasks', () => {
+    before(() => {
       store.dispatch({ type: 'TASKS_SELECT', task: {
         storageKey: 'pull-163031382',
       } })
 
       TestUtils.Simulate.click(renderedDOM().querySelector('#snooze-button'))
+    })
 
+    it('hides selected tasks', () => {
       const taskListItems = renderedDOM().querySelectorAll('.task-list-item')
       assert.equal(0, taskListItems.length)
     })
 
-    it("updates the selected task's `snooze_until` field")
+    it("updates the selected task's `snoozedAt` field", () => {
+      const task = store.getState().tasks[0]
+      assert.equal('string', typeof task.snoozedAt)
+    })
+
     it('shows the tasks again, starting at midnight of the next day')
   })
 
@@ -102,7 +108,7 @@ describe('TaskList', () => {
       assert.equal(0, taskListItems.length)
     })
 
-    it("updates the selected task's `archived_at` field")
+    it("updates the selected task's `archivedAt` field")
     it('shows tasks again if `updated_at` is greater than `archived_at`')
   })
 
