@@ -44,7 +44,7 @@ class FilterList extends React.Component {
           </div>
           <div className="nav-right">
             <button
-              onClick={this.props.addFilter}
+              onClick={() => this.props.addFilter()}
               type="button"
               className="button is-link"
               title="Add a filter"
