@@ -7,7 +7,7 @@ const Filters = require('../../models/Filters')
 const GitHub = require('../../models/github')
 const AppMenu = require('../../models/AppMenu')
 const GitHubAuth = require('../../models/GitHubAuth')
-const LastFilter = require('../../models/last-filter')
+const LastFilter = require('../../models/LastFilter')
 
 const TaskList = require('../TaskList')
 const FilterList = require('../FilterList')

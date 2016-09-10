@@ -10,7 +10,7 @@ const App = require('../../src/components/App')
 const reducer = require('../../src/reducers/reducer')
 const GitHubAuth = require('../../src/models/GitHubAuth')
 const Filter = require('../../src/models/Filter')
-const LastFilter = require('../../src/models/last-filter')
+const LastFilter = require('../../src/models/LastFilter')
 const Config = require('../../src/config.json')
 
 function renderPage(store) {
