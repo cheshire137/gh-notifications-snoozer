@@ -97,18 +97,24 @@ describe('TaskList', () => {
   })
 
   context('when the archive button is clicked', () => {
-    it('hides selected tasks', () => {
+    before(() => {
       store.dispatch({ type: 'TASKS_SELECT', task: {
         storageKey: 'pull-163031382',
       } })
 
       TestUtils.Simulate.click(renderedDOM().querySelector('#archive-button'))
+    })
 
+    it('hides selected tasks', () => {
       const taskListItems = renderedDOM().querySelectorAll('.task-list-item')
       assert.equal(0, taskListItems.length)
     })
 
-    it("updates the selected task's `archivedAt` field")
+    it("updates the selected task's `archivedAt` field", () => {
+      const task = store.getState().tasks[0]
+      assert.equal('string', typeof task.archivedAt)
+    })
+
     it('shows tasks again if `updated_at` is greater than `archived_at`')
   })
 
