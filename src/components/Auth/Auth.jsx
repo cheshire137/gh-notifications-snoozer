@@ -1,7 +1,7 @@
 const React = require('react')
 const shell = require('electron').shell
 
-const GitHubAuth = require('../../models/github-auth')
+const GitHubAuth = require('../../models/GitHubAuth')
 const GitHub = require('../../models/github')
 const hookUpStickyNav = require('../hookUpStickyNav')
 

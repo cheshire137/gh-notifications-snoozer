@@ -2,7 +2,7 @@
 
 const Config = require('../config.json')
 const Fetcher = require('./Fetcher')
-const GitHubAuth = require('./github-auth')
+const GitHubAuth = require('./GitHubAuth')
 
 const repoUrlPrefix = 'https://api.github.com/repos/'
 
