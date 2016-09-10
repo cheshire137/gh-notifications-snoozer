@@ -47,7 +47,8 @@ describe('TaskList', () => {
   })
 
   it('shows task that is not snoozed, archived, or ignored', () => {
-    assert(renderedDOM().querySelector('.task-list-item'))
+    const taskListItems = renderedDOM().querySelectorAll('.task-list-item')
+    assert.equal(1, taskListItems.length)
   })
 
   it('does not show task that is ignored', () => {
