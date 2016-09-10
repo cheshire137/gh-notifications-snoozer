@@ -1,0 +1,25 @@
+const task = {
+  storageKey: 'pull-163031382',
+  id: 163031382,
+  type: 'pull',
+  title: 'Adds docker-machine module-utils',
+  body: 'whee',
+  state: 'open',
+  createdAt: '2016-06-29T21:30:36Z',
+  updatedAt: '2016-07-11T03:19:37Z',
+  closedAt: null,
+  isPullRequest: true,
+  repositoryApiUrl: 'https://api.github.com/repos/ansible/ansible',
+  url: 'https://github.com/ansible/ansible/pull/16510',
+  number: 16510,
+  repository: 'ansible/ansible',
+  repositoryOwner: 'ansible',
+  repositoryOwnerUrl: 'https://github.com/ansible',
+  repositoryOwnerAvatar: 'https://github.com/ansible.png?size=30',
+  user: 'jgrowl',
+  userUrl: 'https://github.com/jgrowl',
+  userAvatar: 'https://github.com/jgrowl.png?size=16',
+  userType: 'User',
+}
+
+module.exports = { task }
