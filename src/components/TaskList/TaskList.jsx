@@ -4,6 +4,7 @@ const { connect } = require('react-redux')
 const TaskListItem = require('../TaskListItem')
 const hookUpStickyNav = require('../hook-up-sticky-nav')
 const Filters = require('../../models/filters')
+const LastFilter = require('../../models/last-filter')
 
 class TaskList extends React.Component {
   onSnoozeClick(event) {
@@ -32,13 +33,18 @@ class TaskList extends React.Component {
 
   render() {
     const filters = Filters.findAll()
+    const lastFilterKey = LastFilter.retrieve()
     return (
       <div>
         <nav id="task-list-navigation" className="top-nav nav">
           <div className="nav-left">
             <span className="nav-item">
               <span className="select">
-                <select id="filters-menu" onChange={event => this.changeFilter(event)}>
+                <select
+                  id="filters-menu"
+                  onChange={event => this.changeFilter(event)}
+                  defaultValue={lastFilterKey}
+                >
                   <option value="">Choose a filter</option>
                   {filters.map(key => (
                     <option key={key} value={key}>{key}</option>

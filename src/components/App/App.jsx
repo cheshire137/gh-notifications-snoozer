@@ -7,6 +7,7 @@ const Filters = require('../../models/filters')
 const GitHub = require('../../models/github')
 const AppMenu = require('../../models/app-menu')
 const GitHubAuth = require('../../models/github-auth')
+const LastFilter = require('../../models/last-filter')
 
 const TaskList = require('../TaskList')
 const FilterList = require('../FilterList')
@@ -25,8 +26,9 @@ class App extends React.Component {
     ipcRenderer.send('title', 'Notifications')
     this.setupAppMenu()
     if (GitHubAuth.isAuthenticated()) {
-      if (this.state.filters.length > 0) {
-        this.loadFilter(this.state.filters[0])
+      const key = LastFilter.retrieve()
+      if (key) {
+        this.loadFilter(key)
       } else {
         this.manageFilters()
       }
@@ -90,6 +92,7 @@ class App extends React.Component {
 
   loadFilter(key) {
     this.props.dispatch({ type: 'TASKS_EMPTY' })
+    LastFilter.save(key)
     const filter = new Filter(key)
     const query = filter.retrieve()
     this.loadTasks(query)
