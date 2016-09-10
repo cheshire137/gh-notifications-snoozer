@@ -105,12 +105,16 @@ describe('reducers', () => {
       store.dispatch({ type: 'TASKS_SNOOZE' })
 
       const actual = store.getState().tasks
-      assert.equal(2, actual.length)
-      assert(actual[1].isSelected)
-      assert.equal('string', typeof actual[1].snoozedAt)
-      assert(storage.has('pull-12'))
-      assert.equal(storage.get('pull-12'), actual[1].snoozedAt)
-      assert(storage.get('snoozed').indexOf('pull-12') > -1)
+      assert.equal(2, actual.length, 'should still have 2 tasks')
+      assert(actual[1].isSelected, 'task should still be selected')
+      assert.equal('string', typeof actual[1].snoozedAt,
+                   'snoozedAt should be a time string')
+      assert(storage.has('pull-12'),
+             'should have a new storage key for the snoozed task')
+      assert.equal(storage.get('pull-12'), actual[1].snoozedAt,
+                   'snoozedAt should be the same as what we stored')
+      assert(storage.get('snoozed').indexOf('pull-12') > -1,
+             'task key should be in the snoozed list')
     })
   })
 
@@ -127,12 +131,16 @@ describe('reducers', () => {
       store.dispatch({ type: 'TASKS_ARCHIVE' })
 
       const actual = store.getState().tasks
-      assert.equal(2, actual.length)
-      assert(actual[1].isSelected)
-      assert.equal('string', typeof actual[1].archivedAt)
-      assert(storage.has('pull-22'))
-      assert.equal(storage.get('pull-22'), actual[1].archivedAt)
-      assert(storage.get('archived').indexOf('pull-22') > -1)
+      assert.equal(2, actual.length, 'should still have 2 tasks')
+      assert(actual[1].isSelected, 'task should still be selected')
+      assert.equal('string', typeof actual[1].archivedAt,
+                   'archivedAt should be a time string')
+      assert(storage.has('pull-22'),
+             'should have a new storage key for the archived task')
+      assert.equal(storage.get('pull-22'), actual[1].archivedAt,
+                   'archivedAt should be the same as what we stored')
+      assert(storage.get('archived').indexOf('pull-22') > -1,
+             'task key should be in the archived list')
     })
   })
 
