@@ -2,6 +2,7 @@ const React = require('react')
 const { connect } = require('react-redux')
 
 const TaskListItem = require('../TaskListItem')
+const hookUpStickyNav = require('../hook-up-sticky-nav')
 const Filters = require('../../models/filters')
 
 class TaskList extends React.Component {
@@ -33,7 +34,7 @@ class TaskList extends React.Component {
     const filters = Filters.findAll()
     return (
       <div>
-        <nav className="top-navigation nav has-shadow">
+        <nav id="task-list-navigation" className="top-nav nav">
           <div className="nav-left">
             <span className="nav-item">
               <span className="select">
@@ -82,31 +83,33 @@ class TaskList extends React.Component {
             </span>
           </div>
         </nav>
-        <nav className="controls-container has-text-right">
-          <label className="label">With selected:</label>
-          <button
-            type="button"
-            onClick={e => this.onSnoozeClick(e)}
-            className="control button is-link"
-            title="Snooze selected"
-          >😴</button>
-          <button
-            type="button"
-            className="control button is-link"
-            onClick={e => this.onArchiveClick(e)}
-            title="Archive selected"
-          >📥</button>
-          <button
-            type="button"
-            className="control button is-link"
-            title="Ignore selected"
-          >❌</button>
-        </nav>
-        <ol className="task-list">
-          {this.props.tasks.map(task =>
-            <TaskListItem {...task} key={task.storageKey} />
-          )}
-        </ol>
+        <div className="task-list-container">
+          <nav className="controls-container has-text-right">
+            <label className="label">With selected:</label>
+            <button
+              type="button"
+              onClick={e => this.onSnoozeClick(e)}
+              className="control button is-link"
+              title="Snooze selected"
+            >😴</button>
+            <button
+              type="button"
+              className="control button is-link"
+              onClick={e => this.onArchiveClick(e)}
+              title="Archive selected"
+            >📥</button>
+            <button
+              type="button"
+              className="control button is-link"
+              title="Ignore selected"
+            >❌</button>
+          </nav>
+          <ol className="task-list">
+            {this.props.tasks.map(task =>
+              <TaskListItem {...task} key={task.storageKey} />
+            )}
+          </ol>
+        </div>
       </div>
     )
   }
@@ -124,4 +127,4 @@ TaskList.propTypes = {
   showAuth: React.PropTypes.func.isRequired,
 }
 
-module.exports = connect(mapStateToProps)(TaskList)
+module.exports = connect(mapStateToProps)(hookUpStickyNav(TaskList, 'task-list-navigation'))
