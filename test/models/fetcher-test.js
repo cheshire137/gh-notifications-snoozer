@@ -1,5 +1,5 @@
 const assert = require('assert')
-const Fetcher = require('../../src/models/fetcher')
+const Fetcher = require('../../src/models/Fetcher')
 const fetchMock = require('fetch-mock')
 
 describe('Fetcher', () => {
