@@ -1,6 +1,5 @@
 @import "../../lib/bulma.css";
 @import "https://cdnjs.cloudflare.com/ajax/libs/octicons/3.5.0/octicons.min.css";
-@import "../TopNavigation/TopNavigation.less";
 @import "../NewFilter/NewFilter.less";
 @import "../EditFilter/EditFilter.less";
 @import "../FilterList/FilterList.less";
@@ -15,10 +14,16 @@ body {
   min-height: 100vh;
 }
 
-#content {
-  padding: 20px;
-}
-
 .button.is-primary {
   margin-right: 5px;
+}
+
+.top-nav {
+  z-index: 5;
+  margin-bottom: 15px;
+  border-bottom: 1px solid rgba(211, 214, 219, 0.5);
+
+  .button.is-link {
+    text-decoration: none;
+  }
 }

@@ -1,0 +1,6 @@
+{
+  "name": "hookUpStickyNav",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./hook-up-sticky-nav.jsx"
+}

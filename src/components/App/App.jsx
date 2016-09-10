@@ -9,7 +9,6 @@ const AppMenu = require('../../models/app-menu')
 const GitHubAuth = require('../../models/github-auth')
 const LastFilter = require('../../models/last-filter')
 
-const TopNavigation = require('../TopNavigation')
 const TaskList = require('../TaskList')
 const FilterList = require('../FilterList')
 const NewFilter = require('../NewFilter')
@@ -49,12 +48,12 @@ class App extends React.Component {
 
   showAbout() {
     ipcRenderer.send('title', 'About')
-    this.setState({ view: 'about' })
+    this.changeView('about')
   }
 
   showAuth() {
     ipcRenderer.send('title', 'Authenticate')
-    this.setState({ view: 'auth' })
+    this.changeView('auth')
   }
 
   loadTasks(query) {
@@ -76,17 +75,19 @@ class App extends React.Component {
 
   showNewFilterForm() {
     ipcRenderer.send('title', 'New Filter')
-    this.setState({ view: 'new-filter' })
+    this.changeView('new-filter')
   }
 
   savedFilter() {
     ipcRenderer.send('title', 'Notifications')
-    this.setState({ view: 'tasks', filters: Filters.findAll() })
+    this.setState({ filters: Filters.findAll() }, () => {
+      this.changeView('tasks')
+    })
   }
 
   showTaskList() {
     ipcRenderer.send('title', 'Notifications')
-    this.setState({ view: 'tasks' })
+    this.changeView('tasks')
   }
 
   loadFilter(key) {
@@ -99,7 +100,7 @@ class App extends React.Component {
 
   manageFilters() {
     ipcRenderer.send('title', 'Manage Filters')
-    this.setState({ view: 'filters' })
+    this.changeView('filters')
   }
 
   deleteFilter(key) {
@@ -110,7 +111,14 @@ class App extends React.Component {
 
   editFilter(key) {
     const filter = new Filter(key)
-    this.setState({ filter, view: 'edit-filter' })
+    this.setState({ filter }, () => {
+      this.changeView('edit-filter')
+    })
+  }
+
+  changeView(view) {
+    window.scrollTo(0, 0)
+    this.setState({ view })
   }
 
   finishedWithAuth(user) {
@@ -131,16 +139,13 @@ class App extends React.Component {
 
     if (this.state.view === 'tasks') {
       return (
-        <div className="tasks-view">
-          <TopNavigation
-            addFilter={() => this.showNewFilterForm()}
-            changeFilter={key => this.loadFilter(key)}
-            manageFilters={() => this.manageFilters()}
-            user={this.state.user}
-            showAuth={() => this.showAuth()}
-          />
-          <TaskList />
-        </div>
+        <TaskList
+          addFilter={() => this.showNewFilterForm()}
+          changeFilter={key => this.loadFilter(key)}
+          manageFilters={() => this.manageFilters()}
+          user={this.state.user}
+          showAuth={() => this.showAuth()}
+        />
       )
     }
 
