@@ -46,14 +46,12 @@ class App extends React.Component {
 
   showAbout() {
     ipcRenderer.send('title', 'About')
-    window.scrollTo(0, 0)
-    this.setState({ view: 'about' })
+    this.changeView('about')
   }
 
   showAuth() {
     ipcRenderer.send('title', 'Authenticate')
-    window.scrollTo(0, 0)
-    this.setState({ view: 'auth' })
+    this.changeView('auth')
   }
 
   loadTasks(query) {
@@ -75,20 +73,19 @@ class App extends React.Component {
 
   showNewFilterForm() {
     ipcRenderer.send('title', 'New Filter')
-    window.scrollTo(0, 0)
-    this.setState({ view: 'new-filter' })
+    this.changeView('new-filter')
   }
 
   savedFilter() {
     ipcRenderer.send('title', 'Notifications')
-    window.scrollTo(0, 0)
-    this.setState({ view: 'tasks', filters: Filters.findAll() })
+    this.setState({ filters: Filters.findAll() }, () => {
+      this.changeView('tasks')
+    })
   }
 
   showTaskList() {
     ipcRenderer.send('title', 'Notifications')
-    window.scrollTo(0, 0)
-    this.setState({ view: 'tasks' })
+    this.changeView('tasks')
   }
 
   loadFilter(key) {
@@ -100,8 +97,7 @@ class App extends React.Component {
 
   manageFilters() {
     ipcRenderer.send('title', 'Manage Filters')
-    window.scrollTo(0, 0)
-    this.setState({ view: 'filters' })
+    this.changeView('filters')
   }
 
   deleteFilter(key) {
@@ -112,8 +108,14 @@ class App extends React.Component {
 
   editFilter(key) {
     const filter = new Filter(key)
+    this.setState({ filter }, () => {
+      this.changeView('edit-filter')
+    })
+  }
+
+  changeView(view) {
     window.scrollTo(0, 0)
-    this.setState({ filter, view: 'edit-filter' })
+    this.setState({ view })
   }
 
   finishedWithAuth(user) {
