@@ -1,6 +1,9 @@
 const assert = require('assert')
 const Redux = require('redux')
 
+const ElectronConfig = require('electron-config')
+const storage = new ElectronConfig({ name: 'config-test' })
+
 const reducer = require('../../src/reducers/reducer')
 
 describe('reducers', () => {
@@ -70,7 +73,6 @@ describe('reducers', () => {
     })
   })
 
-  describe('TASKS_SNOOZE', () => {})
   describe('TASKS_IGNORE', () => {
     it('ignores selected task', () => {
       const initialTasks = [
@@ -87,6 +89,27 @@ describe('reducers', () => {
       ]
 
       assert.deepEqual(expectedTasks, store.getState().tasks)
+    })
+  })
+
+  describe('TASKS_SNOOZE', () => {
+    it('snoozes selected task', () => {
+      storage.clear()
+
+      const initialTasks = [
+        { id: 15, storageKey: 'issue-15' },
+        { id: 12, storageKey: 'pull-12', isSelected: true },
+      ]
+
+      const store = Redux.createStore(reducer, { tasks: initialTasks })
+      store.dispatch({ type: 'TASKS_SNOOZE' })
+
+      const actual = store.getState().tasks
+      assert.equal(2, actual.length)
+      assert(actual[1].isSelected)
+      assert.equal('string', typeof actual[1].snoozedAt)
+      assert(storage.has('pull-12'))
+      assert(storage.get('snoozed').indexOf('pull-12') > -1)
     })
   })
 
