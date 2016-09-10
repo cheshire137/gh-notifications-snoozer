@@ -8,7 +8,6 @@ const GitHub = require('../../models/github')
 const AppMenu = require('../../models/app-menu')
 const GitHubAuth = require('../../models/github-auth')
 
-const TopNavigation = require('../TopNavigation')
 const TaskList = require('../TaskList')
 const FilterList = require('../FilterList')
 const NewFilter = require('../NewFilter')
@@ -128,16 +127,13 @@ class App extends React.Component {
 
     if (this.state.view === 'tasks') {
       return (
-        <div className="tasks-view">
-          <TopNavigation
-            addFilter={() => this.showNewFilterForm()}
-            changeFilter={key => this.loadFilter(key)}
-            manageFilters={() => this.manageFilters()}
-            user={this.state.user}
-            showAuth={() => this.showAuth()}
-          />
-          <TaskList />
-        </div>
+        <TaskList
+          addFilter={() => this.showNewFilterForm()}
+          changeFilter={key => this.loadFilter(key)}
+          manageFilters={() => this.manageFilters()}
+          user={this.state.user}
+          showAuth={() => this.showAuth()}
+        />
       )
     }
 
