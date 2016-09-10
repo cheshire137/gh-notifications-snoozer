@@ -46,11 +46,13 @@ class App extends React.Component {
 
   showAbout() {
     ipcRenderer.send('title', 'About')
+    window.scrollTo(0, 0)
     this.setState({ view: 'about' })
   }
 
   showAuth() {
     ipcRenderer.send('title', 'Authenticate')
+    window.scrollTo(0, 0)
     this.setState({ view: 'auth' })
   }
 
@@ -73,16 +75,19 @@ class App extends React.Component {
 
   showNewFilterForm() {
     ipcRenderer.send('title', 'New Filter')
+    window.scrollTo(0, 0)
     this.setState({ view: 'new-filter' })
   }
 
   savedFilter() {
     ipcRenderer.send('title', 'Notifications')
+    window.scrollTo(0, 0)
     this.setState({ view: 'tasks', filters: Filters.findAll() })
   }
 
   showTaskList() {
     ipcRenderer.send('title', 'Notifications')
+    window.scrollTo(0, 0)
     this.setState({ view: 'tasks' })
   }
 
@@ -95,6 +100,7 @@ class App extends React.Component {
 
   manageFilters() {
     ipcRenderer.send('title', 'Manage Filters')
+    window.scrollTo(0, 0)
     this.setState({ view: 'filters' })
   }
 
@@ -106,6 +112,7 @@ class App extends React.Component {
 
   editFilter(key) {
     const filter = new Filter(key)
+    window.scrollTo(0, 0)
     this.setState({ filter, view: 'edit-filter' })
   }
 
