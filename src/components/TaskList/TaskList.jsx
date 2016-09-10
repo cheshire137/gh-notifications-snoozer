@@ -17,6 +17,11 @@ class TaskList extends React.Component {
     this.props.dispatch({ type: 'TASKS_ARCHIVE' })
   }
 
+  onIgnoreClick(event) {
+    event.currentTarget.blur() // defocus button
+    this.props.dispatch({ type: 'TASKS_IGNORE' })
+  }
+
   changeFilter(event) {
     const filter = event.target.value
     if (filter === '') {
@@ -105,6 +110,7 @@ class TaskList extends React.Component {
             <button
               type="button"
               className="control button is-link"
+              onClick={e => this.onIgnoreClick(e)}
               title="Ignore selected"
             >❌</button>
           </nav>
