@@ -1,24 +1,13 @@
 const { connect } = require('react-redux')
 const React = require('react')
 const { ipcRenderer } = require('electron')
-
-<<<<<<< HEAD
-const Filter = require('../../models/filter')
-const Filters = require('../../models/filters')
-const GitHub = require('../../models/github')
-const AppMenu = require('../../models/app-menu')
-const GitHubAuth = require('../../models/github-auth')
-const LastFilter = require('../../models/last-filter')
-const DefaultFilters = require('../../models/default-filters')
-=======
 const Filter = require('../../models/Filter')
 const Filters = require('../../models/Filters')
 const GitHub = require('../../models/GitHub')
 const AppMenu = require('../../models/AppMenu')
 const GitHubAuth = require('../../models/GitHubAuth')
 const LastFilter = require('../../models/LastFilter')
->>>>>>> master
-
+const DefaultFilters = require('../../models/DefaultFilters')
 const TaskList = require('../TaskList')
 const FilterList = require('../FilterList')
 const NewFilter = require('../NewFilter')
