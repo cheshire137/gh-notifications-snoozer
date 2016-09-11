@@ -79,12 +79,15 @@ describe('TaskList', () => {
   })
 
   context('when the snooze button is clicked', () => {
+    let snoozeTime
+
     before(() => {
       store.dispatch({ type: 'TASKS_SELECT', task: {
         storageKey: 'pull-163031382',
       } })
 
       TestUtils.Simulate.click(renderedDOM().querySelector('#snooze-button'))
+      snoozeTime = new Date()
     })
 
     after(() => {
@@ -107,7 +110,18 @@ describe('TaskList', () => {
       assert.equal('string', typeof task.snoozedAt)
     })
 
-    it('shows the tasks again, starting at midnight of the next day')
+    it('shows the tasks again after 24 hours', () => {
+      const tasks = store.getState().tasks
+      const pastSnooze = new Date()
+      pastSnooze.setDate(snoozeTime.getDate() - 1)
+      const updatedTask = Object.assign({}, tasks[1], {
+        snoozedAt: pastSnooze.toISOString(),
+      })
+      store.dispatch({ type: 'TASKS_UPDATE', tasks: [tasks[0], updatedTask] })
+
+      const taskListItems = renderedDOM().querySelectorAll('#issue-148539337')
+      assert.equal(1, taskListItems.length)
+    })
   })
 
   context('when the archive button is clicked', () => {
