@@ -94,10 +94,12 @@ class TaskList extends React.Component {
               type="button"
               onClick={e => this.onSnoozeClick(e)}
               className="control button is-link"
+              id="snooze-button"
               title="Snooze selected"
             >😴</button>
             <button
               type="button"
+              id="archive-button"
               className="control button is-link"
               onClick={e => this.onArchiveClick(e)}
               title="Archive selected"
