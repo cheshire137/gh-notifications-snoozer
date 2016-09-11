@@ -81,7 +81,7 @@ class TaskListItem extends React.Component {
     }
 
     return (
-      <li id={storageKey} className="task-list-item control columns">
+      <li className="task-list-item control columns">
         <div className="column has-text-right">
           <input
             id={storageKey}
