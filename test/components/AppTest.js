@@ -8,9 +8,9 @@ const fetchMock = require('fetch-mock')
 
 const App = require('../../src/components/App')
 const reducer = require('../../src/reducers/reducer')
-const GitHubAuth = require('../../src/models/github-auth')
-const Filter = require('../../src/models/filter')
-const LastFilter = require('../../src/models/last-filter')
+const GitHubAuth = require('../../src/models/GitHubAuth')
+const Filter = require('../../src/models/Filter')
+const LastFilter = require('../../src/models/LastFilter')
 const Config = require('../../src/config.json')
 
 function renderPage(store) {

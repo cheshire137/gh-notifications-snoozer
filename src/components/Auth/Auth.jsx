@@ -1,9 +1,9 @@
 const React = require('react')
 const shell = require('electron').shell
 
-const GitHubAuth = require('../../models/github-auth')
-const GitHub = require('../../models/github')
-const hookUpStickyNav = require('../hook-up-sticky-nav')
+const GitHubAuth = require('../../models/GitHubAuth')
+const GitHub = require('../../models/GitHub')
+const hookUpStickyNav = require('../hookUpStickyNav')
 
 class Auth extends React.Component {
   constructor() {

@@ -1,7 +1,7 @@
 const React = require('react')
-const Filter = require('../../models/filter')
+const Filter = require('../../models/Filter')
 const FilterHelp = require('../FilterHelp')
-const hookUpStickyNav = require('../hook-up-sticky-nav')
+const hookUpStickyNav = require('../hookUpStickyNav')
 
 class EditFilter extends React.Component {
   constructor(props) {
