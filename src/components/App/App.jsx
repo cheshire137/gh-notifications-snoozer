@@ -20,16 +20,19 @@ const HiddenTaskList = require('../HiddenTaskList')
 class App extends React.Component {
   constructor() {
     super()
-    this.state = { view: 'tasks', filters: Filters.findAll() }
+    this.state = {
+      view: 'tasks',
+      filters: Filters.findAll(),
+      filter: LastFilter.retrieve(),
+    }
   }
 
   componentDidMount() {
     ipcRenderer.send('title', 'Notifications')
     this.setupAppMenu()
     if (GitHubAuth.isAuthenticated()) {
-      const key = LastFilter.retrieve()
-      if (key) {
-        this.loadFilter(key)
+      if (this.state.filter) {
+        this.loadFilter(this.state.filter)
       } else {
         this.manageFilters()
       }
@@ -97,6 +100,7 @@ class App extends React.Component {
     this.props.dispatch({ type: 'TASKS_EMPTY' })
     LastFilter.save(key)
     const filter = new Filter(key)
+    this.setState({ filter: key })
     const query = filter.retrieve()
     this.loadTasks(query)
   }
@@ -195,6 +199,7 @@ class App extends React.Component {
       return (
         <HiddenTaskList
           cancel={() => this.showTaskList()}
+          activeFilter={this.state.filter}
         />
       )
     }

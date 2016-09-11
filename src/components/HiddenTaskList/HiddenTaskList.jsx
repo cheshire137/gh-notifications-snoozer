@@ -11,6 +11,7 @@ class HiddenTaskList extends React.Component {
   }
 
   render() {
+    const { activeFilter } = this.props
     return (
       <div>
         <nav id="hidden-task-list-navigation" className="top-nav nav">
@@ -18,7 +19,8 @@ class HiddenTaskList extends React.Component {
             <h1 className="title">
               <a href="#" onClick={event => this.cancel(event)}>Tasks</a>
               <span> / </span>
-              Hidden Tasks
+              Hidden
+              <span className="subtitle"> in &ldquo;{activeFilter}&rdquo;</span>
             </h1>
           </div>
         </nav>
@@ -38,6 +40,7 @@ HiddenTaskList.propTypes = {
   tasks: React.PropTypes.array.isRequired,
   dispatch: React.PropTypes.func.isRequired,
   cancel: React.PropTypes.func.isRequired,
+  activeFilter: React.PropTypes.string.isRequired,
 }
 
 const mapStateToProps = state => ({ tasks: state.tasks })
