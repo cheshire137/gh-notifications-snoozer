@@ -30,13 +30,14 @@ describe('TaskList', () => {
     // Fake responses from GitHub API
     fetchMock.get(`${Config.githubApiUrl}/user`, { login: 'testuser123' })
     fetchMock.get(`${Config.githubApiUrl}/search/issues?q=cats`,
-                  { items: [fixtures.pullRequest] })
+                  { items: [fixtures.pullRequest, fixtures.issue] })
 
     // Persist a filter
     const filter = new Filter('Cool name')
     filter.store('cats')
     LastFilter.save('Cool name')
 
+    // Setup Redux store and render app
     store = Redux.createStore(reducer, { tasks: [] })
     const component = TestUtils.renderIntoDocument(
       <ReactRedux.Provider store={store}>
@@ -46,13 +47,16 @@ describe('TaskList', () => {
     renderedDOM = () => ReactDOM.findDOMNode(component)
   })
 
+  after(() => {
+    fetchMock.restore()
+  })
+
   it('shows task that is not snoozed, archived, or ignored', () => {
-    const taskListItems = renderedDOM().querySelectorAll('.task-list-item')
+    const taskListItems = renderedDOM().querySelectorAll('#pull-163031382')
     assert.equal(1, taskListItems.length)
   })
 
-  it('does not show task that is ignored', () => {
-  })
+  it('does not show task that is ignored')
 
   it('does not show task that is archived', () => {
     store.dispatch({ type: 'TASKS_SELECT', task: {
@@ -60,7 +64,7 @@ describe('TaskList', () => {
     } })
     store.dispatch({ type: 'TASKS_ARCHIVE' })
 
-    const taskListItems = renderedDOM().querySelectorAll('.task-list-item')
+    const taskListItems = renderedDOM().querySelectorAll('#pull-163031382')
     assert.equal(0, taskListItems.length)
   })
 
@@ -70,7 +74,7 @@ describe('TaskList', () => {
     } })
     store.dispatch({ type: 'TASKS_SNOOZE' })
 
-    const taskListItems = renderedDOM().querySelectorAll('.task-list-item')
+    const taskListItems = renderedDOM().querySelectorAll('#pull-163031382')
     assert.equal(0, taskListItems.length)
   })
 
@@ -83,8 +87,18 @@ describe('TaskList', () => {
       TestUtils.Simulate.click(renderedDOM().querySelector('#snooze-button'))
     })
 
+    after(() => {
+      const task = store.getState().tasks[0]
+      const updatedTask = Object.assign({}, task, { snoozedAt: null })
+      store.dispatch({ type: 'TASKS_UPDATE', tasks: [updatedTask] })
+
+      store.dispatch({ type: 'TASKS_DESELECT', task: {
+        storageKey: 'pull-163031382',
+      } })
+    })
+
     it('hides selected tasks', () => {
-      const taskListItems = renderedDOM().querySelectorAll('.task-list-item')
+      const taskListItems = renderedDOM().querySelectorAll('#pull-163031382')
       assert.equal(0, taskListItems.length)
     })
 
@@ -97,16 +111,29 @@ describe('TaskList', () => {
   })
 
   context('when the archive button is clicked', () => {
+    let archiveTime
+
     before(() => {
       store.dispatch({ type: 'TASKS_SELECT', task: {
         storageKey: 'pull-163031382',
       } })
 
       TestUtils.Simulate.click(renderedDOM().querySelector('#archive-button'))
+      archiveTime = new Date()
+    })
+
+    after(() => {
+      const tasks = store.getState().tasks
+      const updatedTask = Object.assign({}, tasks[0], { archivedAt: null })
+      store.dispatch({ type: 'TASKS_UPDATE', tasks: [updatedTask, tasks[1]] })
+
+      store.dispatch({ type: 'TASKS_DESELECT', task: {
+        storageKey: 'pull-163031382',
+      } })
     })
 
     it('hides selected tasks', () => {
-      const taskListItems = renderedDOM().querySelectorAll('.task-list-item')
+      const taskListItems = renderedDOM().querySelectorAll('#pull-163031382')
       assert.equal(0, taskListItems.length)
     })
 
@@ -115,7 +142,16 @@ describe('TaskList', () => {
       assert.equal('string', typeof task.archivedAt)
     })
 
-    it('shows tasks again if `updated_at` is greater than `archived_at`')
+    it('shows tasks again if `updatedAt` is greater than `archivedAt`', () => {
+      const tasks = store.getState().tasks
+      const updatedTask = Object.assign({}, tasks[1], {
+        updatedAt: new Date(archiveTime.getFullYear() + 1, 0, 1).toISOString(),
+      })
+      store.dispatch({ type: 'TASKS_UPDATE', tasks: [tasks[0], updatedTask] })
+
+      const taskListItems = renderedDOM().querySelectorAll('#issue-148539337')
+      assert.equal(1, taskListItems.length)
+    })
   })
 
   context('when the ignore button is clicked', () => {
