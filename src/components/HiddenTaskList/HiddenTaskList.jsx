@@ -1,4 +1,7 @@
 const React = require('react')
+const { connect } = require('react-redux')
+
+const HiddenTaskListItem = require('../HiddenTaskListItem')
 const hookUpStickyNav = require('../hookUpStickyNav')
 
 class HiddenTaskList extends React.Component {
@@ -20,6 +23,11 @@ class HiddenTaskList extends React.Component {
           </div>
         </nav>
         <div className="hidden-task-list-container">
+          <ol className="task-list">
+            {this.props.tasks.map(task =>
+              <HiddenTaskListItem {...task} key={task.storageKey} />
+            )}
+          </ol>
         </div>
       </div>
     )
@@ -27,7 +35,11 @@ class HiddenTaskList extends React.Component {
 }
 
 HiddenTaskList.propTypes = {
+  tasks: React.PropTypes.array.isRequired,
+  dispatch: React.PropTypes.func.isRequired,
   cancel: React.PropTypes.func.isRequired,
 }
 
-module.exports = hookUpStickyNav(HiddenTaskList, 'hidden-task-list-navigation')
+const mapStateToProps = state => ({ tasks: state.tasks })
+
+module.exports = connect(mapStateToProps)(hookUpStickyNav(HiddenTaskList, 'hidden-task-list-navigation'))
