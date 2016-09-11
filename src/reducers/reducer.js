@@ -16,6 +16,7 @@ function getSavedTaskKeys(key) {
 function writeChanges(tasks, typeKey) {
   const existingTaskKeys = getSavedTaskKeys(typeKey)
   const newTaskKeys = tasks.map(task => task.storageKey)
+  console.info(typeKey, newTaskKeys)
   const allTaskKeys = []
   existingTaskKeys.concat(newTaskKeys).forEach(key => {
     if (allTaskKeys.indexOf(key) < 0) {
@@ -72,21 +73,29 @@ function updateTasks(tasks, action) {
 }
 
 function selectTasks(tasks, action) {
-  return tasks.map(task => {
+  const selectedTasks = []
+  const updatedTasks = tasks.map(task => {
     if (task.storageKey === action.task.storageKey) {
+      selectedTasks.push(task)
       return Object.assign({}, task, { isSelected: true })
     }
     return task
   })
+  console.info('select', selectedTasks.map(task => task.storageKey))
+  return updatedTasks
 }
 
 function deselectTasks(tasks, action) {
-  return tasks.map(task => {
+  const deselectedTasks = []
+  const updatedTasks = tasks.map(task => {
     if (task.storageKey === action.task.storageKey) {
+      deselectedTasks.push(task)
       return Object.assign({}, task, { isSelected: false })
     }
     return task
   })
+  console.info('deselect', deselectedTasks.map(task => task.storageKey))
+  return updatedTasks
 }
 
 function currentTimeString() {
@@ -151,6 +160,7 @@ function restoreTasks(tasks) {
     }
     return task
   })
+  console.info('restore', restoredTasks.map(task => task.storageKey))
   removeTasks(restoredTasks, ARCHIVED_KEY)
   removeTasks(restoredTasks, SNOOZED_KEY)
   removeTasks(restoredTasks, IGNORED_KEY)
