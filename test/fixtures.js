@@ -92,6 +92,49 @@ const pullRequest = {
   score: 1,
 }
 
+const issue = {
+  url: 'https://api.github.com/repos/kiteco/plugins/issues/15',
+  repository_url: 'https://api.github.com/repos/kiteco/plugins',
+  labels_url: 'https://api.github.com/repos/kiteco/plugins/issues/15/labels{/name}',
+  comments_url: 'https://api.github.com/repos/kiteco/plugins/issues/15/comments',
+  events_url: 'https://api.github.com/repos/kiteco/plugins/issues/15/events',
+  html_url: 'https://github.com/kiteco/plugins/issues/15',
+  id: 148539337,
+  number: 15,
+  title: 'Visual Studio Code Support',
+  user: {
+    login: 'blackjid',
+    id: 228037,
+    avatar_url: 'https://avatars.githubusercontent.com/u/228037?v=3',
+    gravatar_id: '',
+    url: 'https://api.github.com/users/blackjid',
+    html_url: 'https://github.com/blackjid',
+    followers_url: 'https://api.github.com/users/blackjid/followers',
+    following_url: 'https://api.github.com/users/blackjid/following{/other_user}',
+    gists_url: 'https://api.github.com/users/blackjid/gists{/gist_id}',
+    starred_url: 'https://api.github.com/users/blackjid/starred{/owner}{/repo}',
+    subscriptions_url: 'https://api.github.com/users/blackjid/subscriptions',
+    organizations_url: 'https://api.github.com/users/blackjid/orgs',
+    repos_url: 'https://api.github.com/users/blackjid/repos',
+    events_url: 'https://api.github.com/users/blackjid/events{/privacy}',
+    received_events_url: 'https://api.github.com/users/blackjid/received_events',
+    type: 'User',
+    site_admin: false,
+  },
+  labels: [],
+  state: 'open',
+  locked: false,
+  assignee: null,
+  assignees: [],
+  milestone: null,
+  comments: 2,
+  created_at: '2016-04-15T02:41:28Z',
+  updated_at: '2016-04-22T16:43:08Z',
+  closed_at: null,
+  body: '',
+  score: 1,
+}
+
 const task = {
   storageKey: 'pull-163031382',
   id: 163031382,
@@ -116,4 +159,4 @@ const task = {
   userType: 'User',
 }
 
-module.exports = { task, pullRequest }
+module.exports = { task, pullRequest, issue }
