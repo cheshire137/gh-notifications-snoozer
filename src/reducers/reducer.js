@@ -25,6 +25,19 @@ function writeChanges(tasks, typeKey) {
   storage.set(typeKey, allTaskKeys)
 }
 
+// Remove the given tasks from the given key in the JSON storage file.
+function removeTasks(tasks, typeKey) {
+  const existingTaskKeys = getSavedTaskKeys(typeKey)
+  const keysToRemove = tasks.map(task => task.storageKey)
+  const allTaskKeys = []
+  existingTaskKeys.forEach(key => {
+    if (keysToRemove.indexOf(key) < 0) {
+      allTaskKeys.push(key)
+    }
+  })
+  storage.set(typeKey, allTaskKeys)
+}
+
 function updateTasks(tasks, action) {
   const tasksByKey = {}
   const snoozedTasks = getSavedTaskKeys(SNOOZED_KEY)
@@ -124,6 +137,26 @@ function archiveTasks(tasks) {
   return updatedTasks
 }
 
+function restoreTasks(tasks) {
+  const restoredTasks = []
+  const updatedTasks = tasks.map(task => {
+    if (task.isSelected) {
+      storage.delete(task.storageKey)
+      restoredTasks.push(task)
+      return Object.assign({}, task, {
+        archivedAt: null,
+        ignore: false,
+        snoozedAt: null,
+      })
+    }
+    return task
+  })
+  removeTasks(restoredTasks, ARCHIVED_KEY)
+  removeTasks(restoredTasks, SNOOZED_KEY)
+  removeTasks(restoredTasks, IGNORED_KEY)
+  return updatedTasks
+}
+
 function tasksReducer(tasks = [], action) {
   switch (action.type) {
     case 'TASKS_EMPTY':
@@ -140,6 +173,8 @@ function tasksReducer(tasks = [], action) {
       return archiveTasks(tasks)
     case 'TASKS_IGNORE':
       return ignoreTasks(tasks)
+    case 'TASKS_RESTORE':
+      return restoreTasks(tasks)
     default:
       return tasks
   }
