@@ -8,8 +8,9 @@ const fetchMock = require('fetch-mock')
 
 const App = require('../../src/components/App')
 const reducer = require('../../src/reducers/reducer')
-const GitHubAuth = require('../../src/models/github-auth')
-const Filter = require('../../src/models/filter')
+const GitHubAuth = require('../../src/models/GitHubAuth')
+const Filter = require('../../src/models/Filter')
+const LastFilter = require('../../src/models/LastFilter')
 const Config = require('../../src/config.json')
 
 function renderPage(store) {
@@ -72,14 +73,15 @@ describe('App', () => {
     it('fetches user and issues when filter exists', () => {
       const filter = new Filter('Cool name')
       filter.store('cats')
+      LastFilter.save('Cool name')
 
       renderPage(store)
 
       const fetchedCalls = fetchMock.calls().matched
       assert.equal(2, fetchedCalls.length, 'Two fetch calls should be made')
-      assert(fetchedCalls[0][0].match(/\/search\/issues/),
-             'Fetch call should be to the user API')
-      assert(fetchedCalls[1][0].match(/\/user/),
+      assert(fetchedCalls[1][0].match(/\/search\/issues/),
+             'Fetch call should be to the search issues API')
+      assert(fetchedCalls[0][0].match(/\/user/),
              'Fetch call should be to the user API')
     })
   })

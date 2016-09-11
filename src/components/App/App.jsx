@@ -1,14 +1,13 @@
 const { connect } = require('react-redux')
 const React = require('react')
 const { ipcRenderer } = require('electron')
-
-const Filter = require('../../models/filter')
-const Filters = require('../../models/filters')
-const GitHub = require('../../models/github')
-const AppMenu = require('../../models/app-menu')
-const GitHubAuth = require('../../models/github-auth')
-
-const TopNavigation = require('../TopNavigation')
+const Filter = require('../../models/Filter')
+const Filters = require('../../models/Filters')
+const GitHub = require('../../models/GitHub')
+const AppMenu = require('../../models/AppMenu')
+const GitHubAuth = require('../../models/GitHubAuth')
+const LastFilter = require('../../models/LastFilter')
+const DefaultFilters = require('../../models/DefaultFilters')
 const TaskList = require('../TaskList')
 const FilterList = require('../FilterList')
 const NewFilter = require('../NewFilter')
@@ -26,12 +25,13 @@ class App extends React.Component {
     ipcRenderer.send('title', 'Notifications')
     this.setupAppMenu()
     if (GitHubAuth.isAuthenticated()) {
-      if (this.state.filters.length > 0) {
-        this.loadFilter(this.state.filters[0])
+      this.loadUser()
+      const key = LastFilter.retrieve()
+      if (key) {
+        this.loadFilter(key)
       } else {
         this.manageFilters()
       }
-      this.loadUser()
     }
   }
 
@@ -47,12 +47,12 @@ class App extends React.Component {
 
   showAbout() {
     ipcRenderer.send('title', 'About')
-    this.setState({ view: 'about' })
+    this.changeView('about')
   }
 
   showAuth() {
     ipcRenderer.send('title', 'Authenticate')
-    this.setState({ view: 'auth' })
+    this.changeView('auth')
   }
 
   loadTasks(query) {
@@ -66,6 +66,8 @@ class App extends React.Component {
     const github = new GitHub()
     github.getCurrentUser().then(user => {
       this.setState({ user })
+      DefaultFilters.init(user.login)
+      this.setState({ filters: Filters.findAll() })
     }).catch(error => {
       console.error('failed to load user', error)
       GitHubAuth.deleteToken()
@@ -74,21 +76,24 @@ class App extends React.Component {
 
   showNewFilterForm() {
     ipcRenderer.send('title', 'New Filter')
-    this.setState({ view: 'new-filter' })
+    this.changeView('new-filter')
   }
 
   savedFilter() {
     ipcRenderer.send('title', 'Notifications')
-    this.setState({ view: 'tasks', filters: Filters.findAll() })
+    this.setState({ filters: Filters.findAll() }, () => {
+      this.changeView('tasks')
+    })
   }
 
   showTaskList() {
     ipcRenderer.send('title', 'Notifications')
-    this.setState({ view: 'tasks' })
+    this.changeView('tasks')
   }
 
   loadFilter(key) {
     this.props.dispatch({ type: 'TASKS_EMPTY' })
+    LastFilter.save(key)
     const filter = new Filter(key)
     const query = filter.retrieve()
     this.loadTasks(query)
@@ -96,7 +101,7 @@ class App extends React.Component {
 
   manageFilters() {
     ipcRenderer.send('title', 'Manage Filters')
-    this.setState({ view: 'filters' })
+    this.changeView('filters')
   }
 
   deleteFilter(key) {
@@ -107,11 +112,20 @@ class App extends React.Component {
 
   editFilter(key) {
     const filter = new Filter(key)
-    this.setState({ filter, view: 'edit-filter' })
+    this.setState({ filter }, () => {
+      this.changeView('edit-filter')
+    })
+  }
+
+  changeView(view) {
+    window.scrollTo(0, 0)
+    this.setState({ view })
   }
 
   finishedWithAuth(user) {
     this.setState({ user })
+    DefaultFilters.init(user.login)
+    this.setState({ filters: Filters.findAll() })
     this.showTaskList()
   }
 
@@ -128,16 +142,13 @@ class App extends React.Component {
 
     if (this.state.view === 'tasks') {
       return (
-        <div className="tasks-view">
-          <TopNavigation
-            addFilter={() => this.showNewFilterForm()}
-            changeFilter={key => this.loadFilter(key)}
-            manageFilters={() => this.manageFilters()}
-            user={this.state.user}
-            showAuth={() => this.showAuth()}
-          />
-          <TaskList />
-        </div>
+        <TaskList
+          addFilter={() => this.showNewFilterForm()}
+          changeFilter={key => this.loadFilter(key)}
+          manageFilters={() => this.manageFilters()}
+          user={this.state.user}
+          showAuth={() => this.showAuth()}
+        />
       )
     }
 

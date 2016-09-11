@@ -1,6 +1,7 @@
 const React = require('react')
-const Filter = require('../../models/filter')
+const Filter = require('../../models/Filter')
 const FilterHelp = require('../FilterHelp')
+const hookUpStickyNav = require('../hookUpStickyNav')
 
 class NewFilter extends React.Component {
   constructor() {
@@ -37,55 +38,57 @@ class NewFilter extends React.Component {
       valueClass += ' is-danger'
     }
     return (
-      <div className="new-filter-container">
-        <div className="columns new-filter-top-navigation">
-          <div className="column is-7">
+      <div>
+        <nav className="nav top-nav" id="new-filter-top-navigation">
+          <div className="nav-left">
             <h1 className="title">
               <a href="#" onClick={event => this.cancel(event)}>Tasks</a>
               <span> / </span>
               Add a Filter
             </h1>
           </div>
-          <div className="column is-5 has-text-right">
+          <div className="nav-right">
             <button
-              onClick={this.props.manageFilters}
+              onClick={() => this.props.manageFilters()}
               type="button"
               className="is-link button"
               title="Manage filters"
-            ><span className="octicon octicon-three-bars"></span></button>
+            ><span className="octicon octicon-beaker"></span></button>
           </div>
+        </nav>
+        <div className="new-filter-container">
+          <form className="new-filter-form" onSubmit={event => this.save(event)}>
+            <label className="label">Search query:</label>
+            <p className="control">
+              <input
+                type="text"
+                name="filterValue"
+                className={valueClass}
+                placeholder="e.g., team:org/team-name is:open sort:updated-desc"
+              />
+            </p>
+            <label className="label">Filter name: (optional)</label>
+            <p className="control">
+              <input
+                type="text"
+                name="filterKey"
+                className="input"
+                placeholder="e.g., Team mentions"
+              />
+            </p>
+            <p className="control">
+              <button type="submit" className="button is-primary">
+                Save Filter
+              </button>
+              <button
+                type="button"
+                onClick={e => this.cancel(e)}
+                className="button is-link"
+              >Cancel</button>
+            </p>
+          </form>
+          <FilterHelp />
         </div>
-        <form className="new-filter-form" onSubmit={event => this.save(event)}>
-          <label className="label">Search query:</label>
-          <p className="control">
-            <input
-              type="text"
-              name="filterValue"
-              className={valueClass}
-              placeholder="e.g., team:org/team-name is:open sort:updated-desc"
-            />
-          </p>
-          <label className="label">Filter name: (optional)</label>
-          <p className="control">
-            <input
-              type="text"
-              name="filterKey"
-              className="input"
-              placeholder="e.g., Team mentions"
-            />
-          </p>
-          <p className="control">
-            <button type="submit" className="button is-primary">
-              Save Filter
-            </button>
-            <button
-              type="button"
-              onClick={this.props.cancel}
-              className="button is-link"
-            >Cancel</button>
-          </p>
-        </form>
-        <FilterHelp />
       </div>
     )
   }
@@ -97,4 +100,4 @@ NewFilter.propTypes = {
   manageFilters: React.PropTypes.func.isRequired,
 }
 
-module.exports = NewFilter
+module.exports = hookUpStickyNav(NewFilter, 'new-filter-top-navigation')
