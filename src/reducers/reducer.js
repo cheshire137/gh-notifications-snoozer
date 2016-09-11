@@ -110,7 +110,12 @@ function snoozeTasks(tasks) {
       const snoozedAt = currentTimeString()
       storage.set(task.storageKey, snoozedAt)
       snoozedTasks.push(task)
-      return Object.assign({}, task, { snoozedAt, archivedAt: null })
+      return Object.assign({}, task, {
+        snoozedAt,
+        archivedAt: null,
+        isSelected: false,
+        ignore: false,
+      })
     }
     return task
   })
@@ -123,7 +128,15 @@ function ignoreTasks(tasks) {
   const updatedTasks = tasks.map(task => {
     if (task.isSelected) {
       ignoredTasks.push(task)
-      return Object.assign({}, task, { ignore: true })
+      if (storage.has(task.storageKey)) {
+        storage.delete(task.storageKey)
+      }
+      return Object.assign({}, task, {
+        ignore: true,
+        isSelected: false,
+        snoozedAt: null,
+        archivedAt: null,
+      })
     }
     return task
   })
@@ -138,7 +151,12 @@ function archiveTasks(tasks) {
       const archivedAt = currentTimeString()
       storage.set(task.storageKey, archivedAt)
       archivedTasks.push(task)
-      return Object.assign({}, task, { archivedAt, snoozedAt: null })
+      return Object.assign({}, task, {
+        archivedAt,
+        snoozedAt: null,
+        isSelected: false,
+        ignore: false,
+      })
     }
     return task
   })
