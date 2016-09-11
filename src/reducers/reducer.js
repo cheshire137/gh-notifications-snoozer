@@ -5,6 +5,7 @@ const configName = process.env.NODE_ENV === 'test' ? 'config-test' : 'config'
 const storage = new ElectronConfig({ name: configName })
 const SNOOZED_KEY = 'snoozed'
 const ARCHIVED_KEY = 'archived'
+const IGNORED_KEY = 'ignored'
 
 // Fetch from the JSON storage file the task IDs saved under the given key.
 function getSavedTaskKeys(key) {
@@ -28,6 +29,7 @@ function updateTasks(tasks, action) {
   const tasksByKey = {}
   const snoozedTasks = getSavedTaskKeys(SNOOZED_KEY)
   const archivedTasks = getSavedTaskKeys(ARCHIVED_KEY)
+  const ignoredTasks = getSavedTaskKeys(IGNORED_KEY)
 
   // Add the existing tasks
   tasks.forEach(task => (tasksByKey[task.storageKey] = task))
@@ -46,6 +48,9 @@ function updateTasks(tasks, action) {
     }
     if (archivedTasks.indexOf(key) > -1) {
       task.archivedAt = storage.get(key)
+    }
+    if (ignoredTasks.indexOf(key) > -1) {
+      task.ignore = true
     }
     return task
   })
@@ -91,6 +96,19 @@ function snoozeTasks(tasks) {
   return updatedTasks
 }
 
+function ignoreTasks(tasks) {
+  const ignoredTasks = []
+  const updatedTasks = tasks.map(task => {
+    if (task.isSelected) {
+      ignoredTasks.push(task)
+      return Object.assign({}, task, { ignore: true })
+    }
+    return task
+  })
+  writeChanges(ignoredTasks, IGNORED_KEY)
+  return updatedTasks
+}
+
 function archiveTasks(tasks) {
   const archivedTasks = []
   const updatedTasks = tasks.map(task => {
@@ -120,6 +138,8 @@ function tasksReducer(tasks = [], action) {
       return snoozeTasks(tasks)
     case 'TASKS_ARCHIVE':
       return archiveTasks(tasks)
+    case 'TASKS_IGNORE':
+      return ignoreTasks(tasks)
     default:
       return tasks
   }

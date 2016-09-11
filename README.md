@@ -14,6 +14,8 @@ scope.
 
 ## How to Develop
 
+This was developed with npm version 3.10.3 and node version 6.3.1
+
 ### First-time Setup
 
 ```bash
