@@ -15,6 +15,7 @@ const NewFilter = require('../NewFilter')
 const EditFilter = require('../EditFilter')
 const About = require('../About')
 const Auth = require('../Auth')
+const HiddenTaskList = require('../HiddenTaskList')
 
 class App extends React.Component {
   constructor() {
@@ -111,9 +112,15 @@ class App extends React.Component {
     this.setState({ filters: remainingFilters })
   }
 
+  showHidden() {
+    ipcRenderer.send('title', 'Hidden Tasks')
+    this.changeView('hidden')
+  }
+
   editFilter(key) {
     const filter = new Filter(key)
     this.setState({ filter }, () => {
+      ipcRenderer.send('title', `Edit Filter ${key}`)
       this.changeView('edit-filter')
     })
   }
@@ -146,6 +153,7 @@ class App extends React.Component {
           changeFilter={key => this.loadFilter(key)}
           manageFilters={() => this.manageFilters()}
           user={this.state.user}
+          showHidden={() => this.showHidden()}
           showAuth={() => this.showAuth()}
         />
       )
@@ -178,6 +186,14 @@ class App extends React.Component {
     if (this.state.view === 'about') {
       return (
         <About
+          cancel={() => this.showTaskList()}
+        />
+      )
+    }
+
+    if (this.state.view === 'hidden') {
+      return (
+        <HiddenTaskList
           cancel={() => this.showTaskList()}
         />
       )

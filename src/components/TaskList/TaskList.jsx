@@ -89,6 +89,12 @@ class TaskList extends React.Component {
                 className="is-link button"
                 title="Add a filter"
               ><span className="octicon octicon-plus"></span></button>
+              <button
+                onClick={this.props.showHidden}
+                type="button"
+                className="is-link button"
+                title="Show hidden tasks"
+              ><span className="octicon octicon-eye"></span></button>
             </span>
           </div>
         </nav>
@@ -137,6 +143,7 @@ TaskList.propTypes = {
   user: React.PropTypes.object,
   manageFilters: React.PropTypes.func.isRequired,
   showAuth: React.PropTypes.func.isRequired,
+  showHidden: React.PropTypes.func.isRequired,
 }
 
 module.exports = connect(mapStateToProps)(hookUpStickyNav(TaskList, 'task-list-navigation'))
