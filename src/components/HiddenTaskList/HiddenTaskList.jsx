@@ -5,6 +5,11 @@ const HiddenTaskListItem = require('../HiddenTaskListItem')
 const hookUpStickyNav = require('../hookUpStickyNav')
 
 class HiddenTaskList extends React.Component {
+  onRestoreClick(event) {
+    event.currentTarget.blur() // defocus button
+    this.props.dispatch({ type: 'TASKS_RESTORE' })
+  }
+
   cancel(event) {
     event.preventDefault()
     this.props.cancel()
@@ -25,6 +30,16 @@ class HiddenTaskList extends React.Component {
           </div>
         </nav>
         <div className="hidden-task-list-container">
+          <nav className="controls-container has-text-right">
+            <label className="label">With selected:</label>
+            <button
+              type="button"
+              onClick={e => this.onRestoreClick(e)}
+              className="control button is-link"
+              id="restore-button"
+              title="Restore selected"
+            >↩️</button>
+          </nav>
           <ol className="task-list">
             {this.props.tasks.map(task =>
               <HiddenTaskListItem {...task} key={task.storageKey} />
