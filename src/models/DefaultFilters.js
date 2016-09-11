@@ -3,8 +3,8 @@
 const ElectronConfig = require('electron-config')
 const configName = process.env.NODE_ENV === 'test' ? 'config-test' : 'config'
 const storage = new ElectronConfig({ name: configName })
-const Filter = require('./filter')
-const LastFilter = require('./last-filter')
+const Filter = require('./Filter')
+const LastFilter = require('./LastFilter')
 const DEFAULT_FILTER_KEY = 'default-filters'
 
 class DefaultFilters {

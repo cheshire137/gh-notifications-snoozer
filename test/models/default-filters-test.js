@@ -1,7 +1,7 @@
 const assert = require('assert')
 const ElectronConfig = require('electron-config')
 const storage = new ElectronConfig({ name: 'config-test' })
-const DefaultFilters = require('../../src/models/default-filters')
+const DefaultFilters = require('../../src/models/DefaultFilters')
 const login = 'RupertScrivener'
 
 describe('DefaultFilters', () => {
