@@ -8,6 +8,7 @@ const GitHub = require('../../models/github')
 const AppMenu = require('../../models/app-menu')
 const GitHubAuth = require('../../models/github-auth')
 const LastFilter = require('../../models/last-filter')
+const DefaultFilters = require('../../models/default-filters')
 
 const TaskList = require('../TaskList')
 const FilterList = require('../FilterList')
@@ -26,13 +27,13 @@ class App extends React.Component {
     ipcRenderer.send('title', 'Notifications')
     this.setupAppMenu()
     if (GitHubAuth.isAuthenticated()) {
+      this.loadUser()
       const key = LastFilter.retrieve()
       if (key) {
         this.loadFilter(key)
       } else {
         this.manageFilters()
       }
-      this.loadUser()
     }
   }
 
@@ -67,6 +68,8 @@ class App extends React.Component {
     const github = new GitHub()
     github.getCurrentUser().then(user => {
       this.setState({ user })
+      DefaultFilters.init(user.login)
+      this.setState({ filters: Filters.findAll() })
     }).catch(error => {
       console.error('failed to load user', error)
       GitHubAuth.deleteToken()
@@ -123,6 +126,8 @@ class App extends React.Component {
 
   finishedWithAuth(user) {
     this.setState({ user })
+    DefaultFilters.init(user.login)
+    this.setState({ filters: Filters.findAll() })
     this.showTaskList()
   }
 
