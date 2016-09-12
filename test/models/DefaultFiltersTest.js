@@ -6,8 +6,9 @@ const DEFAULT_FILTER_KEY = 'default-filters'
 const login = 'RupertScrivener'
 
 describe('DefaultFilters', () => {
-  describe('init', () => {
+  describe('addDefaults', () => {
     beforeEach(() => {
+      storage.clear()
       const filters = new DefaultFilters(login)
       filters.addDefaults()
     })
