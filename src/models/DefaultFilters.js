@@ -7,50 +7,32 @@ const Filter = require('./Filter')
 const LastFilter = require('./LastFilter')
 const DEFAULT_FILTER_KEY = 'default-filters'
 
+const DEFAULT_FILTERS = {
+  'My Issues': 'author:login is:open sort:updated-desc',
+  'My Comments': 'commenter:login sort:updated-desc',
+  'My Assignments': 'assignee:login sort:updated-desc is:open',
+  'My Mentions': 'mentions:login is:open sort:updated-desc',
+  'My Popular Issues': 'author:login is:open interactions:>5 sort:updated-desc',
+}
+
 class DefaultFilters {
-  static init(login) {
-    if (!storage.has(DEFAULT_FILTER_KEY)) {
-      this.myIssuesFilter(login)
-      this.myCommentsFilter(login)
-      this.myAssignmentsFilter(login)
-      this.myMentionsFilter(login)
-      this.myPopularFilter(login)
-      this.save()
+  constructor(login) {
+    this.login = login
+  }
+
+  addDefaults() {
+    if (storage.has(DEFAULT_FILTER_KEY)) {
+      return
     }
-    return
-  }
 
-  static myIssuesFilter(login) {
-    const defaultFilter = new Filter('My Issues')
-    defaultFilter.store(`author:${login} is:open sort:updated-desc`)
-    LastFilter.save(defaultFilter.key)
-  }
+    const filterNames = Object.keys(DEFAULT_FILTERS)
+    filterNames.forEach(name => {
+      const filter = new Filter(name)
+      const value = DEFAULT_FILTERS[name].replace(/login/g, this.login)
+      filter.store(value)
+    })
 
-  static myCommentsFilter(login) {
-    const defaultFilter = new Filter('My Comments')
-    defaultFilter.store(`commenter:${login} sort:updated-desc`)
-    LastFilter.save(defaultFilter.key)
-  }
-
-  static myAssignmentsFilter(login) {
-    const defaultFilter = new Filter('My Assignments')
-    defaultFilter.store(`assignee:${login} sort:updated-desc is:open`)
-    LastFilter.save(defaultFilter.key)
-  }
-
-  static myMentionsFilter(login) {
-    const defaultFilter = new Filter('My Mentions')
-    defaultFilter.store(`mentions:${login} is:open sort:updated-desc`)
-    LastFilter.save(defaultFilter.key)
-  }
-
-  static myPopularFilter(login) {
-    const defaultFilter = new Filter('My Popular Issues')
-    defaultFilter.store(`author:${login} is:open interactions:>5 sort:updated-desc`)
-    LastFilter.save(defaultFilter.key)
-  }
-
-  static save() {
+    LastFilter.save(filterNames[0])
     storage.set(DEFAULT_FILTER_KEY, 'default-filters')
   }
 }

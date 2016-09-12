@@ -35,6 +35,12 @@ class App extends React.Component {
     }
   }
 
+  onUserLoad(user) {
+    const filters = new DefaultFilters(user)
+    filters.addDefaults()
+    this.setState({ filters: Filters.findAll() })
+  }
+
   setupAppMenu() {
     const menu = new AppMenu()
     menu.on('about-app', () => {
@@ -66,8 +72,7 @@ class App extends React.Component {
     const github = new GitHub()
     github.getCurrentUser().then(user => {
       this.setState({ user })
-      DefaultFilters.init(user.login)
-      this.setState({ filters: Filters.findAll() })
+      this.onUserLoad(user.login)
     }).catch(error => {
       console.error('failed to load user', error)
       GitHubAuth.deleteToken()
@@ -124,8 +129,7 @@ class App extends React.Component {
 
   finishedWithAuth(user) {
     this.setState({ user })
-    DefaultFilters.init(user.login)
-    this.setState({ filters: Filters.findAll() })
+    this.onUserLoad(user.login)
     this.showTaskList()
   }
 
