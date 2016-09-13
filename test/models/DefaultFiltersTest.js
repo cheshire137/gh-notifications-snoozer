@@ -23,7 +23,7 @@ describe('DefaultFilters', () => {
     })
 
     it('saves the DEFAULT_FILTER_KEY', () => {
-      assert.equal(true, storage.has(DEFAULT_FILTER_KEY))
+      assert(storage.has(DEFAULT_FILTER_KEY))
     })
 
     it('has correct value for My Issues', () => {
