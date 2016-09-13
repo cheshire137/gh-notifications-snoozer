@@ -8,11 +8,12 @@ const LastFilter = require('./LastFilter')
 const DEFAULT_FILTER_KEY = 'default-filters'
 
 const DEFAULT_FILTERS = {
-  'My Issues': 'author:login is:open sort:updated-desc',
+  'My Issues': 'author:login is:open sort:updated-desc type:issue',
+  'My Pull Requests': 'author:login is:open sort:updated-desc type:pr',
   'My Comments': 'commenter:login sort:updated-desc',
   'My Assignments': 'assignee:login sort:updated-desc is:open',
   'My Mentions': 'mentions:login is:open sort:updated-desc',
-  'My Popular Issues': 'author:login is:open interactions:>5 sort:updated-desc',
+  'My Popular Items': 'author:login is:open interactions:>5 sort:updated-desc',
 }
 
 class DefaultFilters {

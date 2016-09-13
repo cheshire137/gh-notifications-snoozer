@@ -14,11 +14,12 @@ describe('DefaultFilters', () => {
     })
 
     it('creates the default filters', () => {
-      assert.equal(true, storage.has('My Issues'))
-      assert.equal(true, storage.has('My Comments'))
-      assert.equal(true, storage.has('My Assignments'))
-      assert.equal(true, storage.has('My Mentions'))
-      assert.equal(true, storage.has('My Popular Issues'))
+      assert(storage.has('My Issues'))
+      assert(storage.has('My Pull Requests'))
+      assert(storage.has('My Comments'))
+      assert(storage.has('My Assignments'))
+      assert(storage.has('My Mentions'))
+      assert(storage.has('My Popular Items'))
     })
 
     it('saves the DEFAULT_FILTER_KEY', () => {
@@ -27,7 +28,12 @@ describe('DefaultFilters', () => {
 
     it('has correct value for My Issues', () => {
       const filter = storage.get('My Issues')
-      assert.equal('author:RupertScrivener is:open sort:updated-desc', filter)
+      assert.equal('author:RupertScrivener is:open sort:updated-desc type:issue', filter)
+    })
+
+    it('has correct value for My Pull Requests', () => {
+      const filter = storage.get('My Pull Requests')
+      assert.equal('author:RupertScrivener is:open sort:updated-desc type:pr', filter)
     })
 
     it('has correct value for My Comments', () => {
@@ -45,8 +51,8 @@ describe('DefaultFilters', () => {
       assert.equal('mentions:RupertScrivener is:open sort:updated-desc', filter)
     })
 
-    it('has correct value for My Popular Issues', () => {
-      const filter = storage.get('My Popular Issues')
+    it('has correct value for My Popular Items', () => {
+      const filter = storage.get('My Popular Items')
       assert.equal('author:RupertScrivener is:open interactions:>5 sort:updated-desc', filter)
     })
   })

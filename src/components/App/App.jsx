@@ -36,7 +36,8 @@ class App extends React.Component {
   }
 
   onUserLoad(user) {
-    const filters = new DefaultFilters(user)
+    this.setState({ user })
+    const filters = new DefaultFilters(user.login)
     filters.addDefaults()
     this.setState({ filters: Filters.findAll() })
   }
@@ -70,13 +71,12 @@ class App extends React.Component {
 
   loadUser() {
     const github = new GitHub()
-    github.getCurrentUser().then(user => {
-      this.setState({ user })
-      this.onUserLoad(user.login)
-    }).catch(error => {
-      console.error('failed to load user', error)
-      GitHubAuth.deleteToken()
-    })
+    github.getCurrentUser()
+        .then(user => this.onUserLoad(user))
+        .catch(error => {
+          console.error('failed to load user', error)
+          GitHubAuth.deleteToken()
+        })
   }
 
   showNewFilterForm() {
@@ -128,8 +128,7 @@ class App extends React.Component {
   }
 
   finishedWithAuth(user) {
-    this.setState({ user })
-    this.onUserLoad(user.login)
+    this.onUserLoad(user)
     this.showTaskList()
   }
 
