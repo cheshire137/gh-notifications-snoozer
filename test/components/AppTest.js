@@ -79,9 +79,9 @@ describe('App', () => {
 
       const fetchedCalls = fetchMock.calls().matched
       assert.equal(2, fetchedCalls.length, 'Two fetch calls should be made')
-      assert(fetchedCalls[0][0].match(/\/search\/issues/),
-             'Fetch call should be to the user API')
-      assert(fetchedCalls[1][0].match(/\/user/),
+      assert(fetchedCalls[1][0].match(/\/search\/issues/),
+             'Fetch call should be to the search issues API')
+      assert(fetchedCalls[0][0].match(/\/user/),
              'Fetch call should be to the user API')
     })
   })
