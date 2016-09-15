@@ -9,6 +9,7 @@ const AppMenu = require('../../models/AppMenu')
 const GitHubAuth = require('../../models/GitHubAuth')
 const LastFilter = require('../../models/LastFilter')
 
+const TabbedNav = require('../TabbedNav')
 const TaskList = require('../TaskList')
 const FilterList = require('../FilterList')
 const NewFilter = require('../NewFilter')
@@ -131,64 +132,118 @@ class App extends React.Component {
   render() {
     if (this.state.view === 'auth' || !GitHubAuth.isAuthenticated()) {
       return (
-        <Auth
-          done={user => this.finishedWithAuth(user)}
-          isAuthenticated={GitHubAuth.isAuthenticated()}
-          user={this.state.user}
-        />
+        <div>
+          <TabbedNav
+            manageFilters={() => this.manageFilters()}
+            user={this.state.user}
+            showAuth={() => this.showAuth()}
+            showTasks={() => this.showTaskList()}
+            active={this.state.view}
+          />
+          <Auth
+            done={user => this.finishedWithAuth(user)}
+            isAuthenticated={GitHubAuth.isAuthenticated()}
+            user={this.state.user}
+          />
+        </div>
       )
     }
 
     if (this.state.view === 'tasks') {
       return (
-        <TaskList
-          addFilter={() => this.showNewFilterForm()}
-          changeFilter={key => this.loadFilter(key)}
-          manageFilters={() => this.manageFilters()}
-          user={this.state.user}
-          showAuth={() => this.showAuth()}
-        />
+        <div>
+          <TabbedNav
+            manageFilters={() => this.manageFilters()}
+            user={this.state.user}
+            showAuth={() => this.showAuth()}
+            showTasks={() => this.showTaskList()}
+            active={this.state.view}
+          />
+          <TaskList
+            addFilter={() => this.showNewFilterForm()}
+            changeFilter={key => this.loadFilter(key)}
+            manageFilters={() => this.manageFilters()}
+            user={this.state.user}
+            showAuth={() => this.showAuth()}
+          />
+        </div>
       )
     }
 
     if (this.state.view === 'filters') {
       return (
-        <FilterList
-          filters={this.state.filters}
-          delete={key => this.deleteFilter(key)}
-          edit={key => this.editFilter(key)}
-          addFilter={() => this.showNewFilterForm()}
-          cancel={() => this.showTaskList()}
-        />
+        <div>
+          <TabbedNav
+            manageFilters={() => this.manageFilters()}
+            user={this.state.user}
+            showAuth={() => this.showAuth()}
+            showTasks={() => this.showTaskList()}
+            active={this.state.view}
+          />
+          <FilterList
+            filters={this.state.filters}
+            delete={key => this.deleteFilter(key)}
+            edit={key => this.editFilter(key)}
+            addFilter={() => this.showNewFilterForm()}
+            cancel={() => this.showTaskList()}
+          />
+        </div>
       )
     }
 
     if (this.state.view === 'edit-filter') {
       return (
-        <EditFilter
-          filter={this.state.filter}
-          save={() => this.savedFilter()}
-          addFilter={() => this.showNewFilterForm()}
-          cancel={() => this.manageFilters()}
-          delete={key => this.deleteFilter(key)}
-        />
+        <div>
+          <TabbedNav
+            manageFilters={() => this.manageFilters()}
+            user={this.state.user}
+            showAuth={() => this.showAuth()}
+            showTasks={() => this.showTaskList()}
+            active={this.state.view}
+          />
+          <EditFilter
+            filter={this.state.filter}
+            save={() => this.savedFilter()}
+            addFilter={() => this.showNewFilterForm()}
+            cancel={() => this.manageFilters()}
+            delete={key => this.deleteFilter(key)}
+          />
+        </div>
       )
     }
 
     if (this.state.view === 'about') {
       return (
-        <About
-          cancel={() => this.showTaskList()}
-        />
+        <div>
+          <TabbedNav
+            manageFilters={() => this.manageFilters()}
+            user={this.state.user}
+            showAuth={() => this.showAuth()}
+            showTasks={() => this.showTaskList()}
+            active={this.state.view}
+          />
+          <About
+            cancel={() => this.showTaskList()}
+          />
+        </div>
       )
     }
 
     return (
-      <NewFilter
-        save={() => this.savedFilter()}
-        cancel={() => this.showTaskList()}
-        manageFilters={() => this.manageFilters()}
-      />
+      <div>
+        <TabbedNav
+          manageFilters={() => this.manageFilters()}
+          user={this.state.user}
+          showAuth={() => this.showAuth()}
+          showTasks={() => this.showTaskList()}
+          active={this.state.view}
+        />
+        <NewFilter
+          save={() => this.savedFilter()}
+          cancel={() => this.showTaskList()}
+          manageFilters={() => this.manageFilters()}
+        />
+      </div>
     )
   }
 }

@@ -53,32 +53,6 @@ class EditFilter extends React.Component {
     }
     return (
       <div>
-        <nav className="nav top-nav" id="edit-filter-top-navigation">
-          <div className="nav-left">
-            <h1 className="title">
-              <a
-                href="#"
-                onClick={event => this.cancel(event)}
-              >Manage Filters</a>
-              <span> / </span>
-              Edit
-            </h1>
-          </div>
-          <div className="nav-right">
-            <button
-              onClick={event => this.cancel(event)}
-              type="button"
-              className="is-link button"
-              title="Manage filters"
-            ><span className="octicon octicon-beaker"></span></button>
-            <button
-              onClick={() => this.props.addFilter()}
-              type="button"
-              className="is-link button"
-              title="Add a filter"
-            ><span className="octicon octicon-plus"></span></button>
-          </div>
-        </nav>
         <div className="edit-filter-container">
           <form className="edit-filter-form" onSubmit={event => this.save(event)}>
             <label className="label">Search query:</label>

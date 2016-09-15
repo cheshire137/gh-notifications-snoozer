@@ -34,21 +34,22 @@ class FilterList extends React.Component {
   render() {
     return (
       <div>
-        <nav className="nav top-nav" id="filter-list-top-navigation">
+        <nav className="nav secondary-nav" id="filter-list-top-navigation">
           <div className="nav-left">
-            <h1 className="title">
-              <a href="#" onClick={event => this.cancel(event)}>Tasks</a>
-              <span> / </span>
-              Manage Filters
-            </h1>
+            <span className="nav-item">
+              <button
+                onClick={() => this.props.addFilter()}
+                type="button"
+                className="button is-link"
+                title="Add a filter"
+              >
+                <span className="octicon octicon-plus"></span>
+                <span>Add Filter</span>
+              </button>
+            </span>
           </div>
           <div className="nav-right">
-            <button
-              onClick={() => this.props.addFilter()}
-              type="button"
-              className="button is-link"
-              title="Add a filter"
-            ><span className="octicon octicon-plus"></span></button>
+
           </div>
         </nav>
         <div className="filter-list-container">
