@@ -77,7 +77,7 @@ class TaskList extends React.Component {
                 className="control button is-link"
                 id="snooze-button"
                 title="Snooze selected"
-              >😴</button>
+              >😴 Snooze</button>
             </span>
             <span className="nav-item">
               <button
@@ -86,7 +86,7 @@ class TaskList extends React.Component {
                 className="control button is-link"
                 onClick={e => this.onArchiveClick(e)}
                 title="Archive selected"
-              >📥</button>
+              >📥 Archive</button>
             </span>
             <span className="nav-item">
               <button
@@ -94,7 +94,7 @@ class TaskList extends React.Component {
                 className="control button is-link"
                 onClick={e => this.onIgnoreClick(e)}
                 title="Ignore selected"
-              >❌</button>
+              >❌ Ignore</button>
             </span>
           </div>
         </nav>

@@ -36,6 +36,8 @@ class FilterList extends React.Component {
       <div>
         <nav className="nav secondary-nav" id="filter-list-top-navigation">
           <div className="nav-left">
+          </div>
+          <div className="nav-right">
             <span className="nav-item">
               <button
                 onClick={() => this.props.addFilter()}
@@ -43,13 +45,9 @@ class FilterList extends React.Component {
                 className="button is-link"
                 title="Add a filter"
               >
-                <span className="octicon octicon-plus"></span>
-                <span>Add Filter</span>
+                <span>✳️ Add Filter</span>
               </button>
             </span>
-          </div>
-          <div className="nav-right">
-
           </div>
         </nav>
         <div className="filter-list-container">
