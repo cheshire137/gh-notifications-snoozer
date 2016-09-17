@@ -3,6 +3,7 @@ const { connect } = require('react-redux')
 
 const HiddenTaskListItem = require('../HiddenTaskListItem')
 const hookUpStickyNav = require('../hookUpStickyNav')
+const TaskVisibility = require('../../models/TaskVisibility')
 
 class HiddenTaskList extends React.Component {
   onRestoreClick(event) {
@@ -45,37 +46,9 @@ class HiddenTaskList extends React.Component {
     )
   }
 
-  isHiddenTask(task) {
-    const { ignore, snoozedAt, archivedAt, updatedAt } = task
-
-    if (ignore) {
-      return true
-    }
-
-    if (typeof snoozedAt === 'string') {
-      const currentDate = new Date()
-      const snoozeDate = new Date(snoozedAt)
-      if (this.daysBetween(snoozeDate, currentDate) < 1) {
-        // Snoozed within the last day, show it
-        return true
-      }
-    }
-
-    if (typeof archivedAt === 'string') {
-      const updateDate = new Date(updatedAt)
-      const archiveDate = new Date(archivedAt)
-      if (archiveDate > updateDate) {
-        // Has not been updated since it was archived, show it
-        return true
-      }
-    }
-
-    return false
-  }
-
   render() {
     const { activeFilter } = this.props
-    const hiddenTasks = this.props.tasks.filter(task => this.isHiddenTask(task))
+    const hiddenTasks = this.props.tasks.filter(task => TaskVisibility.isHiddenTask(task))
     return (
       <div>
         <nav id="hidden-task-list-navigation" className="top-nav nav">

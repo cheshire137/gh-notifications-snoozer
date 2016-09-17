@@ -10,34 +10,6 @@ class HiddenTaskListItem extends React.Component {
     this.props.dispatch({ type, task: { storageKey } })
   }
 
-  isVisible() {
-    const { ignore, snoozedAt, archivedAt, updatedAt } = this.props
-
-    if (ignore) {
-      return true
-    }
-
-    if (typeof snoozedAt === 'string') {
-      const currentDate = new Date()
-      const snoozeDate = new Date(snoozedAt)
-      if (this.daysBetween(snoozeDate, currentDate) < 1) {
-        // Snoozed within the last day, show it
-        return true
-      }
-    }
-
-    if (typeof archivedAt === 'string') {
-      const updateDate = new Date(updatedAt)
-      const archiveDate = new Date(archivedAt)
-      if (archiveDate > updateDate) {
-        // Has not been updated since it was archived, show it
-        return true
-      }
-    }
-
-    return false
-  }
-
   openExternal(event) {
     event.preventDefault()
     const { url } = this.props
@@ -67,10 +39,6 @@ class HiddenTaskListItem extends React.Component {
   render() {
     const { updatedAt, repository, title, repositoryOwner, user, storageKey,
             url, state, repositoryOwnerAvatar, userAvatar } = this.props
-
-    if (!this.isVisible()) {
-      return null
-    }
 
     return (
       <li className="task-list-item control columns">
