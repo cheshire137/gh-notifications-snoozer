@@ -84,7 +84,14 @@ describe('reducers', () => {
       store.dispatch({ type: 'TASKS_IGNORE' })
 
       const expectedTasks = [
-        { id: 5, storageKey: 'issue-5', isSelected: true, ignore: true },
+        {
+          id: 5,
+          storageKey: 'issue-5',
+          isSelected: false,
+          ignore: true,
+          archivedAt: null,
+          snoozedAt: null,
+        },
         { id: 2, storageKey: 'pull-2' },
       ]
 
@@ -106,7 +113,7 @@ describe('reducers', () => {
 
       const actual = store.getState().tasks
       assert.equal(2, actual.length, 'should still have 2 tasks')
-      assert(actual[1].isSelected, 'task should still be selected')
+      assert(!actual[1].isSelected, 'task should not be selected')
       assert.equal('string', typeof actual[1].snoozedAt,
                    'snoozedAt should be a time string')
       assert(storage.has('pull-12'),
@@ -132,7 +139,7 @@ describe('reducers', () => {
 
       const actual = store.getState().tasks
       assert.equal(2, actual.length, 'should still have 2 tasks')
-      assert(actual[1].isSelected, 'task should still be selected')
+      assert(!actual[1].isSelected, 'task should not be selected')
       assert.equal('string', typeof actual[1].archivedAt,
                    'archivedAt should be a time string')
       assert(storage.has('pull-22'),
