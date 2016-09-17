@@ -52,6 +52,51 @@ class App extends React.Component {
     })
   }
 
+  getViewContents() {
+    switch (this.state.view) {
+      case 'tasks': return (
+        <TaskList
+          addFilter={() => this.showNewFilterForm()}
+          changeFilter={key => this.loadFilter(key)}
+          manageFilters={() => this.manageFilters()}
+          user={this.state.user}
+          showAuth={() => this.showAuth()}
+        />)
+      case 'filters': return (
+        <FilterList
+          filters={this.state.filters}
+          delete={key => this.deleteFilter(key)}
+          edit={key => this.editFilter(key)}
+          addFilter={() => this.showNewFilterForm()}
+          cancel={() => this.showTaskList()}
+        />)
+      case 'edit-filter': return (
+        <EditFilter
+          filter={this.state.filter}
+          save={() => this.savedFilter()}
+          addFilter={() => this.showNewFilterForm()}
+          cancel={() => this.manageFilters()}
+          delete={key => this.deleteFilter(key)}
+        />)
+      case 'about': return (
+        <About cancel={() => this.showTaskList()} />)
+      case 'new-filter': return (
+        <NewFilter
+          save={() => this.savedFilter()}
+          cancel={() => this.showTaskList()}
+          manageFilters={() => this.manageFilters()}
+        />)
+      // Auth is default to ensure token
+      default: return (
+        <Auth
+          done={user => this.finishedWithAuth(user)}
+          isAuthenticated={GitHubAuth.isAuthenticated()}
+          user={this.state.user}
+        />
+      )
+    }
+  }
+
   showAbout() {
     ipcRenderer.send('title', 'About')
     this.changeView('about')
@@ -132,51 +177,6 @@ class App extends React.Component {
   finishedWithAuth(user) {
     this.onUserLoad(user)
     this.showTaskList()
-  }
-
-  getViewContents() {
-    switch (this.state.view) {
-      case 'tasks': return (
-        <TaskList
-          addFilter={() => this.showNewFilterForm()}
-          changeFilter={key => this.loadFilter(key)}
-          manageFilters={() => this.manageFilters()}
-          user={this.state.user}
-          showAuth={() => this.showAuth()}
-        />)
-      case 'filters': return (
-        <FilterList
-          filters={this.state.filters}
-          delete={key => this.deleteFilter(key)}
-          edit={key => this.editFilter(key)}
-          addFilter={() => this.showNewFilterForm()}
-          cancel={() => this.showTaskList()}
-        />)
-      case 'edit-filter': return (
-        <EditFilter
-          filter={this.state.filter}
-          save={() => this.savedFilter()}
-          addFilter={() => this.showNewFilterForm()}
-          cancel={() => this.manageFilters()}
-          delete={key => this.deleteFilter(key)}
-        />)
-      case 'about': return (
-        <About cancel={() => this.showTaskList()} />)
-      case 'new-filter': return (
-        <NewFilter
-          save={() => this.savedFilter()}
-          cancel={() => this.showTaskList()}
-          manageFilters={() => this.manageFilters()}
-        />)
-      // Auth is default to ensure token
-      default: return (
-        <Auth
-          done={user => this.finishedWithAuth(user)}
-          isAuthenticated={GitHubAuth.isAuthenticated()}
-          user={this.state.user}
-        />
-      )
-    }
   }
 
   render() {
