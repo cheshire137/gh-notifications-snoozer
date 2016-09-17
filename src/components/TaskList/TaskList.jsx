@@ -71,26 +71,26 @@ class TaskList extends React.Component {
             <span className="nav-item">
               {typeof this.props.user === 'object' ? (
                 <button
-                  onClick={this.props.showAuth}
+                  onClick={() => this.props.showAuth()}
                   type="button"
                   className="is-link button"
                   title="Authenticate"
                 >{this.props.user.login}</button>
               ) : ''}
               <button
-                onClick={this.props.manageFilters}
+                onClick={() => this.props.manageFilters()}
                 type="button"
                 className="is-link button"
                 title="Manage filters"
               ><span className="octicon octicon-beaker"></span></button>
               <button
-                onClick={this.props.addFilter}
+                onClick={() => this.props.addFilter()}
                 type="button"
                 className="is-link button"
                 title="Add a filter"
               ><span className="octicon octicon-plus"></span></button>
               <button
-                onClick={this.props.showHidden}
+                onClick={() => this.props.showHidden()}
                 type="button"
                 className="is-link button"
                 title="Show hidden tasks"
