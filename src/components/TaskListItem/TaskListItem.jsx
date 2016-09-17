@@ -1,7 +1,6 @@
 const React = require('react')
 const { shell } = require('electron')
 const { connect } = require('react-redux')
-const TaskVisibility = require('../../models/TaskVisibility')
 
 class TaskListItem extends React.Component {
   onChange(event) {

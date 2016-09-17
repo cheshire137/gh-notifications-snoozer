@@ -84,4 +84,6 @@ HiddenTaskList.propTypes = {
 
 const mapStateToProps = state => ({ tasks: state.tasks })
 
-module.exports = connect(mapStateToProps)(hookUpStickyNav(HiddenTaskList, 'hidden-task-list-navigation'))
+const stickyNavd = hookUpStickyNav(HiddenTaskList,
+                                   'hidden-task-list-navigation')
+module.exports = connect(mapStateToProps)(stickyNavd)
