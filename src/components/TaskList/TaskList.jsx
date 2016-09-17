@@ -5,6 +5,7 @@ const TaskListItem = require('../TaskListItem')
 const hookUpStickyNav = require('../hookUpStickyNav')
 const Filters = require('../../models/Filters')
 const LastFilter = require('../../models/LastFilter')
+const TaskVisibility = require('../../models/TaskVisibility')
 
 class TaskList extends React.Component {
   onSnoozeClick(event) {
@@ -39,6 +40,7 @@ class TaskList extends React.Component {
   render() {
     const filters = Filters.findAll()
     const lastFilterKey = LastFilter.retrieve()
+    const visibleTasks = this.props.tasks.filter(task => TaskVisibility.isVisibleTask(task))
     return (
       <div>
         <nav id="task-list-navigation" className="top-nav nav">
@@ -123,7 +125,7 @@ class TaskList extends React.Component {
             >❌</button>
           </nav>
           <ol className="task-list">
-            {this.props.tasks.map(task =>
+            {visibleTasks.map(task =>
               <TaskListItem {...task} key={task.storageKey} />
             )}
           </ol>

@@ -1,8 +1,7 @@
 const React = require('react')
 const { shell } = require('electron')
 const { connect } = require('react-redux')
-
-const MS_PER_DAY = 1000 * 60 * 60 * 24
+const TaskVisibility = require('../../models/TaskVisibility')
 
 class TaskListItem extends React.Component {
   onChange(event) {
@@ -10,40 +9,6 @@ class TaskListItem extends React.Component {
     const type = event.target.checked ? 'TASKS_SELECT' : 'TASKS_DESELECT'
 
     this.props.dispatch({ type, task: { storageKey } })
-  }
-
-  daysBetween(a, b) {
-    const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate())
-    const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate())
-    return Math.floor((utc2 - utc1) / MS_PER_DAY)
-  }
-
-  isVisible() {
-    const { ignore, snoozedAt, archivedAt, updatedAt } = this.props
-
-    if (ignore) {
-      return false
-    }
-
-    if (typeof snoozedAt === 'string') {
-      const currentDate = new Date()
-      const snoozeDate = new Date(snoozedAt)
-      if (this.daysBetween(snoozeDate, currentDate) < 1) {
-        // Snoozed within the last day, keep it hidden
-        return false
-      }
-    }
-
-    if (typeof archivedAt === 'string') {
-      const updateDate = new Date(updatedAt)
-      const archiveDate = new Date(archivedAt)
-      if (archiveDate > updateDate) {
-        // Has not been updated since it was archived, keep it hidden
-        return false
-      }
-    }
-
-    return true
   }
 
   openExternal(event) {
@@ -75,10 +40,6 @@ class TaskListItem extends React.Component {
   render() {
     const { updatedAt, repository, title, repositoryOwner, user, storageKey,
             url, state, repositoryOwnerAvatar, userAvatar } = this.props
-
-    if (!this.isVisible()) {
-      return null
-    }
 
     return (
       <li className="task-list-item control columns">
