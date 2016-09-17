@@ -15,8 +15,67 @@ class HiddenTaskList extends React.Component {
     this.props.cancel()
   }
 
+  navigation(tasks) {
+    if (tasks.length < 1) {
+      return
+    }
+    return (
+      <nav className="controls-container has-text-right">
+        <label className="label">With selected:</label>
+        <button
+          type="button"
+          onClick={e => this.onRestoreClick(e)}
+          className="control button is-link"
+          id="restore-button"
+          title="Restore selected"
+        >↩️</button>
+      </nav>
+    )
+  }
+
+  emptyListMessage(tasks) {
+    if (tasks.length > 0) {
+      return
+    }
+    return (
+      <p className="content">
+        There are no issues or pull requests that have been snoozed, archived,
+        or ignored for this filter.
+      </p>
+    )
+  }
+
+  isHiddenTask(task) {
+    const { ignore, snoozedAt, archivedAt, updatedAt } = task
+
+    if (ignore) {
+      return true
+    }
+
+    if (typeof snoozedAt === 'string') {
+      const currentDate = new Date()
+      const snoozeDate = new Date(snoozedAt)
+      if (this.daysBetween(snoozeDate, currentDate) < 1) {
+        // Snoozed within the last day, show it
+        return true
+      }
+    }
+
+    if (typeof archivedAt === 'string') {
+      const updateDate = new Date(updatedAt)
+      const archiveDate = new Date(archivedAt)
+      if (archiveDate > updateDate) {
+        // Has not been updated since it was archived, show it
+        return true
+      }
+    }
+
+    return false
+  }
+
   render() {
     const { activeFilter } = this.props
+    const hiddenTasks = this.props.tasks.filter(task => this.isHiddenTask(task))
     return (
       <div>
         <nav id="hidden-task-list-navigation" className="top-nav nav">
@@ -30,18 +89,10 @@ class HiddenTaskList extends React.Component {
           </div>
         </nav>
         <div className="hidden-task-list-container">
-          <nav className="controls-container has-text-right">
-            <label className="label">With selected:</label>
-            <button
-              type="button"
-              onClick={e => this.onRestoreClick(e)}
-              className="control button is-link"
-              id="restore-button"
-              title="Restore selected"
-            >↩️</button>
-          </nav>
+          {this.navigation(hiddenTasks)}
+          {this.emptyListMessage(hiddenTasks)}
           <ol className="task-list">
-            {this.props.tasks.map(task =>
+            {hiddenTasks.map(task =>
               <HiddenTaskListItem {...task} key={task.storageKey} />
             )}
           </ol>
