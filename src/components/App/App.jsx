@@ -1,14 +1,13 @@
 const { connect } = require('react-redux')
 const React = require('react')
 const { ipcRenderer } = require('electron')
-
 const Filter = require('../../models/Filter')
 const Filters = require('../../models/Filters')
 const GitHub = require('../../models/GitHub')
 const AppMenu = require('../../models/AppMenu')
 const GitHubAuth = require('../../models/GitHubAuth')
 const LastFilter = require('../../models/LastFilter')
-
+const DefaultFilters = require('../../models/DefaultFilters')
 const TaskList = require('../TaskList')
 const FilterList = require('../FilterList')
 const NewFilter = require('../NewFilter')
@@ -31,13 +30,19 @@ class App extends React.Component {
     ipcRenderer.send('title', 'Notifications')
     this.setupAppMenu()
     if (GitHubAuth.isAuthenticated()) {
+      this.loadUser()
       if (this.state.filter) {
         this.loadFilter(this.state.filter)
       } else {
         this.manageFilters()
       }
-      this.loadUser()
     }
+  }
+
+  onUserLoad(user) {
+    const filters = new DefaultFilters(user.login)
+    filters.addDefaults()
+    this.setState({ user, filters: Filters.findAll() })
   }
 
   setupAppMenu() {
@@ -71,12 +76,12 @@ class App extends React.Component {
 
   loadUser() {
     const github = new GitHub()
-    github.getCurrentUser().then(user => {
-      this.setState({ user })
-    }).catch(error => {
-      console.error('failed to load user', error)
-      GitHubAuth.deleteToken()
-    })
+    github.getCurrentUser()
+          .then(user => this.onUserLoad(user))
+          .catch(error => {
+            console.error('failed to load user', error)
+            GitHubAuth.deleteToken()
+          })
   }
 
   showNewFilterForm() {
@@ -135,7 +140,7 @@ class App extends React.Component {
   }
 
   finishedWithAuth(user) {
-    this.setState({ user })
+    this.onUserLoad(user)
     this.showTaskList()
   }
 
