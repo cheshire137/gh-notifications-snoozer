@@ -6,6 +6,14 @@ class Fetcher {
   get(url, opts) {
     const options = opts || {}
     options.method = 'GET'
+    console.info('GET', url)
+    return this.makeRequest(url, options)
+  }
+
+  patch(url, opts) {
+    const options = opts || {}
+    options.method = 'PATCH'
+    console.info('PATCH', url)
     return this.makeRequest(url, options)
   }
 
@@ -15,8 +23,16 @@ class Fetcher {
       options.headers = {}
     }
     return new Promise((resolve, reject) => {
-      fetch(url, options).then((response) => {
-        this.handleJsonResponse(response, url, resolve, reject)
+      fetch(url, options).then(response => {
+        if (options.ignoreBody) {
+          if (response.ok) {
+            resolve()
+          } else {
+            reject()
+          }
+        } else {
+          this.handleJsonResponse(response, url, resolve, reject)
+        }
       }).catch(reject)
     })
   }
