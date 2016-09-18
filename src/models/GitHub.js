@@ -11,11 +11,11 @@ function getTask(data) {
   const repository = repoUrl.slice(repoUrlPrefix.length)
   const repositoryOwner = repository.split('/')[0]
   const type = typeof data.pull_request === 'object' ? 'pull' : 'issue'
-  return {
   let apiUrl = data.url
   if (type === 'pull') {
     apiUrl = apiUrl.replace(/\/issues\//, '/pulls/')
   }
+  return {
     storageKey: `${type}-${data.id}`,
     id: data.id,
     type,
@@ -49,7 +49,10 @@ class GitHub extends Fetcher {
 
   // https://developer.github.com/v3/activity/notifications/#list-your-notifications
   getNotifications() {
-    return this.get('notifications')
+    const pastDate = new Date()
+    pastDate.setDate(pastDate.getDate() - 31)
+    const dateStr = pastDate.toISOString()
+    return this.get(`notifications?since=${encodeURIComponent(dateStr)}`)
   }
 
   // https://developer.github.com/v3/search/#search-issues
