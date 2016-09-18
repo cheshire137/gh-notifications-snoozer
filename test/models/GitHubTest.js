@@ -41,4 +41,23 @@ describe('GitHub', () => {
       assert.equal(expected, actual)
     })
   })
+
+  describe('combineJson', () => {
+    it('combines two arrays', () => {
+      const json1 = [{ cat: 1 }]
+      const json2 = [{ dog: 2, frog: 3 }]
+
+      const github = new GitHub()
+      const actual = github.combineJson(json1, json2)
+      assert.deepEqual([{ cat: 1 }, { dog: 2, frog: 3 }], actual)
+    })
+
+    it('returns first JSON if second is omitted', () => {
+      const json = [{ id: 3, hello: 'yes' }]
+
+      const github = new GitHub()
+      const actual = github.combineJson(json)
+      assert.deepEqual(json, actual)
+    })
+  })
 })

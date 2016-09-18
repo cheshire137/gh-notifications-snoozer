@@ -69,6 +69,18 @@ class GitHub extends Fetcher {
     }
     return super.get(url, options)
 
+  combineJson(json1, json2) {
+    if (typeof json2 === 'undefined') {
+      return json1
+    }
+    const is1Array = json1.constructor.name === 'Array'
+    const is2Array = json2.constructor.name === 'Array'
+    if (is1Array && is2Array) {
+      return json1.concat(json2)
+    }
+    return Object.assign({}, json1, json2)
+  }
+
   // Sample input:
   // Link: <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=15>; rel="next",
   // <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=34>; rel="last",
