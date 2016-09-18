@@ -68,6 +68,27 @@ class GitHub extends Fetcher {
       },
     }
     return super.get(url, options)
+
+  // Sample input:
+  // Link: <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=15>; rel="next",
+  // <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=34>; rel="last",
+  // <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=1>; rel="first",
+  // <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=13>; rel="prev"
+  //
+  // Sample output:
+  // https://api.github.com/search/code?q=addClass+user%3Amozilla&page=15
+  parseLinkHeader(link) {
+    const urlsAndRels = link.split(',')
+    let nextUrl
+    urlsAndRels.forEach(str => {
+      const urlAndRel = str.trim().split('; ')
+      if (urlAndRel[1] === 'rel="next"') {
+        const urlInBrackets = urlAndRel[0]
+        nextUrl = urlInBrackets.slice(1, urlInBrackets.length - 1)
+        return
+      }
+    })
+    return nextUrl
   }
 }
 
