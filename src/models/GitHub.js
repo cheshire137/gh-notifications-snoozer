@@ -88,7 +88,7 @@ class GitHub extends Fetcher {
       if (nextUrl) {
         return this.get(nextUrl, combinedJson).then(resolve).catch(reject)
       }
-      return resolve(json)
+      return resolve(combinedJson)
     }).catch(reject))
   }
 
