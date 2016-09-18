@@ -49,10 +49,12 @@ function updateTasks(tasks, action) {
 
   // Update tasks with new values and add new tasks
   action.tasks.forEach(task => {
+    const updatedTask = Object.assign({}, tasksByKey[task.storageKey], task)
     const notificationUrl = notificationUrls[task.apiUrl]
-    tasksByKey[task.storageKey] = Object.assign(
-      {}, tasksByKey[task.storageKey], task, { notificationUrl }
-    )
+    if (notificationUrl) {
+      updatedTask.notificationUrl = notificationUrl
+    }
+    tasksByKey[task.storageKey] = updatedTask
   })
 
   const updatedTasks = Object.keys(tasksByKey).map(key => {
