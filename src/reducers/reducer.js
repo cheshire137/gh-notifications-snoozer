@@ -28,6 +28,9 @@ function writeChanges(tasks, typeKey) {
 
 function notificationsBySubject(notifications) {
   const result = {}
+  if (typeof notifications === 'undefined') {
+    return result
+  }
   notifications.forEach(notification => {
     result[notification.subject.url] = notification.url
   })
