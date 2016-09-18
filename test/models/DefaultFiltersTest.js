@@ -23,8 +23,11 @@ describe('DefaultFilters', () => {
       assert(storage.has('My Popular Items'))
     })
 
-    it('saves the DEFAULT_FILTER_KEY', () => {
+    it('saves the list of filter names in DEFAULT_FILTER_KEY', () => {
       assert(storage.has(DEFAULT_FILTER_KEY))
+      assert.deepEqual(['My Repositories', 'My Issues', 'My Pull Requests',
+                        'My Comments', 'My Assignments', 'My Mentions',
+                        'My Popular Items'], storage.get(DEFAULT_FILTER_KEY))
     })
 
     it('has correct value for My Issues', () => {

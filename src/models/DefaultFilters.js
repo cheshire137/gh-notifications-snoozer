@@ -48,7 +48,7 @@ class DefaultFilters {
     })
 
     LastFilter.save(filterNames[0])
-    storage.set(DEFAULT_FILTER_KEY, 'default-filters')
+    storage.set(DEFAULT_FILTER_KEY, filterNames)
   }
 }
 
