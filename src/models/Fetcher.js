@@ -24,7 +24,7 @@ class Fetcher {
   handleJsonResponse(response, url, resolve, reject) {
     response.json().then((json) => {
       if (response.ok) {
-        resolve(json)
+        resolve({ json, headers: response.headers })
       } else {
         const jsonError = json
         jsonError.url = url

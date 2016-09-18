@@ -59,15 +59,34 @@ class GitHub extends Fetcher {
     return this.get('user')
   }
 
-  get(relativeUrl) {
-    const url = `${Config.githubApiUrl}/${relativeUrl}`
-    const options = {
+  get(relativeOrAbsoluteUrl, previousJson) {
+    let url = relativeOrAbsoluteUrl
+    if (url.indexOf('http') !== 0) {
+      url = `${Config.githubApiUrl}/${relativeOrAbsoluteUrl}`
+    }
+    if (!this.token) {
+      this.token = GitHubAuth.getToken()
+    }
+    const opts = {
       headers: {
         Accept: 'application/vnd.github.v3+json',
-        Authorization: `token ${this.token || GitHubAuth.getToken()}`,
+        Authorization: `token ${this.token}`,
       },
     }
-    return super.get(url, options)
+    return new Promise((resolve, reject) => super.get(url, opts).then(res => {
+      const { json, headers } = res
+      const combinedJson = this.combineJson(json, previousJson)
+      const link = headers.get('Link')
+      if (!link) {
+        return resolve(combinedJson)
+      }
+      const nextUrl = this.getNextUrl(link)
+      if (nextUrl) {
+        return this.get(nextUrl, combinedJson).then(resolve).catch(reject)
+      }
+      return resolve(json)
+    }).catch(reject))
+  }
 
   combineJson(json1, json2) {
     if (typeof json2 === 'undefined') {
