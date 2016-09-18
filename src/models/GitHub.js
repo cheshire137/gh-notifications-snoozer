@@ -24,6 +24,7 @@ function getTask(data) {
     isPullRequest: !!data.pull_request,
     repositoryApiUrl: repoUrl,
     url: data.html_url,
+    apiUrl: data.url,
     number: data.number,
     repository,
     repositoryOwner,
