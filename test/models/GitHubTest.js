@@ -24,7 +24,7 @@ describe('GitHub', () => {
     })
   })
 
-  describe('parseLinkHeader', () => {
+  describe('getNextUrl', () => {
     it('returns next link', () => {
       const header = '<https://api.github.com/search/code?q=addClass' +
           '+user%3Amozilla&page=15>; rel="next", <https://api.github.com' +
@@ -32,9 +32,12 @@ describe('GitHub', () => {
           '<https://api.github.com/search/code?q=addClass+user%3Amozilla&' +
           'page=1>; rel="first", <https://api.github.com/search/' +
           'code?q=addClass+user%3Amozilla&page=13>; rel="prev"'
-      const github = new GitHub()
+
       const expected = 'https://api.github.com/search/code?q=addClass+user%3Amozilla&page=15'
-      const actual = github.parseLinkHeader(header)
+
+      const github = new GitHub()
+      const actual = github.getNextUrl(header)
+
       assert.equal(expected, actual)
     })
   })

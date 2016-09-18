@@ -77,7 +77,7 @@ class GitHub extends Fetcher {
   //
   // Sample output:
   // https://api.github.com/search/code?q=addClass+user%3Amozilla&page=15
-  parseLinkHeader(link) {
+  getNextUrl(link) {
     const urlsAndRels = link.split(',')
     let nextUrl
     urlsAndRels.forEach(str => {
