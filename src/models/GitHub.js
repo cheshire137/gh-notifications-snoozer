@@ -25,7 +25,7 @@ function getTask(data) {
     createdAt: data.created_at,
     updatedAt: data.updated_at,
     closedAt: data.closed_at,
-    isPullRequest: !!data.pull_request,
+    isPullRequest: type === 'pull',
     repositoryApiUrl: repoUrl,
     url: data.html_url,
     apiUrl,
