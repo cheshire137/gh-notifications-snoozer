@@ -12,6 +12,10 @@ function getTask(data) {
   const repositoryOwner = repository.split('/')[0]
   const type = typeof data.pull_request === 'object' ? 'pull' : 'issue'
   return {
+  let apiUrl = data.url
+  if (type === 'pull') {
+    apiUrl = apiUrl.replace(/\/issues\//, '/pulls/')
+  }
     storageKey: `${type}-${data.id}`,
     id: data.id,
     type,
@@ -24,7 +28,7 @@ function getTask(data) {
     isPullRequest: !!data.pull_request,
     repositoryApiUrl: repoUrl,
     url: data.html_url,
-    apiUrl: data.url,
+    apiUrl,
     number: data.number,
     repository,
     repositoryOwner,
