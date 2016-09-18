@@ -48,10 +48,13 @@ class GitHub extends Fetcher {
   }
 
   // https://developer.github.com/v3/activity/notifications/#list-your-notifications
-  getNotifications() {
-    const pastDate = new Date()
-    pastDate.setDate(pastDate.getDate() - 31)
-    const dateStr = pastDate.toISOString()
+  getNotifications(sinceDate) {
+    let date = sinceDate
+    if (typeof date === 'undefined') {
+      date = new Date()
+      date.setDate(date.getDate() - 31)
+    }
+    const dateStr = date.toISOString()
     return this.get(`notifications?since=${encodeURIComponent(dateStr)}`)
   }
 

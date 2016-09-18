@@ -5,6 +5,8 @@ const Config = require('../../src/config.json')
 
 describe('GitHub', () => {
   describe('getNotifications', () => {
+    const date = new Date()
+
     const notifications = [{
       id: '153473891',
       last_read_at: '2016-07-22T19:36:40Z',
@@ -12,12 +14,14 @@ describe('GitHub', () => {
     }]
 
     before(() => {
-      fetchMock.get(`${Config.githubApiUrl}/notifications`, notifications)
+      const since = encodeURIComponent(date.toISOString())
+      fetchMock.get(`${Config.githubApiUrl}/notifications?since=${since}`,
+                    notifications)
     })
 
     it('returns a list of notifications', done => {
       const github = new GitHub()
-      github.getNotifications().then(actual => {
+      github.getNotifications(date).then(actual => {
         assert.deepEqual(notifications, actual)
         done()
       })
