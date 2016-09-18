@@ -66,20 +66,37 @@ class GitHub extends Fetcher {
     return this.get('user')
   }
 
+  // https://developer.github.com/v3/activity/notifications/#mark-a-thread-as-read
+  markAsRead(url) {
+    return this.patch(url, { ignoreBody: true })
+  }
+
+  patch(relativeOrAbsoluteUrl, opts) {
+    let url = relativeOrAbsoluteUrl
+    if (url.indexOf('http') !== 0) {
+      url = `${Config.githubApiUrl}/${relativeOrAbsoluteUrl}`
+    }
+    const options = opts || {}
+    options.headers = this.getHeaders()
+    return super.patch(url, options)
+  }
+
+  getHeaders() {
+    if (!this.token) {
+      this.token = GitHubAuth.getToken()
+    }
+    return {
+      Accept: 'application/vnd.github.v3+json',
+      Authorization: `token ${this.token}`,
+    }
+  }
+
   get(relativeOrAbsoluteUrl, previousJson) {
     let url = relativeOrAbsoluteUrl
     if (url.indexOf('http') !== 0) {
       url = `${Config.githubApiUrl}/${relativeOrAbsoluteUrl}`
     }
-    if (!this.token) {
-      this.token = GitHubAuth.getToken()
-    }
-    const opts = {
-      headers: {
-        Accept: 'application/vnd.github.v3+json',
-        Authorization: `token ${this.token}`,
-      },
-    }
+    const opts = { headers: this.getHeaders() }
     return new Promise((resolve, reject) => super.get(url, opts).then(res => {
       const { json, headers } = res
       const combinedJson = this.combineJson(json, previousJson)
