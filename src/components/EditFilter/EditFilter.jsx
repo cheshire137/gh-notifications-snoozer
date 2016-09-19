@@ -53,7 +53,7 @@ class EditFilter extends React.Component {
     }
     return (
       <div>
-        <div className="edit-filter-container">
+        <div className="view-container">
           <form className="edit-filter-form" onSubmit={event => this.save(event)}>
             <label className="label">Search query:</label>
             <p className="control">

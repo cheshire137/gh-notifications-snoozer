@@ -39,7 +39,7 @@ class NewFilter extends React.Component {
     }
     return (
       <div>
-        <div className="new-filter-container">
+        <div className="view-container">
           <form className="new-filter-form" onSubmit={event => this.save(event)}>
             <label className="label">Search query:</label>
             <p className="control">
