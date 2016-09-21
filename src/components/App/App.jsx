@@ -14,11 +14,16 @@ const NewFilter = require('../NewFilter')
 const EditFilter = require('../EditFilter')
 const About = require('../About')
 const Auth = require('../Auth')
+const HiddenTaskList = require('../HiddenTaskList')
 
 class App extends React.Component {
   constructor() {
     super()
-    this.state = { view: 'tasks', filters: Filters.findAll() }
+    this.state = {
+      view: 'tasks',
+      filters: Filters.findAll(),
+      filter: LastFilter.retrieve(),
+    }
   }
 
   componentDidMount() {
@@ -26,9 +31,8 @@ class App extends React.Component {
     this.setupAppMenu()
     if (GitHubAuth.isAuthenticated()) {
       this.loadUser()
-      const key = LastFilter.retrieve()
-      if (key) {
-        this.loadFilter(key)
+      if (this.state.filter) {
+        this.loadFilter(this.state.filter)
       } else {
         this.manageFilters()
       }
@@ -101,6 +105,7 @@ class App extends React.Component {
     this.props.dispatch({ type: 'TASKS_EMPTY' })
     LastFilter.save(key)
     const filter = new Filter(key)
+    this.setState({ filter: key })
     const query = filter.retrieve()
     this.loadTasks(query)
   }
@@ -116,9 +121,15 @@ class App extends React.Component {
     this.setState({ filters: remainingFilters })
   }
 
+  showHidden() {
+    ipcRenderer.send('title', 'Hidden Tasks')
+    this.changeView('hidden')
+  }
+
   editFilter(key) {
     const filter = new Filter(key)
     this.setState({ filter }, () => {
+      ipcRenderer.send('title', `Edit Filter ${key}`)
       this.changeView('edit-filter')
     })
   }
@@ -151,6 +162,7 @@ class App extends React.Component {
           changeFilter={key => this.loadFilter(key)}
           manageFilters={() => this.manageFilters()}
           user={this.state.user}
+          showHidden={() => this.showHidden()}
           showAuth={() => this.showAuth()}
         />
       )
@@ -184,6 +196,15 @@ class App extends React.Component {
       return (
         <About
           cancel={() => this.showTaskList()}
+        />
+      )
+    }
+
+    if (this.state.view === 'hidden') {
+      return (
+        <HiddenTaskList
+          cancel={() => this.showTaskList()}
+          activeFilter={this.state.filter}
         />
       )
     }
