@@ -38,13 +38,13 @@ describe('NewFilter', () => {
   })
 
   it('shows the form', () => {
-    const newFilterForm = renderedDOM().querySelectorAll('.new-filter-form')
-    assert.equal(1, newFilterForm.length)
+    const newFilterForm = renderedDOM().querySelector('.new-filter-form')
+    assert(newFilterForm)
   })
 
   describe('Create', () => {
     it('has a save button', () => {
-      const saveButton = renderedDOM().querySelector('#new-filter-save')
+      const saveButton = renderedDOM().querySelector('button[type="submit"]')
       assert(saveButton)
     })
 
@@ -61,7 +61,8 @@ describe('NewFilter', () => {
       valueInput.value = filter
       TestUtils.Simulate.change(valueInput)
       TestUtils.Simulate.submit(filterForm)
-      assert.equal(storage.get(filter), 'author:LuluPopplewell')
+      assert.equal('author:LuluPopplewell', storage.get(filter))
+      assert.equal('author:LuluPopplewell', storage.get('last-filter'))
     })
   })
 })
