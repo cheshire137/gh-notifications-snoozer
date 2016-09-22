@@ -4,11 +4,11 @@ const Config = require('../config.json')
 const Fetcher = require('./Fetcher')
 const GitHubAuth = require('./GitHubAuth')
 
-const repoUrlPrefix = 'https://api.github.com/repos/'
+const REPO_URL_PREFIX = 'https://api.github.com/repos/'
 
 function getTask(data) {
   const repoUrl = data.repository_url
-  const repository = repoUrl.slice(repoUrlPrefix.length)
+  const repository = repoUrl.slice(REPO_URL_PREFIX.length)
   const repositoryOwner = repository.split('/')[0]
   const type = typeof data.pull_request === 'object' ? 'pull' : 'issue'
   return {

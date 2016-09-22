@@ -5,6 +5,7 @@ const TaskListItem = require('../TaskListItem')
 const hookUpStickyNav = require('../hookUpStickyNav')
 const Filters = require('../../models/Filters')
 const LastFilter = require('../../models/LastFilter')
+const TaskVisibility = require('../../models/TaskVisibility')
 
 class TaskList extends React.Component {
   onSnoozeClick(event) {
@@ -39,6 +40,7 @@ class TaskList extends React.Component {
   render() {
     const filters = Filters.findAll()
     const lastFilterKey = LastFilter.retrieve()
+    const visibleTasks = this.props.tasks.filter(task => TaskVisibility.isVisibleTask(task))
     return (
       <div>
         <nav id="task-list-navigation" className="secondary-nav nav">
@@ -100,7 +102,7 @@ class TaskList extends React.Component {
         </nav>
         <div className="task-list-container">
           <ol className="task-list">
-            {this.props.tasks.map(task =>
+            {visibleTasks.map(task =>
               <TaskListItem {...task} key={task.storageKey} />
             )}
           </ol>
@@ -120,6 +122,7 @@ TaskList.propTypes = {
   user: React.PropTypes.object,
   manageFilters: React.PropTypes.func.isRequired,
   showAuth: React.PropTypes.func.isRequired,
+  showHidden: React.PropTypes.func.isRequired,
 }
 
 module.exports = connect(mapStateToProps)(hookUpStickyNav(TaskList, 'task-list-navigation'))

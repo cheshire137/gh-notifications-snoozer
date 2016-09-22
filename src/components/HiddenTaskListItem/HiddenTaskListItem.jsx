@@ -2,7 +2,7 @@ const React = require('react')
 const { shell } = require('electron')
 const { connect } = require('react-redux')
 
-class TaskListItem extends React.Component {
+class HiddenTaskListItem extends React.Component {
   onChange(event) {
     const { storageKey } = this.props
     const type = event.target.checked ? 'TASKS_SELECT' : 'TASKS_DESELECT'
@@ -103,7 +103,7 @@ class TaskListItem extends React.Component {
   }
 }
 
-TaskListItem.propTypes = {
+HiddenTaskListItem.propTypes = {
   ignore: React.PropTypes.bool,
   snoozedAt: React.PropTypes.string,
   archivedAt: React.PropTypes.string,
@@ -123,4 +123,4 @@ TaskListItem.propTypes = {
   isPullRequest: React.PropTypes.bool.isRequired,
 }
 
-module.exports = connect()(TaskListItem)
+module.exports = connect()(HiddenTaskListItem)
