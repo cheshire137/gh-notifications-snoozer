@@ -2,6 +2,7 @@ const React = require('react')
 const Filter = require('../../models/Filter')
 const FilterHelp = require('../FilterHelp')
 const hookUpStickyNav = require('../hookUpStickyNav')
+const LastFilter = require('../../models/LastFilter')
 
 class NewFilter extends React.Component {
   constructor() {
@@ -24,6 +25,8 @@ class NewFilter extends React.Component {
     }
     const filter = new Filter(key)
     filter.store(value)
+    LastFilter.save(key)
+    this.props.loadFilter(key)
     this.props.save(key)
   }
 
@@ -77,7 +80,7 @@ class NewFilter extends React.Component {
               />
             </p>
             <p className="control">
-              <button type="submit" className="button is-primary">
+              <button type="submit" className="button is-primary" id="new-filter-save">
                 Save Filter
               </button>
               <button
@@ -98,6 +101,7 @@ NewFilter.propTypes = {
   save: React.PropTypes.func.isRequired,
   cancel: React.PropTypes.func.isRequired,
   manageFilters: React.PropTypes.func.isRequired,
+  loadFilter: React.PropTypes.func.isRequired,
 }
 
 module.exports = hookUpStickyNav(NewFilter, 'new-filter-top-navigation')
