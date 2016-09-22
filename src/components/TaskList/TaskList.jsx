@@ -67,6 +67,14 @@ class TaskList extends React.Component {
                 className="is-link button"
               ><span className="octicon octicon-sync"></span></button>
             </span>
+            <span className="nav-item">
+              <button
+                onClick={() => this.props.showHidden()}
+                type="button"
+                className="is-link button"
+                title="Show hidden tasks"
+              ><span className="octicon octicon-eye"></span></button>
+            </span>
           </div>
           <div className="nav-right">
             <span className="nav-item">

@@ -65,6 +65,7 @@ class App extends React.Component {
           manageFilters={() => this.manageFilters()}
           user={this.state.user}
           showAuth={() => this.showAuth()}
+          showHidden={() => this.showHidden()}
         />)
       case 'filters': return (
         <FilterList

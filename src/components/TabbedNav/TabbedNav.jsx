@@ -9,19 +9,19 @@ class TabbedNav extends React.Component {
           <li className={this.props.active === 'tasks' ? 'is-active' : ''}>
             <a id="notifications-link" onClick={this.props.showTasks}>
               <span className="tab octicon octicon-mail"></span>
-              <span> Notifications</span>
+              <span>Tasks</span>
             </a>
           </li>
           <li className={this.props.active === 'filters' ? 'is-active' : ''}>
             <a id="filters-link" onClick={this.props.manageFilters}>
-              <span className="tab octicon octicon-beaker"></span><span> Filters</span>
+              <span className="tab octicon octicon-beaker"></span><span>Filters</span>
             </a>
           </li>
           <li className={this.props.active === 'auth' ? 'is-active' : ''}>
             {typeof this.props.user === 'object' ? (
               <a id="auth-link" onClick={this.props.showAuth}>
                 <span className="tab octicon octicon-mark-github"></span>
-                <span> {this.props.user.login}</span>
+                <span>{this.props.user.login}</span>
               </a>
             ) : ''}
           </li>
