@@ -28,7 +28,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    ipcRenderer.send('title', 'Notifications')
+    ipcRenderer.send('title', 'Tasks')
     this.setupAppMenu()
     if (GitHubAuth.isAuthenticated()) {
       this.loadUser()
@@ -142,14 +142,14 @@ class App extends React.Component {
   }
 
   savedFilter() {
-    ipcRenderer.send('title', 'Notifications')
+    ipcRenderer.send('title', 'Tasks')
     this.setState({ filters: Filters.findAll() }, () => {
       this.changeView('tasks')
     })
   }
 
   showTaskList() {
-    ipcRenderer.send('title', 'Notifications')
+    ipcRenderer.send('title', 'Tasks')
     this.changeView('tasks')
   }
 
