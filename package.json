@@ -15,15 +15,15 @@
     "redux-persist-node-storage": "^1.0.2"
   },
   "devDependencies": {
-    "electron-mocha": "^2.3.1",
+    "electron-mocha": "^3.1.0",
     "electron-prebuilt-compile": "^1.2.5",
-    "eslint": "^3.0.1",
-    "eslint-config-airbnb": "^9.0.1",
-    "eslint-plugin-import": "^1.11.0",
-    "eslint-plugin-jsx-a11y": "^2.0.1",
-    "eslint-plugin-react": "^5.2.2",
+    "eslint": "^3.5.0",
+    "eslint-config-airbnb": "^11.1.0",
+    "eslint-plugin-import": "^1.15.0",
+    "eslint-plugin-jsx-a11y": "^2.2.2",
+    "eslint-plugin-react": "^6.3.0",
     "fetch-mock": "^5.0.2",
-    "mocha": "^2.5.3",
+    "mocha": "^3.0.2",
     "react-addons-test-utils": "^15.2.1",
     "redux-devtools": "^3.3.1",
     "xvfb-maybe": "^0.1.3"
