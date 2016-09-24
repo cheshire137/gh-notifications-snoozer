@@ -5,6 +5,7 @@ const TaskListItem = require('../TaskListItem')
 const hookUpStickyNav = require('../hookUpStickyNav')
 const Filters = require('../../models/Filters')
 const LastFilter = require('../../models/LastFilter')
+const TaskVisibility = require('../../models/TaskVisibility')
 
 class TaskList extends React.Component {
   onSnoozeClick(event) {
@@ -39,6 +40,7 @@ class TaskList extends React.Component {
   render() {
     const filters = Filters.findAll()
     const lastFilterKey = LastFilter.retrieve()
+    const visibleTasks = this.props.tasks.filter(task => TaskVisibility.isVisibleTask(task))
     return (
       <div>
         <nav id="task-list-navigation" className="top-nav nav">
@@ -71,24 +73,30 @@ class TaskList extends React.Component {
             <span className="nav-item">
               {typeof this.props.user === 'object' ? (
                 <button
-                  onClick={this.props.showAuth}
+                  onClick={() => this.props.showAuth()}
                   type="button"
                   className="is-link button"
                   title="Authenticate"
                 >{this.props.user.login}</button>
               ) : ''}
               <button
-                onClick={this.props.manageFilters}
+                onClick={() => this.props.manageFilters()}
                 type="button"
                 className="is-link button"
                 title="Manage filters"
               ><span className="octicon octicon-beaker"></span></button>
               <button
-                onClick={this.props.addFilter}
+                onClick={() => this.props.addFilter()}
                 type="button"
                 className="is-link button"
                 title="Add a filter"
               ><span className="octicon octicon-plus"></span></button>
+              <button
+                onClick={() => this.props.showHidden()}
+                type="button"
+                className="is-link button"
+                title="Show hidden tasks"
+              ><span className="octicon octicon-eye"></span></button>
             </span>
           </div>
         </nav>
@@ -117,7 +125,7 @@ class TaskList extends React.Component {
             >❌</button>
           </nav>
           <ol className="task-list">
-            {this.props.tasks.map(task =>
+            {visibleTasks.map(task =>
               <TaskListItem {...task} key={task.storageKey} />
             )}
           </ol>
@@ -137,6 +145,7 @@ TaskList.propTypes = {
   user: React.PropTypes.object,
   manageFilters: React.PropTypes.func.isRequired,
   showAuth: React.PropTypes.func.isRequired,
+  showHidden: React.PropTypes.func.isRequired,
 }
 
 module.exports = connect(mapStateToProps)(hookUpStickyNav(TaskList, 'task-list-navigation'))
