@@ -23,8 +23,6 @@ body {
 
 .top-nav, .secondary-nav, .tertiary-nav {
   z-index: 5;
-  margin-bottom: 15px;
-  border-bottom: 1px solid rgba(211, 214, 219, 0.5);
 
   .button.is-link, .label {
     text-decoration: none;
@@ -40,18 +38,28 @@ body {
   padding-bottom: 0;
 }
 
-.secondary-nav.has-tertiary-nav {
-  margin-bottom: 0;
-  border-bottom: 0;
+.nav {
   min-height: 38px;
+}
 
-  .nav-item {
-    align-items: flex-end;
+.secondary-nav {
+  border-bottom: 1px solid rgba(211, 214, 219, 0.5);
+  margin-bottom: 15px;
+
+  &.has-tertiary-nav {
+    border-bottom: 0;
+    margin-bottom: 0;
+
+    .nav-item {
+      align-items: flex-end;
+    }
   }
 }
 
 .tertiary-nav {
   min-height: 0;
+  border-bottom: 1px solid rgba(211, 214, 219, 0.5);
+  margin-bottom: 15px;
 
   .nav-item {
     align-items: flex-start;
