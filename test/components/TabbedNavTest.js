@@ -12,13 +12,18 @@ describe('TabbedNav', () => {
     renderedDOM = () => ReactDOM.findDOMNode(component)
   })
 
-  it('has three links', () => {
-    const notificationsLink = renderedDOM().querySelectorAll('notifications-link')
-    const filtersLink = renderedDOM().querySelectorAll('filters-link')
-    const authLink = renderedDOM().querySelectorAll('auth-link')
+  it('has notifications link', () => {
+    const notificationsLink = renderedDOM().querySelector('#notifications-link')
+    assert(notificationsLink, 'Should have a notifications link')
+  })
 
-    assert(notificationsLink)
-    assert(filtersLink)
-    assert(authLink)
+  it('has filters link', () => {
+    const filtersLink = renderedDOM().querySelector('#filters-link')
+    assert(filtersLink, 'Should have a filters link')
+  })
+
+  it('has auth link', () => {
+    const authLink = renderedDOM().querySelector('#auth-link')
+    assert(authLink, 'Should have an auth link')
   })
 })
