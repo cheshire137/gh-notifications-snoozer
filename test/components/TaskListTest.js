@@ -59,33 +59,48 @@ describe('TaskList', () => {
   })
 
   it('does not show task that is ignored', () => {
-    store.dispatch({ type: 'TASKS_SELECT', task: {
-      storageKey: 'pull-8675309',
-    } })
+    assert.equal(1, renderedDOM().querySelectorAll('#pull-163031382').length)
+    store.dispatch({
+      type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
+    })
     store.dispatch({ type: 'TASKS_IGNORE' })
+    assert.equal(0, renderedDOM().querySelectorAll('#pull-163031382').length)
 
-    const taskListItems = renderedDOM().querySelectorAll('#pull-8675309')
-    assert.equal(0, taskListItems.length)
+    // Reset state
+    store.dispatch({
+      type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
+    })
+    store.dispatch({ type: 'TASKS_RESTORE' })
   })
 
   it('does not show task that is archived', () => {
-    store.dispatch({ type: 'TASKS_SELECT', task: {
-      storageKey: 'pull-163031382',
-    } })
+    assert.equal(1, renderedDOM().querySelectorAll('#pull-163031382').length)
+    store.dispatch({
+      type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
+    })
     store.dispatch({ type: 'TASKS_ARCHIVE' })
+    assert.equal(0, renderedDOM().querySelectorAll('#pull-163031382').length)
 
-    const taskListItems = renderedDOM().querySelectorAll('#pull-163031382')
-    assert.equal(0, taskListItems.length)
+    // Reset state
+    store.dispatch({
+      type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
+    })
+    store.dispatch({ type: 'TASKS_RESTORE' })
   })
 
   it('does not show task that is snoozed', () => {
-    store.dispatch({ type: 'TASKS_SELECT', task: {
-      storageKey: 'pull-163031382',
-    } })
+    assert.equal(1, renderedDOM().querySelectorAll('#pull-163031382').length)
+    store.dispatch({
+      type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
+    })
     store.dispatch({ type: 'TASKS_SNOOZE' })
+    assert.equal(0, renderedDOM().querySelectorAll('#pull-163031382').length)
 
-    const taskListItems = renderedDOM().querySelectorAll('#pull-163031382')
-    assert.equal(0, taskListItems.length)
+    // Reset state
+    store.dispatch({
+      type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
+    })
+    store.dispatch({ type: 'TASKS_RESTORE' })
   })
 
   context('when the snooze button is clicked', () => {
