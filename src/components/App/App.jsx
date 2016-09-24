@@ -90,6 +90,7 @@ class App extends React.Component {
           save={() => this.savedFilter()}
           cancel={() => this.showTaskList()}
           manageFilters={() => this.manageFilters()}
+          loadFilter={key => this.loadFilter(key)}
         />)
       case 'hidden': return (
         <HiddenTaskList
