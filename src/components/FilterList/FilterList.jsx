@@ -36,6 +36,9 @@ class FilterList extends React.Component {
       <div>
         <nav className="nav secondary-nav" id="filter-list-top-navigation">
           <div className="nav-left">
+            <h2 className="subtitle nav-item">
+              Manage Filters
+            </h2>
           </div>
           <div className="nav-right">
             <span className="nav-item">

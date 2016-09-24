@@ -2,6 +2,7 @@ const React = require('react')
 const Filter = require('../../models/Filter')
 const FilterHelp = require('../FilterHelp')
 const LastFilter = require('../../models/LastFilter')
+const hookUpStickyNav = require('../hookUpStickyNav')
 
 class NewFilter extends React.Component {
   constructor() {
@@ -41,6 +42,13 @@ class NewFilter extends React.Component {
     }
     return (
       <div>
+        <nav className="nav secondary-nav" id="new-filter-top-navigation">
+          <div className="nav-left">
+            <h2 className="subtitle nav-item">
+              New Filter
+            </h2>
+          </div>
+        </nav>
         <div className="view-container">
           <form className="new-filter-form" onSubmit={event => this.save(event)}>
             <label className="label">Search query:</label>
@@ -86,4 +94,4 @@ NewFilter.propTypes = {
   loadFilter: React.PropTypes.func.isRequired,
 }
 
-module.exports = NewFilter
+module.exports = hookUpStickyNav(NewFilter, '#new-filter-top-navigation')

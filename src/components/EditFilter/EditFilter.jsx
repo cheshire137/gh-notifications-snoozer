@@ -1,6 +1,7 @@
 const React = require('react')
 const Filter = require('../../models/Filter')
 const FilterHelp = require('../FilterHelp')
+const hookUpStickyNav = require('../hookUpStickyNav')
 
 class EditFilter extends React.Component {
   constructor(props) {
@@ -52,6 +53,13 @@ class EditFilter extends React.Component {
     }
     return (
       <div>
+        <nav className="nav secondary-nav" id="edit-filter-top-navigation">
+          <div className="nav-left">
+            <h2 className="subtitle nav-item">
+              Edit Filter
+            </h2>
+          </div>
+        </nav>
         <div className="view-container">
           <form className="edit-filter-form" onSubmit={event => this.save(event)}>
             <label className="label">Search query:</label>
@@ -102,4 +110,4 @@ EditFilter.propTypes = {
   delete: React.PropTypes.func.isRequired,
 }
 
-module.exports = EditFilter
+module.exports = hookUpStickyNav(EditFilter, '#edit-filter-top-navigation')
