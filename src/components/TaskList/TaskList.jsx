@@ -40,7 +40,12 @@ class TaskList extends React.Component {
   render() {
     const filters = Filters.findAll()
     const lastFilterKey = LastFilter.retrieve()
-    const visibleTasks = this.props.tasks.filter(task => TaskVisibility.isVisibleTask(task))
+    const visibleTasks = this.props.tasks.
+        filter(task => TaskVisibility.isVisibleTask(task))
+    const isSnoozeDisabled = this.props.tasks.
+        filter(task => task.isSelected).length < 1
+    const isArchiveDisabled = isSnoozeDisabled
+    const isIgnoreDisabled = isSnoozeDisabled
     return (
       <div>
         <nav id="task-list-navigation" className="secondary-nav nav">
@@ -84,6 +89,7 @@ class TaskList extends React.Component {
                 className="control button is-link"
                 id="snooze-button"
                 title="Snooze selected"
+                disabled={isSnoozeDisabled}
               >😴 Snooze</button>
             </span>
             <span className="nav-item">
@@ -93,6 +99,7 @@ class TaskList extends React.Component {
                 className="control button is-link"
                 onClick={e => this.onArchiveClick(e)}
                 title="Archive selected"
+                disabled={isArchiveDisabled}
               >📥 Archive</button>
             </span>
             <span className="nav-item">
@@ -101,6 +108,7 @@ class TaskList extends React.Component {
                 className="control button is-link"
                 onClick={e => this.onIgnoreClick(e)}
                 title="Ignore selected"
+                disabled={isIgnoreDisabled}
               >❌ Ignore</button>
             </span>
           </div>
