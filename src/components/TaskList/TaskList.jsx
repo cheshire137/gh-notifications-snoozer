@@ -78,9 +78,6 @@ class TaskList extends React.Component {
           </div>
           <div className="nav-right">
             <span className="nav-item">
-              <label className="label">With selected:</label>
-            </span>
-            <span className="nav-item">
               <button
                 type="button"
                 onClick={e => this.onSnoozeClick(e)}
