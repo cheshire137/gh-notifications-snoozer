@@ -3,7 +3,6 @@ const shell = require('electron').shell
 
 const GitHubAuth = require('../../models/GitHubAuth')
 const GitHub = require('../../models/GitHub')
-const hookUpStickyNav = require('../hookUpStickyNav')
 
 class Auth extends React.Component {
   constructor() {
@@ -204,4 +203,4 @@ Auth.propTypes = {
   user: React.PropTypes.object,
 }
 
-module.exports = hookUpStickyNav(Auth, 'auth-top-navigation')
+module.exports = Auth
