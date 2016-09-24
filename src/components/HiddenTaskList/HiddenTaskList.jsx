@@ -16,24 +16,6 @@ class HiddenTaskList extends React.Component {
     this.props.cancel()
   }
 
-  navigation(tasks) {
-    if (tasks.length < 1) {
-      return
-    }
-    return (
-      <nav className="controls-container has-text-right">
-        <label className="label">With selected:</label>
-        <button
-          type="button"
-          onClick={e => this.onRestoreClick(e)}
-          className="control button is-link"
-          id="restore-button"
-          title="Restore selected"
-        >↩️</button>
-      </nav>
-    )
-  }
-
   emptyListMessage(tasks) {
     if (tasks.length > 0) {
       return
@@ -48,7 +30,10 @@ class HiddenTaskList extends React.Component {
 
   render() {
     const { activeFilter } = this.props
-    const hiddenTasks = this.props.tasks.filter(task => TaskVisibility.isHiddenTask(task))
+    const hiddenTasks = this.props.tasks.
+        filter(task => TaskVisibility.isHiddenTask(task))
+    const isRestoreDisabled = hiddenTasks.
+        filter(task => task.isSelected).length < 1
     return (
       <div>
         <nav id="hidden-task-list-navigation" className="secondary-nav nav">
@@ -58,9 +43,20 @@ class HiddenTaskList extends React.Component {
               <span className="subtitle"> in &ldquo;{activeFilter}&rdquo;</span>
             </h1>
           </div>
+          {hiddenTasks.length < 1 ? '' : (
+            <div className="nav-right">
+              <button
+                type="button"
+                onClick={e => this.onRestoreClick(e)}
+                className="control button is-link"
+                id="restore-button"
+                title="Restore selected"
+                disabled={isRestoreDisabled}
+              >↩️ Restore</button>
+            </div>
+          )}
         </nav>
         <div className="hidden-task-list-container">
-          {this.navigation(hiddenTasks)}
           {this.emptyListMessage(hiddenTasks)}
           <ol className="task-list">
             {hiddenTasks.map(task =>
