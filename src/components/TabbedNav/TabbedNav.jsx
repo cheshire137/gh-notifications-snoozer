@@ -21,7 +21,7 @@ class TabbedNav extends React.Component {
             {typeof this.props.user === 'object' ? (
               <a id="auth-link" onClick={this.props.showAuth}>
                 <span className="tab octicon octicon-mark-github"></span>
-                <span>{this.props.user.login}</span>
+                <span className="user-login">{this.props.user.login}</span>
               </a>
             ) : ''}
           </li>
