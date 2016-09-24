@@ -135,13 +135,15 @@ class Auth extends React.Component {
       <div>
         <nav id="auth-navigation" className="secondary-nav nav">
           <div className="nav-right">
-            <button
-              className="button is-link"
-              title="Sign out"
-              type="button"
-              onClick={event => this.deleteToken(event)}
-              disabled={!this.props.isAuthenticated}
-            >🔌 Log out</button>
+            <span className="nav-item">
+              <button
+                className="button is-link"
+                title="Sign out"
+                type="button"
+                onClick={event => this.deleteToken(event)}
+                disabled={!this.props.isAuthenticated}
+              >🔌 Log out</button>
+            </span>
           </div>
         </nav>
         <div className="view-container">

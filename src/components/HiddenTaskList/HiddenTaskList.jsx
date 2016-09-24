@@ -38,21 +38,22 @@ class HiddenTaskList extends React.Component {
       <div>
         <nav id="hidden-task-list-navigation" className="secondary-nav nav">
           <div className="nav-left">
-            <h1 className="title">
-              Hidden Tasks
-              <span className="subtitle"> in &ldquo;{activeFilter}&rdquo;</span>
-            </h1>
+            <h2 className="subtitle nav-item">
+              Hidden Tasks in &ldquo;{activeFilter}&rdquo;
+            </h2>
           </div>
           {hiddenTasks.length < 1 ? '' : (
             <div className="nav-right">
-              <button
-                type="button"
-                onClick={e => this.onRestoreClick(e)}
-                className="control button is-link"
-                id="restore-button"
-                title="Restore selected"
-                disabled={isRestoreDisabled}
-              >↩️ Restore</button>
+              <span className="nav-item">
+                <button
+                  type="button"
+                  onClick={e => this.onRestoreClick(e)}
+                  className="control button is-link"
+                  id="restore-button"
+                  title="Restore selected"
+                  disabled={isRestoreDisabled}
+                >↩️ Restore</button>
+              </span>
             </div>
           )}
         </nav>
