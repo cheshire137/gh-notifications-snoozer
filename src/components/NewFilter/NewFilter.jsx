@@ -42,24 +42,7 @@ class NewFilter extends React.Component {
     }
     return (
       <div>
-        <nav className="nav top-nav" id="new-filter-top-navigation">
-          <div className="nav-left">
-            <h1 className="title">
-              <a href="#" onClick={event => this.cancel(event)}>Tasks</a>
-              <span> / </span>
-              Add a Filter
-            </h1>
-          </div>
-          <div className="nav-right">
-            <button
-              onClick={() => this.props.manageFilters()}
-              type="button"
-              className="is-link button"
-              title="Manage filters"
-            ><span className="octicon octicon-beaker"></span></button>
-          </div>
-        </nav>
-        <div className="new-filter-container">
+        <div className="view-container">
           <form className="new-filter-form" onSubmit={event => this.save(event)}>
             <label className="label">Search query:</label>
             <p className="control">

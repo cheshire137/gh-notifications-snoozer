@@ -43,7 +43,7 @@ class TaskList extends React.Component {
     const visibleTasks = this.props.tasks.filter(task => TaskVisibility.isVisibleTask(task))
     return (
       <div>
-        <nav id="task-list-navigation" className="top-nav nav">
+        <nav id="task-list-navigation" className="secondary-nav nav">
           <div className="nav-left">
             <span className="nav-item">
               <span className="select">
@@ -67,30 +67,7 @@ class TaskList extends React.Component {
                 className="is-link button"
               ><span className="octicon octicon-sync"></span></button>
             </span>
-          </div>
-
-          <div className="nav-right">
             <span className="nav-item">
-              {typeof this.props.user === 'object' ? (
-                <button
-                  onClick={() => this.props.showAuth()}
-                  type="button"
-                  className="is-link button"
-                  title="Authenticate"
-                >{this.props.user.login}</button>
-              ) : ''}
-              <button
-                onClick={() => this.props.manageFilters()}
-                type="button"
-                className="is-link button"
-                title="Manage filters"
-              ><span className="octicon octicon-beaker"></span></button>
-              <button
-                onClick={() => this.props.addFilter()}
-                type="button"
-                className="is-link button"
-                title="Add a filter"
-              ><span className="octicon octicon-plus"></span></button>
               <button
                 onClick={() => this.props.showHidden()}
                 type="button"
@@ -99,31 +76,39 @@ class TaskList extends React.Component {
               ><span className="octicon octicon-eye"></span></button>
             </span>
           </div>
+          <div className="nav-right">
+            <span className="nav-item">
+              <label className="label">With selected:</label>
+            </span>
+            <span className="nav-item">
+              <button
+                type="button"
+                onClick={e => this.onSnoozeClick(e)}
+                className="control button is-link"
+                id="snooze-button"
+                title="Snooze selected"
+              >😴 Snooze</button>
+            </span>
+            <span className="nav-item">
+              <button
+                type="button"
+                id="archive-button"
+                className="control button is-link"
+                onClick={e => this.onArchiveClick(e)}
+                title="Archive selected"
+              >📥 Archive</button>
+            </span>
+            <span className="nav-item">
+              <button
+                type="button"
+                className="control button is-link"
+                onClick={e => this.onIgnoreClick(e)}
+                title="Ignore selected"
+              >❌ Ignore</button>
+            </span>
+          </div>
         </nav>
         <div className="task-list-container">
-          <nav className="controls-container has-text-right">
-            <label className="label">With selected:</label>
-            <button
-              type="button"
-              onClick={e => this.onSnoozeClick(e)}
-              className="control button is-link"
-              id="snooze-button"
-              title="Snooze selected"
-            >😴</button>
-            <button
-              type="button"
-              id="archive-button"
-              className="control button is-link"
-              onClick={e => this.onArchiveClick(e)}
-              title="Archive selected"
-            >📥</button>
-            <button
-              type="button"
-              className="control button is-link"
-              onClick={e => this.onIgnoreClick(e)}
-              title="Ignore selected"
-            >❌</button>
-          </nav>
           <ol className="task-list">
             {visibleTasks.map(task =>
               <TaskListItem {...task} key={task.storageKey} />

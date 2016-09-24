@@ -21,7 +21,7 @@ class FilterListItem extends React.Component {
               className="button is-link"
               title="Edit filter"
             >
-              <span className="octicon octicon-pencil"></span>
+              ✏️
             </button>
             <button
               onClick={() => this.props.delete(this.props.filter)}
@@ -29,7 +29,7 @@ class FilterListItem extends React.Component {
               className="button is-link"
               title="Delete filter"
             >
-              <span className="octicon octicon-trashcan"></span>
+              ❌
             </button>
           </div>
         </div>
