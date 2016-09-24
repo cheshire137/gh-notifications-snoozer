@@ -168,7 +168,7 @@ describe('TaskList', () => {
       store.dispatch({
         type: 'TASKS_UPDATE',
         tasks: [tasks[0], updatedTask],
-        notifications: []
+        notifications: [],
       })
 
       const taskListItems = renderedDOM().querySelectorAll('#issue-148539337')
@@ -194,7 +194,7 @@ describe('TaskList', () => {
       store.dispatch({
         type: 'TASKS_UPDATE',
         tasks: [updatedTask, tasks[1]],
-        notifications: []
+        notifications: [],
       })
 
       store.dispatch({ type: 'TASKS_DESELECT', task: {
@@ -220,7 +220,7 @@ describe('TaskList', () => {
       store.dispatch({
         type: 'TASKS_UPDATE',
         tasks: [tasks[0], updatedTask],
-        notifications: []
+        notifications: [],
       })
 
       const taskListItems = renderedDOM().querySelectorAll('#issue-148539337')
