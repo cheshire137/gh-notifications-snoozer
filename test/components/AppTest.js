@@ -64,6 +64,8 @@ describe('App', () => {
       GitHubAuth.setToken('test-whee')
       fetchMock.get(`${Config.githubApiUrl}/user`, { login: 'testuser123' })
       fetchMock.get(`${Config.githubApiUrl}/search/issues?q=cats`, [])
+      fetchMock.get(`${Config.githubApiUrl}/notifications?` +
+                    'since=2016-06-04T00%3A00%3A00.000Z', [])
     })
 
     after(() => {
@@ -78,11 +80,10 @@ describe('App', () => {
       renderPage(store)
 
       const fetchedCalls = fetchMock.calls().matched
-      assert.equal(2, fetchedCalls.length, 'Two fetch calls should be made')
-      assert(fetchedCalls[1][0].match(/\/search\/issues/),
-             'Fetch call should be to the search issues API')
       assert(fetchedCalls[0][0].match(/\/user/),
              'Fetch call should be to the user API')
+      assert(fetchedCalls[1][0].match(/\/notifications/),
+             'Fetch call should be to the notifications API')
     })
   })
 })
