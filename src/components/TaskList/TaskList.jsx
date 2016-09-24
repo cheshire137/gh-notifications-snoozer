@@ -42,7 +42,7 @@ class TaskList extends React.Component {
     const lastFilterKey = LastFilter.retrieve()
     const visibleTasks = this.props.tasks.
         filter(task => TaskVisibility.isVisibleTask(task))
-    const isSnoozeDisabled = this.props.tasks.
+    const isSnoozeDisabled = visibleTasks.
         filter(task => task.isSelected).length < 1
     const isArchiveDisabled = isSnoozeDisabled
     const isIgnoreDisabled = isSnoozeDisabled
