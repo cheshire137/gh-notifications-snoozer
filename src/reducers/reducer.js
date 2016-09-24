@@ -205,6 +205,7 @@ function restoreTasks(tasks) {
         archivedAt: null,
         ignore: false,
         snoozedAt: null,
+        isSelected: false,
       })
     }
     return task
