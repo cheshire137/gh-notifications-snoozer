@@ -91,19 +91,22 @@ class Auth extends React.Component {
       return ''
     }
     return (
-      <p className="notification is-success">
-        You are
-        {typeof this.props.user === 'object' ? (
-          <span> authenticated as
-            <strong> {this.props.user.login}</strong>.
-            <span> </span>
-            <a
-              href="#"
-              onClick={event => this.deleteToken(event)}
-            >Log out</a>
-          </span>
-        ) : ' authenticated.'}
-      </p>
+      <div>
+        <p className="content">
+          You are
+          {typeof this.props.user === 'object' ? (
+            <span> authenticated as
+              <strong> {this.props.user.login}</strong>.
+              <span> </span>
+              <a
+                href="#"
+                onClick={event => this.deleteToken(event)}
+              >Log out</a>
+            </span>
+          ) : ' authenticated.'}
+        </p>
+        <hr />
+      </div>
     )
   }
 
@@ -136,6 +139,7 @@ class Auth extends React.Component {
       <div>
         <div className="view-container">
           {this.authSuccessMessage()}
+          <h2 className="subtitle">Set Access Token</h2>
           <form className="auth-form" onSubmit={event => this.save(event)}>
             {this.tokenErrorMessage()}
             <p className="control">
@@ -182,7 +186,7 @@ class Auth extends React.Component {
               ) : ''}
             </p>
             <hr />
-            <h2 className="subtitle">Token Scope</h2>
+            <h2 className="subtitle">Token Scope Help</h2>
             <p>
               <img
                 className="scope-screenshot"
