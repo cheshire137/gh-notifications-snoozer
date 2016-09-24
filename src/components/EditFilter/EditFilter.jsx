@@ -1,7 +1,6 @@
 const React = require('react')
 const Filter = require('../../models/Filter')
 const FilterHelp = require('../FilterHelp')
-const hookUpStickyNav = require('../hookUpStickyNav')
 
 class EditFilter extends React.Component {
   constructor(props) {
@@ -103,4 +102,4 @@ EditFilter.propTypes = {
   delete: React.PropTypes.func.isRequired,
 }
 
-module.exports = hookUpStickyNav(EditFilter, 'edit-filter-top-navigation')
+module.exports = EditFilter
