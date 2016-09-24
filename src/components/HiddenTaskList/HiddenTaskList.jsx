@@ -56,7 +56,7 @@ class HiddenTaskList extends React.Component {
             </div>
           )}
         </nav>
-        <div className="hidden-task-list-container">
+        <div className="view-container">
           {this.emptyListMessage(hiddenTasks)}
           <ol className="task-list">
             {hiddenTasks.map(task =>

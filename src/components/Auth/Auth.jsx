@@ -2,6 +2,7 @@ const React = require('react')
 const shell = require('electron').shell
 
 const GitHubAuth = require('../../models/GitHubAuth')
+const hookUpStickyNav = require('../hookUpStickyNav')
 const GitHub = require('../../models/GitHub')
 
 class Auth extends React.Component {
@@ -97,11 +98,6 @@ class Auth extends React.Component {
           {typeof this.props.user === 'object' ? (
             <span> authenticated as
               <strong> {this.props.user.login}</strong>.
-              <span> </span>
-              <a
-                href="#"
-                onClick={event => this.deleteToken(event)}
-              >Log out</a>
             </span>
           ) : ' authenticated.'}
         </p>
@@ -137,9 +133,23 @@ class Auth extends React.Component {
     const authFile = GitHubAuth.path()
     return (
       <div>
+        <nav id="auth-navigation" className="secondary-nav nav">
+          <div className="nav-right">
+            <button
+              className="button is-link"
+              title="Sign out"
+              type="button"
+              onClick={event => this.deleteToken(event)}
+              disabled={!this.props.isAuthenticated}
+            >🔌 Log out</button>
+          </div>
+        </nav>
         <div className="view-container">
           {this.authSuccessMessage()}
-          <h2 className="subtitle">Set Access Token</h2>
+          <h2 className="subtitle">
+            <span>{this.props.isAuthenticated ? 'Change' : 'Set'} </span>
+            Access Token
+          </h2>
           <form className="auth-form" onSubmit={event => this.save(event)}>
             {this.tokenErrorMessage()}
             <p className="control">
@@ -207,4 +217,4 @@ Auth.propTypes = {
   user: React.PropTypes.object,
 }
 
-module.exports = Auth
+module.exports = hookUpStickyNav(Auth, '#auth-navigation')
