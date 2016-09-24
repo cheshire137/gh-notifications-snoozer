@@ -1,7 +1,6 @@
 const React = require('react')
 const Filter = require('../../models/Filter')
 const FilterHelp = require('../FilterHelp')
-const hookUpStickyNav = require('../hookUpStickyNav')
 const LastFilter = require('../../models/LastFilter')
 
 class NewFilter extends React.Component {
@@ -87,4 +86,4 @@ NewFilter.propTypes = {
   loadFilter: React.PropTypes.func.isRequired,
 }
 
-module.exports = hookUpStickyNav(NewFilter, 'new-filter-top-navigation')
+module.exports = NewFilter
