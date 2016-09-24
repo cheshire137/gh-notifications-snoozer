@@ -24,9 +24,15 @@ describe('TabbedNav', () => {
       assert(filtersLink, 'Should have a filters link')
     })
 
-    it('has no auth link', () => {
-      const authLinks = renderedDOM().querySelectorAll('#auth-link')
-      assert.equal(0, authLinks.length, 'Should not have an auth link')
+    it('has auth link', () => {
+      const authLink = renderedDOM().querySelector('#auth-link')
+      assert(authLink, 'Should have an auth link')
+      assert.equal('Authenticate', authLink.textContent)
+    })
+
+    it('does not display user login', () => {
+      const userLogins = renderedDOM().querySelectorAll('.user-login')
+      assert.equal(0, userLogins.length)
     })
   })
 
