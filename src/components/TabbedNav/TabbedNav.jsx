@@ -2,6 +2,11 @@ const React = require('react')
 const hookUpStickyNav = require('../hookUpStickyNav')
 
 class TabbedNav extends React.Component {
+  isFiltersActive() {
+    const filterViews = ['filters', 'new-filter', 'edit-filter']
+    return filterViews.indexOf(this.props.active) > -1
+  }
+
   render() {
     const { active, user, isAuthenticated } = this.props
     return (
@@ -18,7 +23,7 @@ class TabbedNav extends React.Component {
               <span>Tasks</span>
             </button>
           </li>
-          <li className={active === 'filters' ? 'is-active' : ''}>
+          <li className={this.isFiltersActive() ? 'is-active' : ''}>
             <button
               id="filters-link"
               onClick={this.props.manageFilters}
