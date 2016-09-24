@@ -87,25 +87,6 @@ class Auth extends React.Component {
     this.props.done()
   }
 
-  authSuccessMessage() {
-    if (!this.props.isAuthenticated) {
-      return ''
-    }
-    return (
-      <div>
-        <p className="content">
-          You are
-          {typeof this.props.user === 'object' ? (
-            <span> authenticated as
-              <strong> {this.props.user.login}</strong>.
-            </span>
-          ) : ' authenticated.'}
-        </p>
-        <hr />
-      </div>
-    )
-  }
-
   tokenErrorMessage() {
     if (!this.state.tokenHasError) {
       return ''
@@ -134,6 +115,13 @@ class Auth extends React.Component {
     return (
       <div>
         <nav id="auth-navigation" className="secondary-nav nav">
+          {this.props.isAuthenticated && typeof this.props.user === 'object' ? (
+            <div className="nav-left">
+              <span className="nav-item">
+                Signed in as <strong>&nbsp;{this.props.user.login}</strong>
+              </span>
+            </div>
+          ) : ''}
           <div className="nav-right">
             <span className="nav-item">
               <button
@@ -147,7 +135,6 @@ class Auth extends React.Component {
           </div>
         </nav>
         <div className="view-container">
-          {this.authSuccessMessage()}
           <h2 className="subtitle">
             <span>{this.props.isAuthenticated ? 'Change' : 'Set'} </span>
             Access Token
