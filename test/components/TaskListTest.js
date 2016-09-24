@@ -31,6 +31,8 @@ describe('TaskList', () => {
     fetchMock.get(`${Config.githubApiUrl}/user`, { login: 'testuser123' })
     fetchMock.get(`${Config.githubApiUrl}/search/issues?q=cats`,
                   { items: [fixtures.pullRequest, fixtures.issue] })
+    fetchMock.get(`${Config.githubApiUrl}/notifications?` +
+                  'since=2016-06-04T00%3A00%3A00.000Z', [])
 
     // Persist a filter
     const filter = new Filter('Cool name')
@@ -93,7 +95,11 @@ describe('TaskList', () => {
     after(() => {
       const task = store.getState().tasks[0]
       const updatedTask = Object.assign({}, task, { snoozedAt: null })
-      store.dispatch({ type: 'TASKS_UPDATE', tasks: [updatedTask] })
+      store.dispatch({
+        type: 'TASKS_UPDATE',
+        tasks: [updatedTask],
+        notifications: [],
+      })
 
       store.dispatch({ type: 'TASKS_DESELECT', task: {
         storageKey: 'pull-163031382',
@@ -117,7 +123,11 @@ describe('TaskList', () => {
       const updatedTask = Object.assign({}, tasks[1], {
         snoozedAt: pastSnooze.toISOString(),
       })
-      store.dispatch({ type: 'TASKS_UPDATE', tasks: [tasks[0], updatedTask] })
+      store.dispatch({
+        type: 'TASKS_UPDATE',
+        tasks: [tasks[0], updatedTask],
+        notifications: []
+      })
 
       const taskListItems = renderedDOM().querySelectorAll('#issue-148539337')
       assert.equal(1, taskListItems.length)
@@ -139,7 +149,11 @@ describe('TaskList', () => {
     after(() => {
       const tasks = store.getState().tasks
       const updatedTask = Object.assign({}, tasks[0], { archivedAt: null })
-      store.dispatch({ type: 'TASKS_UPDATE', tasks: [updatedTask, tasks[1]] })
+      store.dispatch({
+        type: 'TASKS_UPDATE',
+        tasks: [updatedTask, tasks[1]],
+        notifications: []
+      })
 
       store.dispatch({ type: 'TASKS_DESELECT', task: {
         storageKey: 'pull-163031382',
@@ -161,7 +175,11 @@ describe('TaskList', () => {
       const updatedTask = Object.assign({}, tasks[1], {
         updatedAt: new Date(archiveTime.getFullYear() + 1, 0, 1).toISOString(),
       })
-      store.dispatch({ type: 'TASKS_UPDATE', tasks: [tasks[0], updatedTask] })
+      store.dispatch({
+        type: 'TASKS_UPDATE',
+        tasks: [tasks[0], updatedTask],
+        notifications: []
+      })
 
       const taskListItems = renderedDOM().querySelectorAll('#issue-148539337')
       assert.equal(1, taskListItems.length)
