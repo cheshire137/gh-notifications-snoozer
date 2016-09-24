@@ -42,7 +42,7 @@ describe('App', () => {
     it('has a tabbed nav', () => {
       const appComponent = renderPage(store)
       const app = ReactDOM.findDOMNode(appComponent)
-      assert(app.querySelectorAll('tabbed-nav'))
+      assert(app.querySelector('#tabbed-nav'))
     })
 
     it('does not make request without a token', () => {
