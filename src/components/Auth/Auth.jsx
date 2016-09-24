@@ -135,13 +135,7 @@ class Auth extends React.Component {
     const authFile = GitHubAuth.path()
     return (
       <div>
-        <nav id="auth-top-navigation" className="nav top-nav">
-          <h1 className="title">
-            {this.tasksBackLink()}
-            Authenticate
-          </h1>
-        </nav>
-        <div className="auth-container">
+        <div className="view-container">
           {this.authSuccessMessage()}
           <form className="auth-form" onSubmit={event => this.save(event)}>
             {this.tokenErrorMessage()}

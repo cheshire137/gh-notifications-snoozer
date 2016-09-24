@@ -1,0 +1,6 @@
+{
+  "name": "TabbedNav",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./TabbedNav.jsx"
+}

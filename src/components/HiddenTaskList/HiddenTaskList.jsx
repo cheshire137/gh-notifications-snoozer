@@ -51,12 +51,10 @@ class HiddenTaskList extends React.Component {
     const hiddenTasks = this.props.tasks.filter(task => TaskVisibility.isHiddenTask(task))
     return (
       <div>
-        <nav id="hidden-task-list-navigation" className="top-nav nav">
+        <nav id="hidden-task-list-navigation" className="secondary-nav nav">
           <div className="nav-left">
             <h1 className="title">
-              <a href="#" onClick={event => this.cancel(event)}>Tasks</a>
-              <span> / </span>
-              Hidden
+              Hidden Tasks
               <span className="subtitle"> in &ldquo;{activeFilter}&rdquo;</span>
             </h1>
           </div>
