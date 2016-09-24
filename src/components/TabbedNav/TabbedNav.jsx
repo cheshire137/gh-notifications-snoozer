@@ -2,6 +2,11 @@ const React = require('react')
 const hookUpStickyNav = require('../hookUpStickyNav')
 
 class TabbedNav extends React.Component {
+  isTasksActive() {
+    const taskViews = ['tasks', 'hidden']
+    return taskViews.indexOf(this.props.active) > -1
+  }
+
   isFiltersActive() {
     const filterViews = ['filters', 'new-filter', 'edit-filter']
     return filterViews.indexOf(this.props.active) > -1
@@ -12,7 +17,7 @@ class TabbedNav extends React.Component {
     return (
       <nav id="tabbed-nav" className="top-nav nav tabs is-toggle is-fullwidth">
         <ul>
-          <li className={active === 'tasks' ? 'is-active' : ''}>
+          <li className={this.isTasksActive() ? 'is-active' : ''}>
             <button
               id="notifications-link"
               onClick={this.props.showTasks}
