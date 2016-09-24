@@ -39,4 +39,4 @@ TabbedNav.propTypes = {
   active: React.PropTypes.string,
 }
 
-module.exports = hookUpStickyNav(TabbedNav, 'tabbed-nav')
+module.exports = hookUpStickyNav(TabbedNav, '#tabbed-nav')

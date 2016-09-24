@@ -66,4 +66,4 @@ FilterList.propTypes = {
   cancel: React.PropTypes.func.isRequired,
 }
 
-module.exports = hookUpStickyNav(FilterList, 'filter-list-top-navigation')
+module.exports = hookUpStickyNav(FilterList, '#filter-list-top-navigation')
