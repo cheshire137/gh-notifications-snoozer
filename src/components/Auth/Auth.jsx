@@ -2,8 +2,8 @@ const React = require('react')
 const shell = require('electron').shell
 
 const GitHubAuth = require('../../models/GitHubAuth')
-const hookUpStickyNav = require('../hookUpStickyNav')
 const GitHub = require('../../models/GitHub')
+const hookUpStickyNav = require('../hookUpStickyNav')
 
 class Auth extends React.Component {
   constructor() {
@@ -114,7 +114,7 @@ class Auth extends React.Component {
     const authFile = GitHubAuth.path()
     return (
       <div>
-        <nav id="auth-navigation" className="secondary-nav nav">
+        <nav id="auth-top-navigation" className="secondary-nav nav">
           {this.props.isAuthenticated && typeof this.props.user === 'object' ? (
             <div className="nav-left">
               <span className="nav-item">
@@ -206,4 +206,4 @@ Auth.propTypes = {
   user: React.PropTypes.object,
 }
 
-module.exports = hookUpStickyNav(Auth, '#auth-navigation')
+module.exports = hookUpStickyNav(Auth, '#auth-top-navigation')
