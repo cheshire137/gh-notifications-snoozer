@@ -58,7 +58,15 @@ describe('TaskList', () => {
     assert.equal(1, taskListItems.length)
   })
 
-  it('does not show task that is ignored')
+  it('does not show task that is ignored', () => {
+    store.dispatch({ type: 'TASKS_SELECT', task: {
+      storageKey: 'pull-8675309',
+    } })
+    store.dispatch({ type: 'TASKS_IGNORE' })
+
+    const taskListItems = renderedDOM().querySelectorAll('#pull-8675309')
+    assert.equal(0, taskListItems.length)
+  })
 
   it('does not show task that is archived', () => {
     store.dispatch({ type: 'TASKS_SELECT', task: {
