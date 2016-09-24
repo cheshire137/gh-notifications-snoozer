@@ -71,8 +71,26 @@ body {
   }
 }
 
-nav#tabbed-nav {
+nav#tabbed-nav.tabs.is-toggle {
   margin-bottom: 0;
+  min-height: 0;
+
+  li a {
+    border-top: 0;
+  }
+
+  li:first-child a,
+  li:last-child a {
+    border-radius: 0;
+  }
+
+  li:first-child a {
+    border-left: 0;
+  }
+
+  li:last-child a {
+    border-right: 0;
+  }
 }
 
 .octicon {
