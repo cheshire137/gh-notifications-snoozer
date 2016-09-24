@@ -32,7 +32,8 @@ describe('TaskList', () => {
     fetchMock.get(`${Config.githubApiUrl}/search/issues?q=cats`,
                   { items: [fixtures.pullRequest, fixtures.issue] })
     fetchMock.get(`${Config.githubApiUrl}/notifications?` +
-                  'since=2016-06-04T00%3A00%3A00.000Z', [])
+                  'since=2016-06-04T00%3A00%3A00.000Z', [fixtures.notification])
+    fetchMock.mock(fixtures.notification.url, {}, { method: 'PATCH' })
 
     // Persist a filter
     const filter = new Filter('Cool name')
@@ -99,6 +100,24 @@ describe('TaskList', () => {
     // Reset state
     store.dispatch({
       type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
+    })
+    store.dispatch({ type: 'TASKS_RESTORE' })
+  })
+
+  it('marks notification as read for ignored task', () => {
+    store.dispatch({
+      type: 'TASKS_SELECT', task: { storageKey: 'issue-148539337' },
+    })
+    assert.equal(3, fetchMock.calls().matched.length)
+    store.dispatch({ type: 'TASKS_IGNORE' })
+    assert.equal(4, fetchMock.calls().matched.length,
+                 'Upon ignoring task, should have marked notification as read')
+    assert.equal(fixtures.notification.url, fetchMock.calls().matched[3][0],
+                 'Should have made a request to the notification URL')
+
+    // Reset state
+    store.dispatch({
+      type: 'TASKS_SELECT', task: { storageKey: 'issue-148539337' },
     })
     store.dispatch({ type: 'TASKS_RESTORE' })
   })
