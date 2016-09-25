@@ -51,7 +51,10 @@ class NewFilter extends React.Component {
           </div>
         </nav>
         <div className="view-container">
-          <form className="new-filter-form" onSubmit={event => this.save(event)}>
+          <form
+            className="new-filter-form"
+            onSubmit={event => this.save(event)}
+          >
             <label className="label">Filter name: (optional)</label>
             <p className="control">
               <input
@@ -63,7 +66,10 @@ class NewFilter extends React.Component {
             </p>
             <label className="label">Search query:</label>
             <div className="control">
-              <FilterSuggester className={valueClass} />
+              <FilterSuggester
+                className={valueClass}
+                inputID="new-filter-query"
+              />
             </div>
             <p className="control">
               <button type="submit" className="button is-primary" id="new-filter-save">

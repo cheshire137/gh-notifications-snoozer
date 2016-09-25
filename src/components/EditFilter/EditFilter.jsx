@@ -80,6 +80,7 @@ class EditFilter extends React.Component {
                 className={valueClass}
                 value={this.state.value}
                 onChange={e => this.valueChanged(e)}
+                inputID="edit-filter-query"
               />
             </div>
             <p className="control">

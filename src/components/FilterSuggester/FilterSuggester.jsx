@@ -148,6 +148,17 @@ class FilterSuggester extends React.Component {
   constructor(props) {
     super(props)
     this.state = { value: props.value || '', suggestions: [] }
+    this.onKeyPress = this.onKeyPress.bind(this)
+  }
+
+  componentDidMount() {
+    const input = document.getElementById(this.props.inputID)
+    input.addEventListener('keypress', this.onKeyPress)
+  }
+
+  componentWillUnmount() {
+    const input = document.getElementById(this.props.inputID)
+    input.removeEventListener('keypress', this.onKeyPress)
   }
 
   onChange(event, { newValue }) {
@@ -165,15 +176,29 @@ class FilterSuggester extends React.Component {
     this.setState({ showFilterHelp: false })
   }
 
+  onKeyPress(event) {
+    if (event.key === 'Enter' && this.state.suppressSubmit) {
+      event.preventDefault()
+    }
+  }
+
   onSuggestionsFetchRequested({ value }) {
+    const suggestions = this.getSuggestions(value)
     this.setState({
-      suggestions: this.getSuggestions(value),
+      suggestions,
       showFilterHelp: false,
     })
   }
 
   onSuggestionsClearRequested() {
-    this.setState({ suggestions: [], showFilterHelp: true })
+    this.setState({
+      suggestions: [],
+      showFilterHelp: true,
+    })
+  }
+
+  onSuggestionSelected(event, props) {
+    this.setState({ suppressSubmit: props.method === 'enter' })
   }
 
   getSuggestions(rawValue) {
@@ -204,6 +229,7 @@ class FilterSuggester extends React.Component {
       className: this.props.className || '',
       onFocus: () => this.onFocus(),
       onBlur: () => this.onBlur(),
+      id: this.props.inputID,
     }
     let previousGroup = filters[0].group
     return (
@@ -215,6 +241,7 @@ class FilterSuggester extends React.Component {
           getSuggestionValue={filter => filter.name}
           renderSuggestion={filter => this.renderSuggestion(filter)}
           inputProps={inputProps}
+          onSuggestionSelected={(e, p) => this.onSuggestionSelected(e, p)}
         />
         {this.state.showFilterHelp ? (
           <div className="card suggestions-container">
@@ -246,6 +273,7 @@ FilterSuggester.propTypes = {
   className: React.PropTypes.string,
   onChange: React.PropTypes.func,
   value: React.PropTypes.string,
+  inputID: React.PropTypes.string.isRequired,
 }
 
 module.exports = FilterSuggester
