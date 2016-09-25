@@ -212,6 +212,15 @@ class FilterSuggester extends React.Component {
     return filters.filter(s => s.name.slice(0, length) === lastValue)
   }
 
+  getSuggestionValue(filter) {
+    const segments = this.state.value.split(/\s+/)
+    if (segments.length === 1) {
+      return filter.name
+    }
+    const priorQuery = segments.slice(0, segments.length - 1).join(' ')
+    return `${priorQuery} ${filter.name}`
+  }
+
   renderSuggestion(suggestion) {
     return (
       <span className="suggestion">
@@ -238,7 +247,7 @@ class FilterSuggester extends React.Component {
           suggestions={this.state.suggestions}
           onSuggestionsFetchRequested={p => this.onSuggestionsFetchRequested(p)}
           onSuggestionsClearRequested={() => this.onSuggestionsClearRequested()}
-          getSuggestionValue={filter => filter.name}
+          getSuggestionValue={f => this.getSuggestionValue(f)}
           renderSuggestion={filter => this.renderSuggestion(filter)}
           inputProps={inputProps}
           onSuggestionSelected={(e, p) => this.onSuggestionSelected(e, p)}
