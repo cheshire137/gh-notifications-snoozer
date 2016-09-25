@@ -10,6 +10,13 @@
       max-width: 100%;
     }
   }
+
+  .button.is-link {
+    &:hover, &:focus {
+      background-color: transparent;
+      text-decoration: underline;
+    }
+  }
 }
 
 nav#tabbed-nav.tabs.is-toggle {
@@ -33,6 +40,12 @@ nav#tabbed-nav.tabs.is-toggle {
 
   li .button {
     border-radius: 0;
+
+    &.is-link {
+      &:hover, &:focus {
+        text-decoration: none;
+      }
+    }
   }
 
   li:first-child .button {
