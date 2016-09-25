@@ -87,27 +87,6 @@ class Auth extends React.Component {
     this.props.done()
   }
 
-  authSuccessMessage() {
-    if (!this.props.isAuthenticated) {
-      return ''
-    }
-    return (
-      <p className="notification is-success">
-        You are
-        {typeof this.props.user === 'object' ? (
-          <span> authenticated as
-            <strong> {this.props.user.login}</strong>.
-            <span> </span>
-            <a
-              href="#"
-              onClick={event => this.deleteToken(event)}
-            >Log out</a>
-          </span>
-        ) : ' authenticated.'}
-      </p>
-    )
-  }
-
   tokenErrorMessage() {
     if (!this.state.tokenHasError) {
       return ''
@@ -135,8 +114,31 @@ class Auth extends React.Component {
     const authFile = GitHubAuth.path()
     return (
       <div>
+        <nav id="auth-top-navigation" className="secondary-nav nav">
+          {this.props.isAuthenticated && typeof this.props.user === 'object' ? (
+            <div className="nav-left">
+              <span className="nav-item">
+                Signed in as <strong>&nbsp;{this.props.user.login}</strong>
+              </span>
+            </div>
+          ) : ''}
+          <div className="nav-right">
+            <span className="nav-item">
+              <button
+                className="button is-link"
+                title="Sign out"
+                type="button"
+                onClick={event => this.deleteToken(event)}
+                disabled={!this.props.isAuthenticated}
+              >🔌 Log out</button>
+            </span>
+          </div>
+        </nav>
         <div className="view-container">
-          {this.authSuccessMessage()}
+          <h2 className="subtitle">
+            <span>{this.props.isAuthenticated ? 'Change' : 'Set'} </span>
+            Access Token
+          </h2>
           <form className="auth-form" onSubmit={event => this.save(event)}>
             {this.tokenErrorMessage()}
             <p className="control">
@@ -183,7 +185,7 @@ class Auth extends React.Component {
               ) : ''}
             </p>
             <hr />
-            <h2 className="subtitle">Token Scope</h2>
+            <h2 className="subtitle">Token Scope Help</h2>
             <p>
               <img
                 className="scope-screenshot"
@@ -204,4 +206,4 @@ Auth.propTypes = {
   user: React.PropTypes.object,
 }
 
-module.exports = hookUpStickyNav(Auth, 'auth-top-navigation')
+module.exports = hookUpStickyNav(Auth, '#auth-top-navigation')

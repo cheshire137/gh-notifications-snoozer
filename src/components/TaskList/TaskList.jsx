@@ -40,12 +40,17 @@ class TaskList extends React.Component {
   render() {
     const filters = Filters.findAll()
     const lastFilterKey = LastFilter.retrieve()
-    const visibleTasks = this.props.tasks.filter(task => TaskVisibility.isVisibleTask(task))
+    const visibleTasks = this.props.tasks.
+        filter(task => TaskVisibility.isVisibleTask(task))
+    const isSnoozeDisabled = visibleTasks.
+        filter(task => task.isSelected).length < 1
+    const isArchiveDisabled = isSnoozeDisabled
+    const isIgnoreDisabled = isSnoozeDisabled
     return (
       <div>
-        <nav id="task-list-navigation" className="secondary-nav nav">
+        <nav className="task-list-navigation secondary-nav nav has-tertiary-nav">
           <div className="nav-left">
-            <span className="nav-item">
+            <span className="nav-item compact-vertically">
               <span className="select">
                 <select
                   id="filters-menu"
@@ -58,53 +63,55 @@ class TaskList extends React.Component {
                   ))}
                 </select>
               </span>
-            </span>
-            <span className="nav-item">
               <button
                 onClick={e => this.refresh(e)}
                 type="button"
                 title="Refresh list"
                 className="is-link button"
-              ><span className="octicon octicon-sync"></span></button>
-            </span>
-            <span className="nav-item">
-              <button
-                onClick={() => this.props.showHidden()}
-                type="button"
-                className="is-link button"
-                title="Show hidden tasks"
-              ><span className="octicon octicon-eye"></span></button>
+              >🔄</button>
             </span>
           </div>
           <div className="nav-right">
-            <span className="nav-item">
-              <label className="label">With selected:</label>
-            </span>
-            <span className="nav-item">
+            <span className="nav-item compact-vertically">
               <button
                 type="button"
                 onClick={e => this.onSnoozeClick(e)}
                 className="control button is-link"
                 id="snooze-button"
                 title="Snooze selected"
+                disabled={isSnoozeDisabled}
               >😴 Snooze</button>
             </span>
-            <span className="nav-item">
+            <span className="nav-item compact-vertically">
               <button
                 type="button"
                 id="archive-button"
                 className="control button is-link"
                 onClick={e => this.onArchiveClick(e)}
                 title="Archive selected"
+                disabled={isArchiveDisabled}
               >📥 Archive</button>
             </span>
-            <span className="nav-item">
+            <span className="nav-item compact-vertically">
               <button
                 type="button"
                 className="control button is-link"
                 onClick={e => this.onIgnoreClick(e)}
                 title="Ignore selected"
+                disabled={isIgnoreDisabled}
               >❌ Ignore</button>
+            </span>
+          </div>
+        </nav>
+        <nav className="task-list-navigation tertiary-nav nav">
+          <div className="nav-left">
+            <span className="nav-item compact-vertically">
+              <button
+                onClick={() => this.props.showHidden()}
+                type="button"
+                className="is-link is-small button"
+                title="Show hidden tasks"
+              >View hidden</button>
             </span>
           </div>
         </nav>
@@ -133,4 +140,4 @@ TaskList.propTypes = {
   showHidden: React.PropTypes.func.isRequired,
 }
 
-module.exports = connect(mapStateToProps)(hookUpStickyNav(TaskList, 'task-list-navigation'))
+module.exports = connect(mapStateToProps)(hookUpStickyNav(TaskList, '.task-list-navigation'))
