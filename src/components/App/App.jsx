@@ -91,8 +91,7 @@ class App extends React.Component {
           cancel={cancel}
           delete={key => this.deleteFilter(key)}
         />)
-      case 'about': return (
-        <About cancel={() => this.showTaskList()} />)
+      case 'about': return <About cancel={cancel} />
       case 'new-filter': return (
         <NewFilter
           save={() => this.savedFilter()}
