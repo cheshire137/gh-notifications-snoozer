@@ -165,9 +165,9 @@ class FilterSuggester extends React.Component {
     this.setState({ showFilterHelp: false })
   }
 
-  onSuggestionsFetchRequested(props) {
+  onSuggestionsFetchRequested({ value }) {
     this.setState({
-      suggestions: this.getSuggestions(props.value),
+      suggestions: this.getSuggestions(value),
       showFilterHelp: false,
     })
   }
@@ -178,11 +178,13 @@ class FilterSuggester extends React.Component {
 
   getSuggestions(rawValue) {
     const value = rawValue.trim().toLowerCase()
-    const length = value.length
-    if (length < 1) {
+    if (value.length < 1) {
       return []
     }
-    return filters.filter(s => s.name.slice(0, length) === value)
+    const segments = value.split(/\s+/)
+    const lastValue = segments[segments.length - 1]
+    const length = lastValue.length
+    return filters.filter(s => s.name.slice(0, length) === lastValue)
   }
 
   renderSuggestion(suggestion) {
@@ -194,13 +196,12 @@ class FilterSuggester extends React.Component {
   }
 
   render() {
-    const inputClass = this.props.className || ''
     const inputProps = {
       placeholder: 'e.g., team:org/team-name is:open sort:updated-desc',
       value: this.state.value,
       onChange: (e, props) => this.onChange(e, props),
       name: 'filterValue',
-      className: inputClass,
+      className: this.props.className || '',
       onFocus: () => this.onFocus(),
       onBlur: () => this.onBlur(),
     }
