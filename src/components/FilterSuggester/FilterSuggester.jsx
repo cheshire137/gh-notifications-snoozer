@@ -207,8 +207,11 @@ class FilterSuggester extends React.Component {
       return []
     }
     const segments = value.split(/\s+/)
-    const lastValue = segments[segments.length - 1]
+    const lastValue = segments[segments.length - 1].replace(/^-/, '')
     const length = lastValue.length
+    if (length < 1) {
+      return []
+    }
     return filters.filter(s => s.name.slice(0, length) === lastValue)
   }
 
@@ -217,8 +220,13 @@ class FilterSuggester extends React.Component {
     if (segments.length === 1) {
       return filter.name
     }
+    const lastValue = segments[segments.length - 1]
     const priorQuery = segments.slice(0, segments.length - 1).join(' ')
-    return `${priorQuery} ${filter.name}`
+    let newSuggestion = filter.name
+    if (lastValue.indexOf('-') === 0) {
+      newSuggestion = `-${newSuggestion}`
+    }
+    return `${priorQuery} ${newSuggestion}`
   }
 
   renderSuggestion(suggestion) {
