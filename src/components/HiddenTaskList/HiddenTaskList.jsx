@@ -16,24 +16,6 @@ class HiddenTaskList extends React.Component {
     this.props.cancel()
   }
 
-  navigation(tasks) {
-    if (tasks.length < 1) {
-      return
-    }
-    return (
-      <nav className="controls-container has-text-right">
-        <label className="label">With selected:</label>
-        <button
-          type="button"
-          onClick={e => this.onRestoreClick(e)}
-          className="control button is-link"
-          id="restore-button"
-          title="Restore selected"
-        >↩️</button>
-      </nav>
-    )
-  }
-
   emptyListMessage(tasks) {
     if (tasks.length > 0) {
       return
@@ -48,19 +30,34 @@ class HiddenTaskList extends React.Component {
 
   render() {
     const { activeFilter } = this.props
-    const hiddenTasks = this.props.tasks.filter(task => TaskVisibility.isHiddenTask(task))
+    const hiddenTasks = this.props.tasks.
+        filter(task => TaskVisibility.isHiddenTask(task))
+    const isRestoreDisabled = hiddenTasks.
+        filter(task => task.isSelected).length < 1
     return (
       <div>
         <nav id="hidden-task-list-navigation" className="secondary-nav nav">
           <div className="nav-left">
-            <h1 className="title">
-              Hidden Tasks
-              <span className="subtitle"> in &ldquo;{activeFilter}&rdquo;</span>
-            </h1>
+            <h2 className="subtitle nav-item">
+              Hidden Tasks in &ldquo;{activeFilter}&rdquo;
+            </h2>
           </div>
+          {hiddenTasks.length < 1 ? '' : (
+            <div className="nav-right">
+              <span className="nav-item">
+                <button
+                  type="button"
+                  onClick={e => this.onRestoreClick(e)}
+                  className="control button is-link"
+                  id="restore-button"
+                  title="Restore selected"
+                  disabled={isRestoreDisabled}
+                >↩️ Restore</button>
+              </span>
+            </div>
+          )}
         </nav>
-        <div className="hidden-task-list-container">
-          {this.navigation(hiddenTasks)}
+        <div className="view-container">
           {this.emptyListMessage(hiddenTasks)}
           <ol className="task-list">
             {hiddenTasks.map(task =>
@@ -83,5 +80,5 @@ HiddenTaskList.propTypes = {
 const mapStateToProps = state => ({ tasks: state.tasks })
 
 const stickyNavd = hookUpStickyNav(HiddenTaskList,
-                                   'hidden-task-list-navigation')
+                                   '#hidden-task-list-navigation')
 module.exports = connect(mapStateToProps)(stickyNavd)

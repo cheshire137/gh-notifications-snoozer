@@ -13,7 +13,7 @@
 @import "../HiddenTaskListItem/HiddenTaskListItem.less";
 
 body {
-  background-color: #fff;
+  background-color: #fFfFFf;
   min-height: 100vh;
 }
 
@@ -21,18 +21,54 @@ body {
   margin-right: 5px;
 }
 
-.top-nav, .secondary-nav {
+.top-nav, .secondary-nav, .tertiary-nav {
   z-index: 5;
-  margin-bottom: 15px;
-  border-bottom: 1px solid rgba(211, 214, 219, 0.5);
 
   .button.is-link, .label {
     text-decoration: none;
   }
+
+  .nav-item {
+    padding: 5px 10px;
+  }
 }
 
-nav#tabbed-nav {
-  margin-bottom: 0;
+.nav-item.compact-vertically {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.nav {
+  min-height: 38px;
+}
+
+.secondary-nav {
+  border-bottom: 1px solid rgba(211, 214, 219, 0.5);
+  margin-bottom: 15px;
+
+  &.has-tertiary-nav {
+    border-bottom: 0;
+    margin-bottom: 0;
+
+    .nav-item {
+      align-items: flex-end;
+    }
+  }
+}
+
+.tertiary-nav {
+  min-height: 0;
+  border-bottom: 1px solid rgba(211, 214, 219, 0.5);
+  margin-bottom: 15px;
+
+  .nav-item {
+    align-items: flex-start;
+  }
+
+  .compact-vertically .is-small {
+    line-height: 14px;
+    height: 22px;
+  }
 }
 
 .octicon {

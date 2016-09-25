@@ -1,3 +1,35 @@
 .tab {
   padding-right: 5px;
 }
+
+nav#tabbed-nav.tabs.is-toggle {
+  margin-bottom: 0;
+  min-height: 0;
+
+  li.is-active .is-link {
+    background-color: #1fc8db;
+    border-color: #1fc8db;
+    color: white;
+    z-index: 1;
+  }
+
+  li .is-link {
+    width: 100%;
+    border: 1px solid #d3d6db;
+    margin-bottom: 0;
+    padding-bottom: 5px;
+    position: relative;
+  }
+
+  li .button {
+    border-radius: 0;
+  }
+
+  li:first-child .button {
+    border-left: 0;
+  }
+
+  li:last-child .button {
+    border-right: 0;
+  }
+}

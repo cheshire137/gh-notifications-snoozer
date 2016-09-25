@@ -20,8 +20,9 @@ const HiddenTaskList = require('../HiddenTaskList')
 class App extends React.Component {
   constructor() {
     super()
+    const view = GitHubAuth.isAuthenticated() ? 'tasks' : 'auth'
     this.state = {
-      view: 'tasks',
+      view,
       filters: Filters.findAll(),
       filter: LastFilter.retrieve(),
     }
@@ -50,8 +51,10 @@ class App extends React.Component {
   }
 
   onUserLoad(user) {
-    const filters = new DefaultFilters(user.login)
-    filters.addDefaults()
+    if (user) {
+      const filters = new DefaultFilters(user.login)
+      filters.addDefaults()
+    }
     this.setState({ user, filters: Filters.findAll() })
   }
 
@@ -99,13 +102,13 @@ class App extends React.Component {
           save={() => this.savedFilter()}
           cancel={() => this.showTaskList()}
           manageFilters={() => this.manageFilters()}
+          loadFilter={key => this.loadFilter(key)}
         />)
       case 'hidden': return (
         <HiddenTaskList
           cancel={() => this.showTaskList()}
           activeFilter={this.state.filter}
         />)
-      // Auth is default to ensure token
       default: return (
         <Auth
           done={user => this.finishedWithAuth(user)}
@@ -201,7 +204,9 @@ class App extends React.Component {
 
   finishedWithAuth(user) {
     this.onUserLoad(user)
-    this.showTaskList()
+    if (user) {
+      this.showTaskList()
+    }
   }
 
   render() {
@@ -214,6 +219,7 @@ class App extends React.Component {
           showAuth={() => this.showAuth()}
           showTasks={() => this.showTaskList()}
           active={this.state.view}
+          isAuthenticated={GitHubAuth.isAuthenticated()}
         />
         {this.getViewContents()}
       </div>)
