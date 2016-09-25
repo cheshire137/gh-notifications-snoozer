@@ -147,22 +147,31 @@ const filters = [
 class FilterSuggester extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { value: props.value || '', suggestions: [] }
+    const value = props.value || ''
+    this.state = {
+      value,
+      previousValue: value,
+      suggestions: [],
+    }
     this.onKeyPress = this.onKeyPress.bind(this)
+    this.onKeyUp = this.onKeyUp.bind(this)
   }
 
   componentDidMount() {
     const input = document.getElementById(this.props.inputID)
     input.addEventListener('keypress', this.onKeyPress)
+    input.addEventListener('keyup', this.onKeyUp)
   }
 
   componentWillUnmount() {
     const input = document.getElementById(this.props.inputID)
     input.removeEventListener('keypress', this.onKeyPress)
+    input.removeEventListener('keyup', this.onKeyUp)
   }
 
   onChange(event, { newValue }) {
-    this.setState({ value: newValue })
+    const previousValue = this.state.value
+    this.setState({ value: newValue, previousValue })
     if (this.props.onChange) {
       this.props.onChange(event)
     }
@@ -182,11 +191,17 @@ class FilterSuggester extends React.Component {
     }
   }
 
+  onKeyUp(event) {
+    if (event.key === 'Escape') {
+      this.setState({ showFilterHelp: false, value: this.state.previousValue })
+    }
+  }
+
   onSuggestionsFetchRequested({ value }) {
     const suggestions = this.getSuggestions(value)
     this.setState({
       suggestions,
-      showFilterHelp: false,
+      showFilterHelp: suggestions.length < 1,
     })
   }
 
