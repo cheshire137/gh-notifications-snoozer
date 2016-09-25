@@ -1,6 +1,5 @@
 const React = require('react')
 const Filter = require('../../models/Filter')
-const FilterHelp = require('../FilterHelp')
 const FilterSuggester = require('../FilterSuggester')
 const LastFilter = require('../../models/LastFilter')
 const hookUpStickyNav = require('../hookUpStickyNav')
@@ -82,7 +81,6 @@ class NewFilter extends React.Component {
               >Cancel</button>
             </p>
           </form>
-          <FilterHelp />
         </div>
       </div>
     )
