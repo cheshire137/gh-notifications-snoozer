@@ -9,8 +9,8 @@ class EditFilter extends React.Component {
     const { filter } = props
     this.state = {
       valueHasError: false,
-      key: filter.key,
-      value: filter.retrieve(),
+      key: filter,
+      value: new Filter(filter).retrieve(),
     }
   }
 
@@ -27,8 +27,8 @@ class EditFilter extends React.Component {
     }
     const filter = new Filter(key)
     filter.store(this.state.value)
-    if (this.props.filter.key !== key) {
-      this.props.delete(this.props.filter.key)
+    if (this.props.filter !== key) {
+      this.props.delete(this.props.filter)
     }
     this.props.save(key)
   }
@@ -100,7 +100,7 @@ class EditFilter extends React.Component {
 }
 
 EditFilter.propTypes = {
-  filter: React.PropTypes.object.isRequired,
+  filter: React.PropTypes.string.isRequired,
   save: React.PropTypes.func.isRequired,
   cancel: React.PropTypes.func.isRequired,
   addFilter: React.PropTypes.func.isRequired,

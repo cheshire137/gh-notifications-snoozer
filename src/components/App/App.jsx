@@ -186,8 +186,7 @@ class App extends React.Component {
   }
 
   editFilter(key) {
-    const filter = new Filter(key)
-    this.setState({ filter }, () => {
+    this.setState({ filter: key }, () => {
       ipcRenderer.send('title', `Edit Filter ${key}`)
       this.changeView('edit-filter')
     })
