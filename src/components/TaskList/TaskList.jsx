@@ -61,7 +61,6 @@ class TaskList extends React.Component {
                   onChange={event => this.changeFilter(event)}
                   defaultValue={lastFilterKey}
                 >
-                  <option value="">Choose a filter</option>
                   {filters.map(key => (
                     <option key={key} value={key}>{key}</option>
                   ))}
