@@ -251,21 +251,11 @@ class FilterSuggester extends React.Component {
 
   onSuggestionsFetchRequested({ value }) {
     const suggestions = this.getSuggestions(value)
-    this.setState({
-      suggestions,
-      showFilterHelp: suggestions.length < 1,
-    })
+    this.setState({ suggestions, showFilterHelp: suggestions.length < 1 })
   }
 
-  onSuggestionsClearRequested() {
-    this.setState({
-      suggestions: [],
-      showFilterHelp: true,
-    })
-  }
-
-  onSuggestionSelected(event, props) {
-    this.setState({ suppressSubmit: props.method === 'enter' })
+  onSuggestionSelected(event, { method }) {
+    this.setState({ suppressSubmit: method === 'enter' })
   }
 
   getSuggestions(rawValue) {
@@ -284,6 +274,10 @@ class FilterSuggester extends React.Component {
       if (filter && typeof filter.suggestions === 'object') {
         return filter.suggestions
       }
+    }
+    const trailingWhitespace = rawValue.match(/\s+$/)
+    if (trailingWhitespace !== null) {
+      return []
     }
     const colonIndex = lastValue.indexOf(':')
     if (colonIndex > -1) {
@@ -353,10 +347,10 @@ class FilterSuggester extends React.Component {
         <Autosuggest
           suggestions={this.state.suggestions}
           onSuggestionsFetchRequested={p => this.onSuggestionsFetchRequested(p)}
-          onSuggestionsClearRequested={() => this.onSuggestionsClearRequested()}
           getSuggestionValue={f => this.getSuggestionValue(f)}
           renderSuggestion={filter => this.renderSuggestion(filter)}
           inputProps={inputProps}
+          alwaysRenderSuggestions
           onSuggestionSelected={(e, p) => this.onSuggestionSelected(e, p)}
         />
         {this.state.showFilterHelp ? (
