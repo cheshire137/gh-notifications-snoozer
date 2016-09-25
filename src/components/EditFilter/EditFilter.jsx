@@ -64,13 +64,13 @@ class EditFilter extends React.Component {
         <div className="view-container">
           <form className="edit-filter-form" onSubmit={event => this.save(event)}>
             <label className="label">Search query:</label>
-            <p className="control">
+            <div className="control">
               <FilterSuggester
                 className={valueClass}
                 value={this.state.value}
                 onChange={e => this.valueChanged(e)}
               />
-            </p>
+            </div>
             <label className="label">Filter name: (optional)</label>
             <p className="control">
               <input
