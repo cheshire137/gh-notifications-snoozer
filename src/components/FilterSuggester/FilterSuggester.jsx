@@ -1,8 +1,13 @@
 const React = require('react')
 
 class FilterSuggester extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { value: props.value || '' }
+  }
+
   onChange(event) {
-    event.target.blur()
+    this.setState({ value: event.target.value })
     if (this.props.onChange) {
       this.props.onChange(event)
     }
@@ -10,14 +15,13 @@ class FilterSuggester extends React.Component {
 
   render() {
     const inputClass = this.props.className || ''
-    const value = this.props.value || ''
     return (
       <div>
         <input
           type="text"
           className={inputClass}
           name="filterValue"
-          value={value}
+          value={this.state.value}
           onChange={e => this.onChange(e)}
           placeholder="e.g., team:org/team-name is:open sort:updated-desc"
         />
