@@ -183,16 +183,34 @@ const filters = [
     name: 'comments:',
     tip: 'number',
     group: 'count',
+    suggestions: [
+      { name: '>', prefix: 'comments:', tip: 'number' },
+      { name: '<', prefix: 'comments:', tip: 'number' },
+      { name: '>=', prefix: 'comments:', tip: 'number' },
+      { name: '<=', prefix: 'comments:', tip: 'number' },
+    ],
   },
   {
     name: 'reactions:',
     tip: 'number',
     group: 'count',
+    suggestions: [
+      { name: '>', prefix: 'reactions:', tip: 'number' },
+      { name: '<', prefix: 'reactions:', tip: 'number' },
+      { name: '>=', prefix: 'reactions:', tip: 'number' },
+      { name: '<=', prefix: 'reactions:', tip: 'number' },
+    ],
   },
   {
     name: 'interactions:',
     tip: 'number',
     group: 'count',
+    suggestions: [
+      { name: '>', prefix: 'interactions:', tip: 'number' },
+      { name: '<', prefix: 'interactions:', tip: 'number' },
+      { name: '>=', prefix: 'interactions:', tip: 'number' },
+      { name: '<=', prefix: 'interactions:', tip: 'number' },
+    ],
   },
 ]
 
@@ -311,6 +329,9 @@ class FilterSuggester extends React.Component {
         {typeof suggestion.prefix === 'string' ? (
           <span>
             <span>{suggestion.prefix}</span><strong>{suggestion.name}</strong>
+            {typeof suggestion.tip === 'string' ? (
+              <span>{suggestion.tip}</span>
+            ) : ''}
           </span>
         ) : (
           <span>
