@@ -212,7 +212,6 @@ class App extends React.Component {
         <TabbedNav
           manageFilters={() => this.manageFilters()}
           user={this.state.user}
-          showHidden={() => this.showHidden()}
           showAuth={() => this.showAuth()}
           showTasks={() => this.showTaskList()}
           active={this.state.view}
