@@ -63,14 +63,6 @@ class EditFilter extends React.Component {
         </nav>
         <div className="view-container">
           <form className="edit-filter-form" onSubmit={event => this.save(event)}>
-            <label className="label">Search query:</label>
-            <div className="control">
-              <FilterSuggester
-                className={valueClass}
-                value={this.state.value}
-                onChange={e => this.valueChanged(e)}
-              />
-            </div>
             <label className="label">Filter name: (optional)</label>
             <p className="control">
               <input
@@ -82,6 +74,14 @@ class EditFilter extends React.Component {
                 placeholder="e.g., Team mentions"
               />
             </p>
+            <label className="label">Search query:</label>
+            <div className="control">
+              <FilterSuggester
+                className={valueClass}
+                value={this.state.value}
+                onChange={e => this.valueChanged(e)}
+              />
+            </div>
             <p className="control">
               <button type="submit" className="button is-primary">
                 Save Filter

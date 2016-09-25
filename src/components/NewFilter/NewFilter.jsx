@@ -52,10 +52,6 @@ class NewFilter extends React.Component {
         </nav>
         <div className="view-container">
           <form className="new-filter-form" onSubmit={event => this.save(event)}>
-            <label className="label">Search query:</label>
-            <div className="control">
-              <FilterSuggester className={valueClass} />
-            </div>
             <label className="label">Filter name: (optional)</label>
             <p className="control">
               <input
@@ -65,6 +61,10 @@ class NewFilter extends React.Component {
                 placeholder="e.g., Team mentions"
               />
             </p>
+            <label className="label">Search query:</label>
+            <div className="control">
+              <FilterSuggester className={valueClass} />
+            </div>
             <p className="control">
               <button type="submit" className="button is-primary" id="new-filter-save">
                 Save Filter
