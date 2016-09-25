@@ -229,14 +229,6 @@ class FilterSuggester extends React.Component {
     }
   }
 
-  onFocus() {
-    this.setState({ showFilterHelp: true })
-  }
-
-  onBlur() {
-    this.setState({ showFilterHelp: false })
-  }
-
   onKeyPress(event) {
     if (event.key === 'Enter' && this.state.suppressSubmit) {
       event.preventDefault()
@@ -245,13 +237,12 @@ class FilterSuggester extends React.Component {
 
   onKeyUp(event) {
     if (event.key === 'Escape') {
-      this.setState({ showFilterHelp: false, value: this.state.previousValue })
+      this.setState({ value: this.state.previousValue, suggestions: [] })
     }
   }
 
   onSuggestionsFetchRequested({ value }) {
-    const suggestions = this.getSuggestions(value)
-    this.setState({ suggestions, showFilterHelp: suggestions.length < 1 })
+    this.setState({ suggestions: this.getSuggestions(value) })
   }
 
   onSuggestionSelected(event, { method }) {
@@ -261,13 +252,13 @@ class FilterSuggester extends React.Component {
   getSuggestions(rawValue) {
     const value = rawValue.trim().toLowerCase()
     if (value.length < 1) {
-      return []
+      return filters
     }
     const segments = value.split(/\s+/)
     const lastValue = segments[segments.length - 1].replace(/^-/, '')
     let length = lastValue.length
     if (length < 1) {
-      return []
+      return filters
     }
     if (lastValue.match(/:$/)) {
       const filter = filters.filter(s => s.name === lastValue)[0]
@@ -277,7 +268,7 @@ class FilterSuggester extends React.Component {
     }
     const trailingWhitespace = rawValue.match(/\s+$/)
     if (trailingWhitespace !== null) {
-      return []
+      return filters
     }
     const colonIndex = lastValue.indexOf(':')
     if (colonIndex > -1) {
@@ -337,9 +328,8 @@ class FilterSuggester extends React.Component {
       onChange: (e, props) => this.onChange(e, props),
       name: 'filterValue',
       className: this.props.className || '',
-      onFocus: () => this.onFocus(),
-      onBlur: () => this.onBlur(),
       id: this.props.inputID,
+      onBlur: () => { this.setState({ suggestions: [] }) },
     }
     let previousGroup = filters[0].group
     return (
