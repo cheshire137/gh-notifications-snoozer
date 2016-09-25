@@ -64,40 +64,45 @@ class App extends React.Component {
     if (this.state.previousView === 'filters') {
       cancel = () => this.manageFilters()
     }
+    const addFilter = () => this.showNewFilterForm()
+    const editFilter = key => this.editFilter(key)
+    const save = () => this.savedFilter()
+    const manageFilters = () => this.manageFilters()
+    const loadFilter = key => this.loadFilter(key)
     switch (this.state.view) {
       case 'tasks': return (
         <TaskList
-          addFilter={() => this.showNewFilterForm()}
-          changeFilter={key => this.loadFilter(key)}
-          manageFilters={() => this.manageFilters()}
+          addFilter={addFilter}
+          changeFilter={loadFilter}
+          manageFilters={manageFilters}
           user={this.state.user}
           showAuth={() => this.showAuth()}
           showHidden={() => this.showHidden()}
-          editFilter={key => this.editFilter(key)}
+          editFilter={editFilter}
         />)
       case 'filters': return (
         <FilterList
           filters={this.state.filters}
           delete={key => this.deleteFilter(key)}
-          edit={key => this.editFilter(key)}
-          addFilter={() => this.showNewFilterForm()}
+          edit={editFilter}
+          addFilter={addFilter}
           cancel={cancel}
         />)
       case 'edit-filter': return (
         <EditFilter
           filter={this.state.filter}
-          save={() => this.savedFilter()}
-          addFilter={() => this.showNewFilterForm()}
+          save={save}
+          addFilter={addFilter}
           cancel={cancel}
           delete={key => this.deleteFilter(key)}
         />)
       case 'about': return <About cancel={cancel} />
       case 'new-filter': return (
         <NewFilter
-          save={() => this.savedFilter()}
+          save={save}
           cancel={cancel}
-          manageFilters={() => this.manageFilters()}
-          loadFilter={key => this.loadFilter(key)}
+          manageFilters={manageFilters}
+          loadFilter={loadFilter}
         />)
       case 'hidden': return (
         <HiddenTaskList
