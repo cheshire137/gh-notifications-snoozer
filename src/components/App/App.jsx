@@ -60,6 +60,10 @@ class App extends React.Component {
   }
 
   getViewContents() {
+    let cancel = () => this.showTaskList()
+    if (this.state.previousView === 'filters') {
+      cancel = () => this.manageFilters()
+    }
     switch (this.state.view) {
       case 'tasks': return (
         <TaskList
@@ -69,6 +73,7 @@ class App extends React.Component {
           user={this.state.user}
           showAuth={() => this.showAuth()}
           showHidden={() => this.showHidden()}
+          editFilter={key => this.editFilter(key)}
         />)
       case 'filters': return (
         <FilterList
@@ -76,14 +81,14 @@ class App extends React.Component {
           delete={key => this.deleteFilter(key)}
           edit={key => this.editFilter(key)}
           addFilter={() => this.showNewFilterForm()}
-          cancel={() => this.showTaskList()}
+          cancel={cancel}
         />)
       case 'edit-filter': return (
         <EditFilter
           filter={this.state.filter}
           save={() => this.savedFilter()}
           addFilter={() => this.showNewFilterForm()}
-          cancel={() => this.manageFilters()}
+          cancel={cancel}
           delete={key => this.deleteFilter(key)}
         />)
       case 'about': return (
@@ -91,13 +96,13 @@ class App extends React.Component {
       case 'new-filter': return (
         <NewFilter
           save={() => this.savedFilter()}
-          cancel={() => this.showTaskList()}
+          cancel={cancel}
           manageFilters={() => this.manageFilters()}
           loadFilter={key => this.loadFilter(key)}
         />)
       case 'hidden': return (
         <HiddenTaskList
-          cancel={() => this.showTaskList()}
+          cancel={cancel}
           activeFilter={this.state.filter}
         />)
       default: return (
@@ -191,7 +196,7 @@ class App extends React.Component {
 
   changeView(view) {
     window.scrollTo(0, 0)
-    this.setState({ view })
+    this.setState({ view, previousView: this.state.view })
   }
 
   finishedWithAuth(user) {
