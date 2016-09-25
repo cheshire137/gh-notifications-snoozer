@@ -1,6 +1,7 @@
 const React = require('react')
 const Filter = require('../../models/Filter')
 const FilterHelp = require('../FilterHelp')
+const FilterSuggester = require('../FilterSuggester')
 const hookUpStickyNav = require('../hookUpStickyNav')
 
 class EditFilter extends React.Component {
@@ -64,13 +65,10 @@ class EditFilter extends React.Component {
           <form className="edit-filter-form" onSubmit={event => this.save(event)}>
             <label className="label">Search query:</label>
             <p className="control">
-              <input
-                type="text"
-                name="filterValue"
+              <FilterSuggester
                 className={valueClass}
                 value={this.state.value}
                 onChange={e => this.valueChanged(e)}
-                placeholder="e.g., team:org/team-name is:open"
               />
             </p>
             <label className="label">Filter name: (optional)</label>

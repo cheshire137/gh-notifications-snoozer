@@ -1,6 +1,7 @@
 const React = require('react')
 const Filter = require('../../models/Filter')
 const FilterHelp = require('../FilterHelp')
+const FilterSuggester = require('../FilterSuggester')
 const LastFilter = require('../../models/LastFilter')
 const hookUpStickyNav = require('../hookUpStickyNav')
 
@@ -53,12 +54,7 @@ class NewFilter extends React.Component {
           <form className="new-filter-form" onSubmit={event => this.save(event)}>
             <label className="label">Search query:</label>
             <p className="control">
-              <input
-                type="text"
-                name="filterValue"
-                className={valueClass}
-                placeholder="e.g., team:org/team-name is:open sort:updated-desc"
-              />
+              <FilterSuggester className={valueClass} />
             </p>
             <label className="label">Filter name: (optional)</label>
             <p className="control">
