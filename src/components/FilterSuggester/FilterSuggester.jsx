@@ -27,10 +27,7 @@ const filters = [
       { name: 'closed', prefix: 'state:' },
     ],
   },
-  {
-    name: 'label:',
-    tip: 'label name',
-  },
+  { name: 'label:', tip: 'label name' },
   {
     name: 'is:',
     tip: 'open, closed, merged',
@@ -49,10 +46,7 @@ const filters = [
       { name: 'assignee', prefix: 'no:' },
     ],
   },
-  {
-    name: 'language:',
-    tip: 'language name',
-  },
+  { name: 'language:', tip: 'language name' },
   {
     name: 'status:',
     tip: 'pending, failure, success',
@@ -90,70 +84,22 @@ const filters = [
       { name: 'reactions-tada', prefix: 'sort:' },
     ],
   },
-  {
-    name: 'milestone:',
-    tip: 'milestone name',
-  },
-  {
-    name: 'author:',
-    tip: 'username',
-  },
-  {
-    name: 'assignee:',
-    tip: 'username',
-  },
-  {
-    name: 'mentions:',
-    tip: 'username',
-  },
-  {
-    name: 'commenter:',
-    tip: 'username',
-  },
-  {
-    name: 'involves:',
-    tip: 'username',
-  },
-  {
-    name: 'team:',
-    tip: 'team name',
-  },
-  {
-    name: 'user:',
-    tip: 'username',
-  },
-  {
-    name: 'org:',
-    tip: 'organization name',
-  },
-  {
-    name: 'repo:',
-    tip: 'user/repo or org/repo',
-  },
-  {
-    name: 'created:',
-    tip: 'date',
-  },
-  {
-    name: 'updated:',
-    tip: 'date',
-  },
-  {
-    name: 'closed:',
-    tip: 'date',
-  },
-  {
-    name: 'merged:',
-    tip: 'date',
-  },
-  {
-    name: 'head:',
-    tip: 'branch name',
-  },
-  {
-    name: 'base:',
-    tip: 'branch name',
-  },
+  { name: 'milestone:', tip: 'milestone name' },
+  { name: 'author:', tip: 'username' },
+  { name: 'assignee:', tip: 'username' },
+  { name: 'mentions:', tip: 'username' },
+  { name: 'commenter:', tip: 'username' },
+  { name: 'involves:', tip: 'username' },
+  { name: 'team:', tip: 'team name' },
+  { name: 'user:', tip: 'username' },
+  { name: 'org:', tip: 'organization name' },
+  { name: 'repo:', tip: 'user/repo or org/repo' },
+  { name: 'created:', tip: 'date' },
+  { name: 'updated:', tip: 'date' },
+  { name: 'closed:', tip: 'date' },
+  { name: 'merged:', tip: 'date' },
+  { name: 'head:', tip: 'branch name' },
+  { name: 'base:', tip: 'branch name' },
   {
     name: 'comments:',
     tip: 'number',
