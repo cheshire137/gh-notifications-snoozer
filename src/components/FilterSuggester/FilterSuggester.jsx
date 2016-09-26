@@ -307,14 +307,17 @@ class FilterSuggester extends React.Component {
       <span className="suggestion">
         {typeof suggestion.prefix === 'string' ? (
           <span>
-            <span className="prefix">{suggestion.prefix}</span><strong className="name">{suggestion.name}</strong>
+            <span className="prefix">{suggestion.prefix}</span>
+            <strong className="name">{suggestion.name}</strong>
             {typeof suggestion.tip === 'string' ? (
               <span> &mdash; {suggestion.tip}</span>
             ) : ''}
           </span>
         ) : (
           <span>
-            <strong className="name">{suggestion.name}</strong> &mdash; {suggestion.tip}
+            <strong className="name">
+              {suggestion.name}
+            </strong> &mdash; {suggestion.tip}
           </span>
         )}
       </span>
