@@ -5,7 +5,6 @@ const filters = [
   {
     name: 'type:',
     tip: 'issue, pr',
-    group: 'general',
     suggestions: [
       { name: 'issue', prefix: 'type:' },
       { name: 'pr', prefix: 'type:' },
@@ -14,7 +13,6 @@ const filters = [
   {
     name: 'in:',
     tip: 'title, body, comments',
-    group: 'general',
     suggestions: [
       { name: 'title', prefix: 'in:' },
       { name: 'body', prefix: 'in:' },
@@ -24,7 +22,6 @@ const filters = [
   {
     name: 'state:',
     tip: 'open, closed',
-    group: 'general',
     suggestions: [
       { name: 'open', prefix: 'state:' },
       { name: 'closed', prefix: 'state:' },
@@ -33,12 +30,10 @@ const filters = [
   {
     name: 'label:',
     tip: 'label name',
-    group: 'general',
   },
   {
     name: 'is:',
     tip: 'open, closed, merged',
-    group: 'general',
     suggestions: [
       { name: 'open', prefix: 'is:' },
       { name: 'closed', prefix: 'is:' },
@@ -48,7 +43,6 @@ const filters = [
   {
     name: 'no:',
     tip: 'label, milestone, assignee',
-    group: 'general',
     suggestions: [
       { name: 'label', prefix: 'no:' },
       { name: 'milestone', prefix: 'no:' },
@@ -58,12 +52,10 @@ const filters = [
   {
     name: 'language:',
     tip: 'language name',
-    group: 'general',
   },
   {
     name: 'status:',
     tip: 'pending, failure, success',
-    group: 'general',
     suggestions: [
       { name: 'pending', prefix: 'status:' },
       { name: 'failure', prefix: 'status:' },
@@ -73,7 +65,6 @@ const filters = [
   {
     name: 'sort:',
     tip: 'comments, created, updated, reactions, interactions',
-    group: 'general',
     suggestions: [
       { name: 'updated-desc', prefix: 'sort:' },
       { name: 'created-desc', prefix: 'sort:' },
@@ -102,87 +93,70 @@ const filters = [
   {
     name: 'milestone:',
     tip: 'milestone name',
-    group: 'general',
   },
   {
     name: 'author:',
     tip: 'username',
-    group: 'user',
   },
   {
     name: 'assignee:',
     tip: 'username',
-    group: 'user',
   },
   {
     name: 'mentions:',
     tip: 'username',
-    group: 'user',
   },
   {
     name: 'commenter:',
     tip: 'username',
-    group: 'user',
   },
   {
     name: 'involves:',
     tip: 'username',
-    group: 'user',
   },
   {
     name: 'team:',
     tip: 'team name',
-    group: 'owner',
   },
   {
     name: 'user:',
     tip: 'username',
-    group: 'owner',
   },
   {
     name: 'org:',
     tip: 'organization name',
-    group: 'owner',
   },
   {
     name: 'repo:',
     tip: 'user/repo or org/repo',
-    group: 'owner',
   },
   {
     name: 'created:',
     tip: 'date',
-    group: 'date',
   },
   {
     name: 'updated:',
     tip: 'date',
-    group: 'date',
   },
   {
     name: 'closed:',
     tip: 'date',
-    group: 'date',
   },
   {
     name: 'merged:',
     tip: 'date',
-    group: 'date',
   },
   {
     name: 'head:',
     tip: 'branch name',
-    group: 'branch',
   },
   {
     name: 'base:',
     tip: 'branch name',
-    group: 'branch',
   },
   {
     name: 'comments:',
     tip: 'number',
-    group: 'count',
     suggestions: [
       { name: '', prefix: 'comments:', tip: 'number' },
       { name: '>', prefix: 'comments:', tip: 'number' },
@@ -194,7 +168,6 @@ const filters = [
   {
     name: 'reactions:',
     tip: 'number',
-    group: 'count',
     suggestions: [
       { name: '', prefix: 'reactions:', tip: 'number' },
       { name: '>', prefix: 'reactions:', tip: 'number' },
@@ -206,7 +179,6 @@ const filters = [
   {
     name: 'interactions:',
     tip: 'number',
-    group: 'count',
     suggestions: [
       { name: '', prefix: 'interactions:', tip: 'number' },
       { name: '>', prefix: 'interactions:', tip: 'number' },
