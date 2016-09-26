@@ -339,27 +339,6 @@ class FilterSuggester extends React.Component {
           alwaysRenderSuggestions
           onSuggestionSelected={(e, p) => this.onSuggestionSelected(e, p)}
         />
-        {this.state.showFilterHelp ? (
-          <div className="card suggestions-container">
-            <div className="card-content">
-              <h3 className="card-header-title">Refine your filter:</h3>
-              <ul className="suggestions-list">
-                {filters.map(filter => {
-                  let className = 'suggestion'
-                  if (filter.group !== previousGroup) {
-                    className += ' first-in-section'
-                  }
-                  previousGroup = filter.group
-                  return (
-                    <li key={filter.name} className={className}>
-                      <strong>{filter.name}</strong> &mdash; {filter.tip}
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
-          </div>
-        ) : ''}
       </div>
     )
   }
