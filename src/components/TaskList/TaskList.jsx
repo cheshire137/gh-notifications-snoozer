@@ -119,7 +119,7 @@ class TaskList extends React.Component {
                 onClick={() => this.editSelectedFilter()}
                 type="button"
                 className="is-link is-small button"
-                title="Show hidden tasks"
+                title="Edit selected filter"
               >Edit</button>
             </span>
           </div>
