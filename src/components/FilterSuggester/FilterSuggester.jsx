@@ -204,14 +204,18 @@ class FilterSuggester extends React.Component {
 
   componentDidMount() {
     const input = document.getElementById(this.props.inputID)
-    input.addEventListener('keypress', this.onKeyPress)
-    input.addEventListener('keyup', this.onKeyUp)
+    if (input) {
+      input.addEventListener('keypress', this.onKeyPress)
+      input.addEventListener('keyup', this.onKeyUp)
+    }
   }
 
   componentWillUnmount() {
     const input = document.getElementById(this.props.inputID)
-    input.removeEventListener('keypress', this.onKeyPress)
-    input.removeEventListener('keyup', this.onKeyUp)
+    if (input) {
+      input.removeEventListener('keypress', this.onKeyPress)
+      input.removeEventListener('keyup', this.onKeyUp)
+    }
   }
 
   onChange(event, { newValue }) {
@@ -327,7 +331,6 @@ class FilterSuggester extends React.Component {
       id: this.props.inputID,
       onBlur: () => { this.setState({ suggestions: [] }) },
     }
-    let previousGroup = filters[0].group
     return (
       <div className="filter-suggester-container">
         <Autosuggest
