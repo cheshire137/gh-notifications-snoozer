@@ -218,7 +218,7 @@ class FilterSuggester extends React.Component {
     const previousValue = this.state.value
     this.setState({ value: newValue, previousValue })
     if (this.props.onChange) {
-      this.props.onChange(event)
+      this.props.onChange(newValue)
     }
   }
 

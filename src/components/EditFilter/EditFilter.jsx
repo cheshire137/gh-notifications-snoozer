@@ -38,8 +38,8 @@ class EditFilter extends React.Component {
     this.props.cancel()
   }
 
-  valueChanged(event) {
-    this.setState({ value: event.target.value })
+  valueChanged(newValue) {
+    this.setState({ value: newValue })
   }
 
   keyChanged(event) {
@@ -78,7 +78,7 @@ class EditFilter extends React.Component {
               <FilterSuggester
                 className={valueClass}
                 value={this.state.value}
-                onChange={e => this.valueChanged(e)}
+                onChange={val => this.valueChanged(val)}
                 inputID="edit-filter-query"
               />
             </div>
