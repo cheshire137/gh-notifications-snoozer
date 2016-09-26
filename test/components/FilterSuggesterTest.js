@@ -31,4 +31,17 @@ describe('FilterSuggester', () => {
     const input = renderedDOM().querySelector('input#test-filter[type="text"]')
     assert(input)
   })
+
+  it('makes suggestions', () => {
+    assert.equal(0, renderedDOM().querySelectorAll('.suggestion').length)
+
+    const input = renderedDOM().querySelector('input#test-filter')
+    input.value = 'st'
+    TestUtils.Simulate.change(input)
+
+    const suggestions = renderedDOM().querySelectorAll('.suggestion')
+    assert.equal(2, suggestions.length)
+    assert.equal('state:', suggestions[0].querySelector('.name').textContent)
+    assert.equal('status:', suggestions[1].querySelector('.name').textContent)
+  })
 })
