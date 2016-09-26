@@ -66,7 +66,7 @@ class App extends React.Component {
     }
     const addFilter = () => this.showNewFilterForm()
     const editFilter = key => this.editFilter(key)
-    const save = () => this.savedFilter()
+    const save = key => this.savedFilter(key)
     const manageFilters = () => this.manageFilters()
     const loadFilter = key => this.loadFilter(key)
     switch (this.state.view) {
@@ -153,10 +153,11 @@ class App extends React.Component {
     this.changeView('new-filter')
   }
 
-  savedFilter() {
+  savedFilter(key) {
     ipcRenderer.send('title', 'Tasks')
     this.setState({ filters: Filters.findAll() }, () => {
       this.changeView('tasks')
+      this.loadFilter(key)
     })
   }
 
