@@ -1,0 +1,52 @@
+.filter-suggester-container {
+  position: relative;
+
+  .suggestion {
+    color: #a5a5a5;
+    border-radius: 1px;
+    padding: 0 1px;
+
+    strong {
+      color: #222324;
+    }
+  }
+
+  .react-autosuggest__suggestion--focused {
+    background-color: #ffdd57;
+  }
+
+  .react-autosuggest__suggestions-container:not(:empty) {
+    background-color: #fff;
+    box-shadow: 0 2px 3px rgba(17, 17, 17, 0.1), 0 0 0 1px rgba(17, 17, 17, 0.1);
+    color: #69707a;
+    border-radius: 3px;
+    padding: 9px 10px;
+  }
+}
+
+.suggestions-container.card {
+  position: absolute;
+  width: auto;
+  left: 0;
+  right: 1px;
+  z-index: 1;
+  border-radius: 3px;
+
+  .card-content {
+    padding: 10px;
+  }
+
+  .card-header-title {
+    font-weight: 400;
+    font-size: 13px;
+    color: #a5a5a5;
+    padding: 0;
+    margin-bottom: 5px;
+  }
+}
+
+.first-in-section {
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+  margin-top: 10px;
+}

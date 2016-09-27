@@ -31,6 +31,10 @@ class TaskList extends React.Component {
     this.props.changeFilter(filter)
   }
 
+  editSelectedFilter() {
+    this.props.editFilter(LastFilter.retrieve())
+  }
+
   refresh(event) {
     event.currentTarget.blur() // defocus button
     const filter = document.getElementById('filters-menu').value
@@ -57,7 +61,6 @@ class TaskList extends React.Component {
                   onChange={event => this.changeFilter(event)}
                   defaultValue={lastFilterKey}
                 >
-                  <option value="">Choose a filter</option>
                   {filters.map(key => (
                     <option key={key} value={key}>{key}</option>
                   ))}
@@ -112,6 +115,12 @@ class TaskList extends React.Component {
                 className="is-link is-small button"
                 title="Show hidden tasks"
               >View hidden</button>
+              <button
+                onClick={() => this.editSelectedFilter()}
+                type="button"
+                className="is-link is-small button"
+                title="Edit selected filter"
+              >Edit</button>
             </span>
           </div>
         </nav>
@@ -138,6 +147,7 @@ TaskList.propTypes = {
   manageFilters: React.PropTypes.func.isRequired,
   showAuth: React.PropTypes.func.isRequired,
   showHidden: React.PropTypes.func.isRequired,
+  editFilter: React.PropTypes.func.isRequired,
 }
 
 module.exports = connect(mapStateToProps)(hookUpStickyNav(TaskList, '.task-list-navigation'))

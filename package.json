@@ -8,6 +8,7 @@
     "electron-config": "^0.2.1",
     "isomorphic-fetch": "^2.2.1",
     "react": "^15.2.1",
+    "react-autosuggest": "^6.0.4",
     "react-dom": "^15.2.1",
     "react-redux": "^4.4.5",
     "redux": "^3.5.2",

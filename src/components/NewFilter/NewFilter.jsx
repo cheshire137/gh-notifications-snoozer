@@ -1,6 +1,6 @@
 const React = require('react')
 const Filter = require('../../models/Filter')
-const FilterHelp = require('../FilterHelp')
+const FilterSuggester = require('../FilterSuggester')
 const LastFilter = require('../../models/LastFilter')
 const hookUpStickyNav = require('../hookUpStickyNav')
 
@@ -50,16 +50,10 @@ class NewFilter extends React.Component {
           </div>
         </nav>
         <div className="view-container">
-          <form className="new-filter-form" onSubmit={event => this.save(event)}>
-            <label className="label">Search query:</label>
-            <p className="control">
-              <input
-                type="text"
-                name="filterValue"
-                className={valueClass}
-                placeholder="e.g., team:org/team-name is:open sort:updated-desc"
-              />
-            </p>
+          <form
+            className="new-filter-form"
+            onSubmit={event => this.save(event)}
+          >
             <label className="label">Filter name: (optional)</label>
             <p className="control">
               <input
@@ -69,6 +63,13 @@ class NewFilter extends React.Component {
                 placeholder="e.g., Team mentions"
               />
             </p>
+            <label className="label">Search query:</label>
+            <div className="control">
+              <FilterSuggester
+                className={valueClass}
+                inputID="new-filter-query"
+              />
+            </div>
             <p className="control">
               <button type="submit" className="button is-primary" id="new-filter-save">
                 Save Filter
@@ -80,7 +81,6 @@ class NewFilter extends React.Component {
               >Cancel</button>
             </p>
           </form>
-          <FilterHelp />
         </div>
       </div>
     )

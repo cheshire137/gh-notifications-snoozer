@@ -69,44 +69,53 @@ class App extends React.Component {
   }
 
   getViewContents() {
+    let cancel = () => this.showTaskList()
+    if (this.state.previousView === 'filters') {
+      cancel = () => this.manageFilters()
+    }
+    const addFilter = () => this.showNewFilterForm()
+    const editFilter = key => this.editFilter(key)
+    const save = key => this.savedFilter(key)
+    const manageFilters = () => this.manageFilters()
+    const loadFilter = key => this.loadFilter(key)
     switch (this.state.view) {
       case 'tasks': return (
         <TaskList
-          addFilter={() => this.showNewFilterForm()}
-          changeFilter={key => this.loadFilter(key)}
-          manageFilters={() => this.manageFilters()}
+          addFilter={addFilter}
+          changeFilter={loadFilter}
+          manageFilters={manageFilters}
           user={this.state.user}
           showAuth={() => this.showAuth()}
           showHidden={() => this.showHidden()}
+          editFilter={editFilter}
         />)
       case 'filters': return (
         <FilterList
           filters={this.state.filters}
           delete={key => this.deleteFilter(key)}
-          edit={key => this.editFilter(key)}
-          addFilter={() => this.showNewFilterForm()}
-          cancel={() => this.showTaskList()}
+          edit={editFilter}
+          addFilter={addFilter}
+          cancel={cancel}
         />)
       case 'edit-filter': return (
         <EditFilter
           filter={this.state.filter}
-          save={() => this.savedFilter()}
-          addFilter={() => this.showNewFilterForm()}
-          cancel={() => this.manageFilters()}
+          save={save}
+          addFilter={addFilter}
+          cancel={cancel}
           delete={key => this.deleteFilter(key)}
         />)
-      case 'about': return (
-        <About cancel={() => this.showTaskList()} />)
+      case 'about': return <About cancel={cancel} />
       case 'new-filter': return (
         <NewFilter
-          save={() => this.savedFilter()}
-          cancel={() => this.showTaskList()}
-          manageFilters={() => this.manageFilters()}
-          loadFilter={key => this.loadFilter(key)}
+          save={save}
+          cancel={cancel}
+          manageFilters={manageFilters}
+          loadFilter={loadFilter}
         />)
       case 'hidden': return (
         <HiddenTaskList
-          cancel={() => this.showTaskList()}
+          cancel={cancel}
           activeFilter={this.state.filter}
         />)
       default: return (
@@ -152,10 +161,11 @@ class App extends React.Component {
     this.changeView('new-filter')
   }
 
-  savedFilter() {
+  savedFilter(key) {
     ipcRenderer.send('title', 'Tasks')
     this.setState({ filters: Filters.findAll() }, () => {
       this.changeView('tasks')
+      this.loadFilter(key)
     })
   }
 
@@ -190,8 +200,7 @@ class App extends React.Component {
   }
 
   editFilter(key) {
-    const filter = new Filter(key)
-    this.setState({ filter }, () => {
+    this.setState({ filter: key }, () => {
       ipcRenderer.send('title', `Edit Filter ${key}`)
       this.changeView('edit-filter')
     })
@@ -199,7 +208,7 @@ class App extends React.Component {
 
   changeView(view) {
     window.scrollTo(0, 0)
-    this.setState({ view })
+    this.setState({ view, previousView: this.state.view })
   }
 
   finishedWithAuth(user) {
@@ -215,7 +224,6 @@ class App extends React.Component {
         <TabbedNav
           manageFilters={() => this.manageFilters()}
           user={this.state.user}
-          showHidden={() => this.showHidden()}
           showAuth={() => this.showAuth()}
           showTasks={() => this.showTaskList()}
           active={this.state.view}

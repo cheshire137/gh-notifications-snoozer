@@ -1,6 +1,6 @@
 const React = require('react')
 const Filter = require('../../models/Filter')
-const FilterHelp = require('../FilterHelp')
+const FilterSuggester = require('../FilterSuggester')
 const hookUpStickyNav = require('../hookUpStickyNav')
 
 class EditFilter extends React.Component {
@@ -9,8 +9,8 @@ class EditFilter extends React.Component {
     const { filter } = props
     this.state = {
       valueHasError: false,
-      key: filter.key,
-      value: filter.retrieve(),
+      key: filter,
+      value: new Filter(filter).retrieve(),
     }
   }
 
@@ -27,8 +27,8 @@ class EditFilter extends React.Component {
     }
     const filter = new Filter(key)
     filter.store(this.state.value)
-    if (this.props.filter.key !== key) {
-      this.props.delete(this.props.filter.key)
+    if (this.props.filter !== key) {
+      this.props.delete(this.props.filter)
     }
     this.props.save(key)
   }
@@ -38,8 +38,8 @@ class EditFilter extends React.Component {
     this.props.cancel()
   }
 
-  valueChanged(event) {
-    this.setState({ value: event.target.value })
+  valueChanged(newValue) {
+    this.setState({ value: newValue })
   }
 
   keyChanged(event) {
@@ -62,17 +62,6 @@ class EditFilter extends React.Component {
         </nav>
         <div className="view-container">
           <form className="edit-filter-form" onSubmit={event => this.save(event)}>
-            <label className="label">Search query:</label>
-            <p className="control">
-              <input
-                type="text"
-                name="filterValue"
-                className={valueClass}
-                value={this.state.value}
-                onChange={e => this.valueChanged(e)}
-                placeholder="e.g., team:org/team-name is:open"
-              />
-            </p>
             <label className="label">Filter name: (optional)</label>
             <p className="control">
               <input
@@ -84,6 +73,15 @@ class EditFilter extends React.Component {
                 placeholder="e.g., Team mentions"
               />
             </p>
+            <label className="label">Search query:</label>
+            <div className="control">
+              <FilterSuggester
+                className={valueClass}
+                value={this.state.value}
+                onChange={val => this.valueChanged(val)}
+                inputID="edit-filter-query"
+              />
+            </div>
             <p className="control">
               <button type="submit" className="button is-primary">
                 Save Filter
@@ -95,7 +93,6 @@ class EditFilter extends React.Component {
               >Cancel</button>
             </p>
           </form>
-          <FilterHelp />
         </div>
       </div>
     )
@@ -103,7 +100,7 @@ class EditFilter extends React.Component {
 }
 
 EditFilter.propTypes = {
-  filter: React.PropTypes.object.isRequired,
+  filter: React.PropTypes.string.isRequired,
   save: React.PropTypes.func.isRequired,
   cancel: React.PropTypes.func.isRequired,
   addFilter: React.PropTypes.func.isRequired,
