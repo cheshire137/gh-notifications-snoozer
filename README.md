@@ -37,9 +37,11 @@ npm start
 
 ## How to Run Tests
 
+How you set the `NODE_ENV` environment variable to run `npm test` may be different depending on your operating system and shell.
+
 ```bash
 npm install
-npm test
+NODE_ENV=test npm test
 ```
 
-You can run just the style checker by itself with `npm run-script style`. You can run just the tests by themselves with `npm run-script unit-tests`.
+You can run just the style checker by itself with `npm run style`. You can run just the tests by themselves with `NODE_ENV=test npm run unit-tests`.
