@@ -12,6 +12,7 @@ const storage = new ElectronConfig({ name: 'config-test' })
 const Config = require('../../src/config.json')
 const App = require('../../src/components/App')
 const reducer = require('../../src/reducers/reducer')
+const GitHub = require('../../src/models/GitHub')
 const GitHubAuth = require('../../src/models/GitHubAuth')
 const Filter = require('../../src/models/Filter')
 const LastFilter = require('../../src/models/LastFilter')
@@ -20,6 +21,7 @@ const fixtures = require('../fixtures')
 describe('TaskList', () => {
   let renderedDOM
   let store
+  let getNotifications
 
   before(() => {
     storage.clear()
@@ -31,6 +33,12 @@ describe('TaskList', () => {
     fetchMock.get(`${Config.githubApiUrl}/user`, { login: 'testuser123' })
     fetchMock.get(`${Config.githubApiUrl}/search/issues?q=cats`,
                   { items: [fixtures.pullRequest, fixtures.issue] })
+    fetchMock.mock(fixtures.notification.url, {}, { method: 'PATCH' })
+
+    getNotifications = GitHub.prototype.getNotifications
+    GitHub.prototype.getNotifications = function() {
+      return Promise.resolve([fixtures.notification])
+    }
 
     // Persist a filter
     const filter = new Filter('Cool name')
@@ -48,6 +56,7 @@ describe('TaskList', () => {
   })
 
   after(() => {
+    GitHub.prototype.getNotifications = getNotifications
     fetchMock.restore()
   })
 
@@ -56,26 +65,67 @@ describe('TaskList', () => {
     assert.equal(1, taskListItems.length)
   })
 
-  it('does not show task that is ignored')
+  it('does not show task that is ignored', () => {
+    assert.equal(1, renderedDOM().querySelectorAll('#pull-163031382').length)
+    store.dispatch({
+      type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
+    })
+    store.dispatch({ type: 'TASKS_IGNORE' })
+    assert.equal(0, renderedDOM().querySelectorAll('#pull-163031382').length)
+
+    // Reset state
+    store.dispatch({
+      type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
+    })
+    store.dispatch({ type: 'TASKS_RESTORE' })
+  })
 
   it('does not show task that is archived', () => {
-    store.dispatch({ type: 'TASKS_SELECT', task: {
-      storageKey: 'pull-163031382',
-    } })
+    assert.equal(1, renderedDOM().querySelectorAll('#pull-163031382').length)
+    store.dispatch({
+      type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
+    })
     store.dispatch({ type: 'TASKS_ARCHIVE' })
+    assert.equal(0, renderedDOM().querySelectorAll('#pull-163031382').length)
 
-    const taskListItems = renderedDOM().querySelectorAll('#pull-163031382')
-    assert.equal(0, taskListItems.length)
+    // Reset state
+    store.dispatch({
+      type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
+    })
+    store.dispatch({ type: 'TASKS_RESTORE' })
   })
 
   it('does not show task that is snoozed', () => {
-    store.dispatch({ type: 'TASKS_SELECT', task: {
-      storageKey: 'pull-163031382',
-    } })
+    assert.equal(1, renderedDOM().querySelectorAll('#pull-163031382').length)
+    store.dispatch({
+      type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
+    })
     store.dispatch({ type: 'TASKS_SNOOZE' })
+    assert.equal(0, renderedDOM().querySelectorAll('#pull-163031382').length)
 
-    const taskListItems = renderedDOM().querySelectorAll('#pull-163031382')
-    assert.equal(0, taskListItems.length)
+    // Reset state
+    store.dispatch({
+      type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
+    })
+    store.dispatch({ type: 'TASKS_RESTORE' })
+  })
+
+  it('marks notification as read for ignored task', () => {
+    store.dispatch({
+      type: 'TASKS_SELECT', task: { storageKey: 'issue-148539337' },
+    })
+    assert.equal(2, fetchMock.calls().matched.length)
+    store.dispatch({ type: 'TASKS_IGNORE' })
+    assert.equal(3, fetchMock.calls().matched.length,
+                 'Upon ignoring task, should have marked notification as read')
+    assert.equal(fixtures.notification.url, fetchMock.calls().matched[2][0],
+                 'Should have made a request to the notification URL')
+
+    // Reset state
+    store.dispatch({
+      type: 'TASKS_SELECT', task: { storageKey: 'issue-148539337' },
+    })
+    store.dispatch({ type: 'TASKS_RESTORE' })
   })
 
   context('when the snooze button is clicked', () => {
@@ -91,13 +141,10 @@ describe('TaskList', () => {
     })
 
     after(() => {
-      const task = store.getState().tasks[0]
-      const updatedTask = Object.assign({}, task, { snoozedAt: null })
-      store.dispatch({ type: 'TASKS_UPDATE', tasks: [updatedTask] })
-
-      store.dispatch({ type: 'TASKS_DESELECT', task: {
-        storageKey: 'pull-163031382',
-      } })
+      store.dispatch({
+        type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
+      })
+      store.dispatch({ type: 'TASKS_RESTORE' })
     })
 
     it('hides selected tasks', () => {
@@ -117,7 +164,11 @@ describe('TaskList', () => {
       const updatedTask = Object.assign({}, tasks[1], {
         snoozedAt: pastSnooze.toISOString(),
       })
-      store.dispatch({ type: 'TASKS_UPDATE', tasks: [tasks[0], updatedTask] })
+      store.dispatch({
+        type: 'TASKS_UPDATE',
+        tasks: [tasks[0], updatedTask],
+        notifications: [],
+      })
 
       const taskListItems = renderedDOM().querySelectorAll('#issue-148539337')
       assert.equal(1, taskListItems.length)
@@ -137,13 +188,10 @@ describe('TaskList', () => {
     })
 
     after(() => {
-      const tasks = store.getState().tasks
-      const updatedTask = Object.assign({}, tasks[0], { archivedAt: null })
-      store.dispatch({ type: 'TASKS_UPDATE', tasks: [updatedTask, tasks[1]] })
-
-      store.dispatch({ type: 'TASKS_DESELECT', task: {
-        storageKey: 'pull-163031382',
-      } })
+      store.dispatch({
+        type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
+      })
+      store.dispatch({ type: 'TASKS_RESTORE' })
     })
 
     it('hides selected tasks', () => {
@@ -161,7 +209,11 @@ describe('TaskList', () => {
       const updatedTask = Object.assign({}, tasks[1], {
         updatedAt: new Date(archiveTime.getFullYear() + 1, 0, 1).toISOString(),
       })
-      store.dispatch({ type: 'TASKS_UPDATE', tasks: [tasks[0], updatedTask] })
+      store.dispatch({
+        type: 'TASKS_UPDATE',
+        tasks: [tasks[0], updatedTask],
+        notifications: [],
+      })
 
       const taskListItems = renderedDOM().querySelectorAll('#issue-148539337')
       assert.equal(1, taskListItems.length)

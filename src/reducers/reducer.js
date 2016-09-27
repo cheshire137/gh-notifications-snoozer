@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
 import ElectronConfig from 'electron-config'
+import GitHub from '../models/GitHub'
 
 const configName = process.env.NODE_ENV === 'test' ? 'config-test' : 'config'
 const storage = new ElectronConfig({ name: configName })
@@ -26,6 +27,17 @@ function writeChanges(tasks, typeKey) {
   storage.set(typeKey, allTaskKeys)
 }
 
+function notificationsBySubject(notifications) {
+  const result = {}
+  if (typeof notifications === 'undefined') {
+    return result
+  }
+  notifications.forEach(notification => {
+    result[notification.subject.url] = notification.url
+  })
+  return result
+}
+
 // Remove the given tasks from the given key in the JSON storage file.
 function removeTasks(tasks, typeKey) {
   const existingTaskKeys = getSavedTaskKeys(typeKey)
@@ -44,15 +56,19 @@ function updateTasks(tasks, action) {
   const snoozedTasks = getSavedTaskKeys(SNOOZED_KEY)
   const archivedTasks = getSavedTaskKeys(ARCHIVED_KEY)
   const ignoredTasks = getSavedTaskKeys(IGNORED_KEY)
+  const notificationUrls = notificationsBySubject(action.notifications)
 
   // Add the existing tasks
   tasks.forEach(task => (tasksByKey[task.storageKey] = task))
 
   // Update tasks with new values and add new tasks
   action.tasks.forEach(task => {
-    tasksByKey[task.storageKey] = Object.assign({},
-                                                tasksByKey[task.storageKey],
-                                                task)
+    const updatedTask = Object.assign({}, tasksByKey[task.storageKey], task)
+    const notificationUrl = notificationUrls[task.apiUrl]
+    if (notificationUrl) {
+      updatedTask.notificationUrl = notificationUrl
+    }
+    tasksByKey[task.storageKey] = updatedTask
   })
 
   const updatedTasks = Object.keys(tasksByKey).map(key => {
@@ -103,6 +119,18 @@ function currentTimeString() {
   return date.toISOString()
 }
 
+function markNotificationsAsRead(tasks) {
+  const tasksWithNotifications = tasks.filter(task => {
+    return typeof task.notificationUrl === 'string'
+  })
+  const github = new GitHub()
+  tasksWithNotifications.forEach(task => {
+    github.markAsRead(task.notificationUrl).catch(err => {
+      console.error('failed to mark notification as read', err, task)
+    })
+  })
+}
+
 function snoozeTasks(tasks) {
   const snoozedTasks = []
   const updatedTasks = tasks.map(task => {
@@ -119,6 +147,7 @@ function snoozeTasks(tasks) {
     }
     return task
   })
+  markNotificationsAsRead(snoozedTasks)
   writeChanges(snoozedTasks, SNOOZED_KEY)
   return updatedTasks
 }
@@ -140,6 +169,7 @@ function ignoreTasks(tasks) {
     }
     return task
   })
+  markNotificationsAsRead(ignoredTasks)
   writeChanges(ignoredTasks, IGNORED_KEY)
   return updatedTasks
 }
@@ -160,6 +190,7 @@ function archiveTasks(tasks) {
     }
     return task
   })
+  markNotificationsAsRead(archivedTasks)
   writeChanges(archivedTasks, ARCHIVED_KEY)
   return updatedTasks
 }
@@ -174,6 +205,7 @@ function restoreTasks(tasks) {
         archivedAt: null,
         ignore: false,
         snoozedAt: null,
+        isSelected: false,
       })
     }
     return task

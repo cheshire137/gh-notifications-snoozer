@@ -10,7 +10,7 @@ describe('Fetcher', () => {
 
     it('returns a promise that resolves with the JSON response', done => {
       const fetcher = new Fetcher()
-      fetcher.get('http://example.com').then(json => {
+      fetcher.get('http://example.com').then(({ json }) => {
         assert.deepEqual({ foo: 'bar' }, json)
         fetchMock.restore()
         done()

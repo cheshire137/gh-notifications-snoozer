@@ -41,6 +41,15 @@ class App extends React.Component {
     }
   }
 
+  onNotificationsFetched(notifications, query) {
+    const github = new GitHub()
+    github.getTasks(query).then(tasks => {
+      this.props.dispatch({ type: 'TASKS_UPDATE', tasks, notifications })
+    }).catch(err => {
+      console.error('failed to get tasks from GitHub', err)
+    })
+  }
+
   onUserLoad(user) {
     if (user) {
       const filters = new DefaultFilters(user.login)
@@ -122,17 +131,16 @@ class App extends React.Component {
 
   loadTasks(query) {
     const github = new GitHub()
-    github.getTasks(query).then(tasks => {
-      this.props.dispatch({ type: 'TASKS_UPDATE', tasks })
+    github.getNotifications().then(notifications => {
+      this.onNotificationsFetched(notifications, query)
     }).catch(err => {
-      console.error('failed to get tasks from GitHub', err)
+      console.error('failed to get notifications from GitHub', err)
     })
   }
 
   loadUser() {
     const github = new GitHub()
-    github.getCurrentUser()
-          .then(user => this.onUserLoad(user))
+    github.getCurrentUser().then(user => this.onUserLoad(user))
           .catch(error => {
             console.error('failed to load user', error)
             GitHubAuth.deleteToken()
