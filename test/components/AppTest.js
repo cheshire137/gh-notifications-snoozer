@@ -84,18 +84,21 @@ describe('App', () => {
       fetchMock.restore()
     })
 
-    it('fetches user and issues when filter exists', () => {
+    it('fetches user and issues when filter exists', done => {
       const filter = new Filter('Cool name')
       filter.store('cats')
       LastFilter.save('Cool name')
 
       renderPage(store)
 
-      const fetchedCalls = fetchMock.calls().matched
-      assert(fetchedCalls[0][0].match(/\/user/),
-             'Fetch call should be to the user API')
-      assert(fetchedCalls[1][0].match(/\/notifications/),
-             'Fetch call should be to the notifications API')
+      setTimeout(() => {
+        const fetchedCalls = fetchMock.calls().matched
+        assert(fetchedCalls[0][0].match(/\/user/),
+               'Fetch call should be to the user API')
+        assert(fetchedCalls[1][0].match(/\/search\/issues/),
+               'Fetch call should be to the search issues API')
+        done()
+      }, 500)
     })
   })
 })
