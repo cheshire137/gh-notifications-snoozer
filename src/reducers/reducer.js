@@ -119,12 +119,12 @@ function currentTimeString() {
   return date.toISOString()
 }
 
-function clearNotifications(tasks) {
-  const withNotification = tasks.filter(task => {
+function markNotificationsAsRead(tasks) {
+  const tasksWithNotifications = tasks.filter(task => {
     return typeof task.notificationUrl === 'string'
   })
   const github = new GitHub()
-  withNotification.forEach(task => {
+  tasksWithNotifications.forEach(task => {
     github.markAsRead(task.notificationUrl).catch(err => {
       console.error('failed to mark notification as read', err, task)
     })
@@ -147,7 +147,7 @@ function snoozeTasks(tasks) {
     }
     return task
   })
-  clearNotifications(snoozedTasks)
+  markNotificationsAsRead(snoozedTasks)
   writeChanges(snoozedTasks, SNOOZED_KEY)
   return updatedTasks
 }
@@ -169,7 +169,7 @@ function ignoreTasks(tasks) {
     }
     return task
   })
-  clearNotifications(ignoredTasks)
+  markNotificationsAsRead(ignoredTasks)
   writeChanges(ignoredTasks, IGNORED_KEY)
   return updatedTasks
 }
@@ -190,7 +190,7 @@ function archiveTasks(tasks) {
     }
     return task
   })
-  clearNotifications(archivedTasks)
+  markNotificationsAsRead(archivedTasks)
   writeChanges(archivedTasks, ARCHIVED_KEY)
   return updatedTasks
 }
