@@ -51,12 +51,8 @@ class GitHub extends Fetcher {
   getNotifications(sinceDate) {
     let date = sinceDate
     if (typeof date === 'undefined') {
-      if (process.env.NODE_ENV === 'test') {
-        date = new Date(Date.UTC(2016, 5, 4)) // June 4, 2016 UTC
-      } else {
-        date = new Date()
-        date.setDate(date.getDate() - 31)
-      }
+      date = new Date()
+      date.setDate(date.getDate() - 31)
     }
     const dateStr = date.toISOString()
     return this.get(`notifications?since=${encodeURIComponent(dateStr)}`)

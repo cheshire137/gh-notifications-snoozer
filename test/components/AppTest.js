@@ -8,6 +8,7 @@ const fetchMock = require('fetch-mock')
 
 const App = require('../../src/components/App')
 const reducer = require('../../src/reducers/reducer')
+const GitHub = require('../../src/models/GitHub')
 const GitHubAuth = require('../../src/models/GitHubAuth')
 const Filter = require('../../src/models/Filter')
 const LastFilter = require('../../src/models/LastFilter')
@@ -65,16 +66,21 @@ describe('App', () => {
   })
 
   describe('when valid auth token is set', () => {
+    let getNotifications
+
     before(() => {
       store = Redux.createStore(reducer)
       GitHubAuth.setToken('test-whee')
+      getNotifications = GitHub.prototype.getNotifications
+      GitHub.prototype.getNotifications = function() {
+        return Promise.resolve([])
+      }
       fetchMock.get(`${Config.githubApiUrl}/user`, { login: 'testuser123' })
       fetchMock.get(`${Config.githubApiUrl}/search/issues?q=cats`, [])
-      fetchMock.get(`${Config.githubApiUrl}/notifications?` +
-                    'since=2016-06-04T00%3A00%3A00.000Z', [])
     })
 
     after(() => {
+      GitHub.prototype.getNotifications = getNotifications
       fetchMock.restore()
     })
 
