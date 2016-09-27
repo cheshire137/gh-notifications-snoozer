@@ -12,6 +12,7 @@ const storage = new ElectronConfig({ name: 'config-test' })
 const Config = require('../../src/config.json')
 const App = require('../../src/components/App')
 const reducer = require('../../src/reducers/reducer')
+const GitHub = require('../../src/models/GitHub')
 const GitHubAuth = require('../../src/models/GitHubAuth')
 const Filter = require('../../src/models/Filter')
 const LastFilter = require('../../src/models/LastFilter')
@@ -20,6 +21,7 @@ const fixtures = require('../fixtures')
 describe('TaskList', () => {
   let renderedDOM
   let store
+  let getNotifications
 
   before(() => {
     storage.clear()
@@ -31,9 +33,12 @@ describe('TaskList', () => {
     fetchMock.get(`${Config.githubApiUrl}/user`, { login: 'testuser123' })
     fetchMock.get(`${Config.githubApiUrl}/search/issues?q=cats`,
                   { items: [fixtures.pullRequest, fixtures.issue] })
-    fetchMock.get(`${Config.githubApiUrl}/notifications?` +
-                  'since=2016-06-04T00%3A00%3A00.000Z', [fixtures.notification])
     fetchMock.mock(fixtures.notification.url, {}, { method: 'PATCH' })
+
+    getNotifications = GitHub.prototype.getNotifications
+    GitHub.prototype.getNotifications = function() {
+      return Promise.resolve([fixtures.notification])
+    }
 
     // Persist a filter
     const filter = new Filter('Cool name')
@@ -51,6 +56,7 @@ describe('TaskList', () => {
   })
 
   after(() => {
+    GitHub.prototype.getNotifications = getNotifications
     fetchMock.restore()
   })
 
@@ -108,11 +114,11 @@ describe('TaskList', () => {
     store.dispatch({
       type: 'TASKS_SELECT', task: { storageKey: 'issue-148539337' },
     })
-    assert.equal(3, fetchMock.calls().matched.length)
+    assert.equal(2, fetchMock.calls().matched.length)
     store.dispatch({ type: 'TASKS_IGNORE' })
-    assert.equal(4, fetchMock.calls().matched.length,
+    assert.equal(3, fetchMock.calls().matched.length,
                  'Upon ignoring task, should have marked notification as read')
-    assert.equal(fixtures.notification.url, fetchMock.calls().matched[3][0],
+    assert.equal(fixtures.notification.url, fetchMock.calls().matched[2][0],
                  'Should have made a request to the notification URL')
 
     // Reset state
