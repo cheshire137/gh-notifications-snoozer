@@ -135,17 +135,10 @@ describe('TaskList', () => {
     })
 
     after(() => {
-      const task = store.getState().tasks[0]
-      const updatedTask = Object.assign({}, task, { snoozedAt: null })
       store.dispatch({
-        type: 'TASKS_UPDATE',
-        tasks: [updatedTask],
-        notifications: [],
+        type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
       })
-
-      store.dispatch({ type: 'TASKS_DESELECT', task: {
-        storageKey: 'pull-163031382',
-      } })
+      store.dispatch({ type: 'TASKS_RESTORE' })
     })
 
     it('hides selected tasks', () => {
@@ -189,17 +182,10 @@ describe('TaskList', () => {
     })
 
     after(() => {
-      const tasks = store.getState().tasks
-      const updatedTask = Object.assign({}, tasks[0], { archivedAt: null })
       store.dispatch({
-        type: 'TASKS_UPDATE',
-        tasks: [updatedTask, tasks[1]],
-        notifications: [],
+        type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
       })
-
-      store.dispatch({ type: 'TASKS_DESELECT', task: {
-        storageKey: 'pull-163031382',
-      } })
+      store.dispatch({ type: 'TASKS_RESTORE' })
     })
 
     it('hides selected tasks', () => {
