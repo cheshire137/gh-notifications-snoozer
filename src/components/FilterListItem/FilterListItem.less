@@ -1,0 +1,17 @@
+.filter-key {
+  font-weight: bold;
+}
+
+.filter-list-item {
+  .is-link {
+    text-decoration: none;
+
+    + .is-link {
+      margin-left: 5px;
+    }
+  }
+
+  &:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+}

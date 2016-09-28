@@ -1,45 +1,80 @@
 @import "../../lib/bulma.css";
 @import "https://cdnjs.cloudflare.com/ajax/libs/octicons/3.5.0/octicons.min.css";
-@import "../Filter/Filter.less";
+@import "../NewFilter/NewFilter.less";
+@import "../EditFilter/EditFilter.less";
+@import "../FilterList/FilterList.less";
+@import "../FilterListItem/FilterListItem.less";
 @import "../TaskList/TaskList.less";
 @import "../TaskListItem/TaskListItem.less";
-@import "../RuleListItem/RuleListItem.less";
-@import "../NewRule/NewRule.less";
+@import "../Auth/Auth.less";
+@import "../TabbedNav/TabbedNav.less";
+@import "../FilterSuggester/FilterSuggester.less";
+@import "../HiddenTaskList/HiddenTaskList.less";
+@import "../HiddenTaskListItem/HiddenTaskListItem.less";
 
 body {
-  background-color: #fff;
+  background-color: #Fff;
   min-height: 100vh;
-}
-
-#content {
-  padding: 20px;
-}
-
-.issues-list {
-  list-style: none;
-}
-
-.filter {
-  .label {
-    display: inline-block;
-    line-height: 32px;
-    margin-right: 5px;
-  }
 }
 
 .button.is-primary {
   margin-right: 5px;
 }
 
-.rule-list-item:nth-child(even) {
-  background-color: #f9f9f9;
+.top-nav, .secondary-nav, .tertiary-nav {
+  z-index: 5;
+
+  .button.is-link, .label {
+    text-decoration: none;
+  }
+
+  .nav-item {
+    padding: 5px 10px;
+  }
 }
 
-.new-rule-form {
-  margin-bottom: 40px;
+.nav-item.compact-vertically {
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
-.search-query-help li {
-  text-indent: -2em;
-  margin: 0 0 10px 2em;
+.nav {
+  min-height: 38px;
+}
+
+.secondary-nav {
+  border-bottom: 1px solid rgba(211, 214, 219, 0.5);
+  margin-bottom: 15px;
+
+  &.has-tertiary-nav {
+    border-bottom: 0;
+    margin-bottom: 0;
+
+    .nav-item {
+      align-items: flex-end;
+    }
+  }
+}
+
+.tertiary-nav {
+  min-height: 0;
+  border-bottom: 1px solid rgba(211, 214, 219, 0.5);
+  margin-bottom: 15px;
+
+  .nav-item {
+    align-items: flex-start;
+  }
+
+  .compact-vertically .is-small {
+    line-height: 14px;
+    height: 22px;
+  }
+}
+
+.octicon {
+  margin: 0 5px;
+}
+
+.view-container {
+  padding: 10px 20px 20px 20px;
 }

@@ -1,8 +1,33 @@
+.task-list-container {
+  padding: 0 20px 20px 20px;
+}
+
+#top-list-navigation {
+  .select select {
+    max-width: 295px;
+  }
+}
+
 .controls-container {
-  text-align: right;
+  margin-bottom: 10px;
+
+  .label {
+    margin-right: 5px;
+    display: inline-block;
+    font-weight: 400;
+    color: #333;
+    line-height: 28px;
+    font-size: 14px;
+    cursor: default;
+  }
 
   .control {
     display: inline-block;
+    font-size: 24px;
+
+    &.is-link {
+      text-decoration: none;
+    }
 
     + .control {
       margin-left: 5px;

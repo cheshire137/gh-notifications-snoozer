@@ -1,0 +1,6 @@
+{
+  "name": "FilterSuggester",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./FilterSuggester.jsx"
+}

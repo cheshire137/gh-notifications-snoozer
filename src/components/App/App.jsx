@@ -1,121 +1,236 @@
 const { connect } = require('react-redux')
 const React = require('react')
 const { ipcRenderer } = require('electron')
-
-const Rule = require('../../models/rule')
-const Rules = require('../../models/rules')
-const GitHub = require('../../models/github')
-const AppMenu = require('../../models/app-menu')
-const Filter = require('../Filter')
+const Filter = require('../../models/Filter')
+const Filters = require('../../models/Filters')
+const GitHub = require('../../models/GitHub')
+const AppMenu = require('../../models/AppMenu')
+const GitHubAuth = require('../../models/GitHubAuth')
+const LastFilter = require('../../models/LastFilter')
+const TabbedNav = require('../TabbedNav')
+const DefaultFilters = require('../../models/DefaultFilters')
 const TaskList = require('../TaskList')
-const RuleList = require('../RuleList')
-const NewRule = require('../NewRule')
-const Config = require('../../config.json')
+const FilterList = require('../FilterList')
+const NewFilter = require('../NewFilter')
+const EditFilter = require('../EditFilter')
 const About = require('../About')
+const Auth = require('../Auth')
+const HiddenTaskList = require('../HiddenTaskList')
 
 class App extends React.Component {
   constructor() {
     super()
-    this.state = { view: 'tasks', rules: Rules.findAll() }
+    const view = GitHubAuth.isAuthenticated() ? 'tasks' : 'auth'
+    this.state = {
+      view,
+      filters: Filters.findAll(),
+      filter: LastFilter.retrieve(),
+    }
   }
 
   componentDidMount() {
-    ipcRenderer.send('title', 'Notifications')
-    if (this.state.rules.length > 0) {
-      this.loadRule(this.state.rules[0])
-    } else {
-      this.loadTasks(Config.searchQuery)
-    }
+    ipcRenderer.send('title', 'Tasks')
     this.setupAppMenu()
+    if (GitHubAuth.isAuthenticated()) {
+      this.loadUser()
+      if (this.state.filter) {
+        this.loadFilter(this.state.filter)
+      } else {
+        this.manageFilters()
+      }
+    }
+  }
+
+  onNotificationsFetched(notifications, query) {
+    const github = new GitHub()
+    github.getTasks(query).then(tasks => {
+      this.props.dispatch({ type: 'TASKS_UPDATE', tasks, notifications })
+    }).catch(err => {
+      console.error('failed to get tasks from GitHub', err)
+    })
+  }
+
+  onUserLoad(user) {
+    if (user) {
+      const filters = new DefaultFilters(user.login)
+      filters.addDefaults()
+    }
+    this.setState({ user, filters: Filters.findAll() })
   }
 
   setupAppMenu() {
     const menu = new AppMenu()
     menu.on('about-app', () => {
-      ipcRenderer.send('title', 'About')
-      this.setState({ view: 'about' })
+      this.showAbout()
     })
+    menu.on('authenticate', () => {
+      this.showAuth()
+    })
+  }
+
+  getViewContents() {
+    let cancel = () => this.showTaskList()
+    if (this.state.previousView === 'filters') {
+      cancel = () => this.manageFilters()
+    }
+    const addFilter = () => this.showNewFilterForm()
+    const editFilter = key => this.editFilter(key)
+    const save = key => this.savedFilter(key)
+    const manageFilters = () => this.manageFilters()
+    const loadFilter = key => this.loadFilter(key)
+    switch (this.state.view) {
+      case 'tasks': return (
+        <TaskList
+          addFilter={addFilter}
+          changeFilter={loadFilter}
+          manageFilters={manageFilters}
+          user={this.state.user}
+          showAuth={() => this.showAuth()}
+          showHidden={() => this.showHidden()}
+          editFilter={editFilter}
+        />)
+      case 'filters': return (
+        <FilterList
+          filters={this.state.filters}
+          delete={key => this.deleteFilter(key)}
+          edit={editFilter}
+          addFilter={addFilter}
+          cancel={cancel}
+        />)
+      case 'edit-filter': return (
+        <EditFilter
+          filter={this.state.filter}
+          save={save}
+          addFilter={addFilter}
+          cancel={cancel}
+          delete={key => this.deleteFilter(key)}
+        />)
+      case 'about': return <About cancel={cancel} />
+      case 'new-filter': return (
+        <NewFilter
+          save={save}
+          cancel={cancel}
+          manageFilters={manageFilters}
+          loadFilter={loadFilter}
+        />)
+      case 'hidden': return (
+        <HiddenTaskList
+          cancel={cancel}
+          activeFilter={this.state.filter}
+        />)
+      default: return (
+        <Auth
+          done={user => this.finishedWithAuth(user)}
+          isAuthenticated={GitHubAuth.isAuthenticated()}
+          user={this.state.user}
+        />
+      )
+    }
+  }
+
+  showAbout() {
+    ipcRenderer.send('title', 'About')
+    this.changeView('about')
+  }
+
+  showAuth() {
+    ipcRenderer.send('title', 'Authenticate')
+    this.changeView('auth')
   }
 
   loadTasks(query) {
     const github = new GitHub()
-    github.getTasks(query).then(tasks => {
-      this.props.dispatch({ type: 'TASKS_UPDATE', tasks })
+    github.getNotifications().then(notifications => {
+      this.onNotificationsFetched(notifications, query)
+    }).catch(err => {
+      console.error('failed to get notifications from GitHub', err)
     })
   }
 
-  showNewRuleForm() {
-    ipcRenderer.send('title', 'New Filter')
-    this.setState({ view: 'new-rule' })
+  loadUser() {
+    const github = new GitHub()
+    github.getCurrentUser().then(user => this.onUserLoad(user))
+          .catch(error => {
+            console.error('failed to load user', error)
+            GitHubAuth.deleteToken()
+          })
   }
 
-  savedRule() {
-    ipcRenderer.send('title', 'Notifications')
-    this.setState({ view: 'tasks', rules: Rules.findAll() })
+  showNewFilterForm() {
+    ipcRenderer.send('title', 'New Filter')
+    this.changeView('new-filter')
+  }
+
+  savedFilter(key) {
+    ipcRenderer.send('title', 'Tasks')
+    this.setState({ filters: Filters.findAll() }, () => {
+      this.changeView('tasks')
+      this.loadFilter(key)
+    })
   }
 
   showTaskList() {
-    ipcRenderer.send('title', 'Notifications')
-    this.setState({ view: 'tasks' })
+    ipcRenderer.send('title', 'Tasks')
+    this.changeView('tasks')
   }
 
-  loadRule(ruleKey) {
+  loadFilter(key) {
     this.props.dispatch({ type: 'TASKS_EMPTY' })
-    const rule = new Rule(ruleKey)
-    const query = rule.retrieve()
+    LastFilter.save(key)
+    const filter = new Filter(key)
+    this.setState({ filter: key })
+    const query = filter.retrieve()
     this.loadTasks(query)
   }
 
-  manageRules() {
+  manageFilters() {
     ipcRenderer.send('title', 'Manage Filters')
-    this.setState({ view: 'rules' })
+    this.changeView('filters')
   }
 
-  deleteRule(ruleKey) {
-    const rule = new Rule(ruleKey)
-    const remainingRules = rule.delete()
-    this.setState({ rules: remainingRules })
+  deleteFilter(key) {
+    const filter = new Filter(key)
+    const remainingFilters = filter.delete()
+    this.setState({ filters: remainingFilters })
+  }
+
+  showHidden() {
+    ipcRenderer.send('title', 'Hidden Tasks')
+    this.changeView('hidden')
+  }
+
+  editFilter(key) {
+    this.setState({ filter: key }, () => {
+      ipcRenderer.send('title', `Edit Filter ${key}`)
+      this.changeView('edit-filter')
+    })
+  }
+
+  changeView(view) {
+    window.scrollTo(0, 0)
+    this.setState({ view, previousView: this.state.view })
+  }
+
+  finishedWithAuth(user) {
+    this.onUserLoad(user)
+    if (user) {
+      this.showTaskList()
+    }
   }
 
   render() {
-    if (this.state.view === 'tasks') {
-      return (
-        <div className="tasks-view">
-          <Filter
-            addRule={() => this.showNewRuleForm()}
-            changeRule={ruleKey => this.loadRule(ruleKey)}
-            manageRules={() => this.manageRules()}
-          />
-          <TaskList />
-        </div>
-      )
-    }
-
-    if (this.state.view === 'rules') {
-      return (
-        <RuleList
-          rules={this.state.rules}
-          delete={(ruleKey) => this.deleteRule(ruleKey)}
-          addRule={() => this.showNewRuleForm()}
-          cancel={() => this.showTaskList()}
-        />
-      )
-    }
-
-    if (this.state.view === 'about') {
-      return (
-        <About
-          cancel={() => this.showTaskList()}
-        />
-      )
-    }
-
     return (
-      <NewRule
-        save={() => this.savedRule()}
-        cancel={() => this.showTaskList()}
-      />
-    )
+      <div>
+        <TabbedNav
+          manageFilters={() => this.manageFilters()}
+          user={this.state.user}
+          showAuth={() => this.showAuth()}
+          showTasks={() => this.showTaskList()}
+          active={this.state.view}
+          isAuthenticated={GitHubAuth.isAuthenticated()}
+        />
+        {this.getViewContents()}
+      </div>)
   }
 }
 

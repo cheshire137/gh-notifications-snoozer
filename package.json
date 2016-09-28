@@ -8,6 +8,7 @@
     "electron-config": "^0.2.1",
     "isomorphic-fetch": "^2.2.1",
     "react": "^15.2.1",
+    "react-autosuggest": "^6.0.4",
     "react-dom": "^15.2.1",
     "react-redux": "^4.4.5",
     "redux": "^3.5.2",
@@ -30,11 +31,11 @@
     "xvfb-maybe": "^0.1.3"
   },
   "scripts": {
-    "postinstall": "if [ ! -f src/config.json ]; then cp config.json.example src/config.json; fi; if [ ! -f .env ]; then touch .env; fi",
+    "postinstall": "node postinstall.js",
     "start": "electron src/main.js",
     "style": "eslint -c .eslintrc *.js scripts/* src/*.js src/**/*.jsx test/**/*.js",
     "unit-tests": "xvfb-maybe electron-mocha --renderer --recursive --compilers js:babel-register test",
-    "test": "npm run-script style && npm run-script unit-tests",
+    "test": "npm run-script style && NODE_ENV=test npm run-script unit-tests",
     "build-osx": "if [ -d dist/GHSnooze-darwin-x64 ]; then rm -r dist/GHSnooze-darwin-x64; fi && electron-packager src --out=dist --app-version=$npm_package_version --prune --asar --overwrite --appname=GHSnooze --platform=darwin --arch=all --ignore=test",
     "build-windows": "node node_modules\\electron-packager\\cli.js src --out=dist --prune --asar --overwrite --appname=GHSnooze --platform=win32 --arch=all --ignore=test",
     "build-linux": "if [ -d dist/GHSnooze-linux-ia32 ]; then rm -r dist/GHSnooze-linux-ia32; fi && if [ -d dist/GHSnooze-linux-x64 ]; then rm -r dist/GHSnooze-linux-x64; fi && electron-packager src --out=dist --app-version=$npm_package_version --prune --asar --overwrite --appname=GHSnooze --platform=linux --arch=all --ignore=test",

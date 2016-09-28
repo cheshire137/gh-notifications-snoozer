@@ -1,0 +1,58 @@
+.tab {
+  padding-right: 5px;
+}
+
+.nav {
+  .select {
+    max-width: 337px;
+
+    select {
+      max-width: 100%;
+    }
+  }
+
+  .button.is-link {
+    &:hover, &:focus {
+      background-color: transparent;
+      text-decoration: underline;
+    }
+  }
+}
+
+nav#tabbed-nav.tabs.is-toggle {
+  margin-bottom: 0;
+  min-height: 0;
+
+  li.is-active .is-link {
+    background-color: #005ef5;
+    border-color: #005ef5;
+    color: white;
+    z-index: 1;
+  }
+
+  li .is-link {
+    width: 100%;
+    border: 1px solid #dbdbdb;
+    margin-bottom: 0;
+    padding-bottom: 5px;
+    position: relative;
+  }
+
+  li .button {
+    border-radius: 0;
+
+    &.is-link {
+      &:hover, &:focus {
+        text-decoration: none;
+      }
+    }
+  }
+
+  li:first-child .button {
+    border-left: 0;
+  }
+
+  li:last-child .button {
+    border-right: 0;
+  }
+}
