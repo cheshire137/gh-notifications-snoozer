@@ -12,10 +12,12 @@ class TaskList extends React.Component {
     super(props)
     this.state = { selectedIndex: null }
     this.onKeyUp = this.onKeyUp.bind(this)
+    this.onKeyDown = this.onKeyDown.bind(this)
   }
 
   componentDidMount() {
     document.addEventListener('keyup', this.onKeyUp)
+    document.addEventListener('keydown', this.onKeyDown)
   }
 
   componentDidUpdate() {
@@ -24,6 +26,7 @@ class TaskList extends React.Component {
 
   componentWillUnmount() {
     document.removeEventListener('keyup', this.onKeyUp)
+    document.removeEventListener('keydown', this.onKeyDown)
   }
 
   onSnoozeClick(event) {
@@ -46,6 +49,15 @@ class TaskList extends React.Component {
       this.focusPreviousTask()
     } else if (event.key === 'ArrowDown') {
       this.focusNextTask()
+    }
+  }
+
+  onKeyDown(event) {
+    if (event.key === ' ' && typeof this.state.selectedIndex === 'number') {
+      event.preventDefault()
+      this.selectFocusedTask()
+    } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+      event.preventDefault()
     }
   }
 
@@ -76,12 +88,19 @@ class TaskList extends React.Component {
     return this.cachedVisibleTasks
   }
 
+  selectFocusedTask() {
+    const task = this.visibleTasks()[this.state.selectedIndex]
+    const type = task.isSelected ? 'TASKS_DESELECT' : 'TASKS_SELECT'
+    this.props.dispatch({ type, task: { storageKey: task.storageKey } })
+  }
+
   focusNextTask() {
     const oldIndex = this.state.selectedIndex
     let newIndex = typeof oldIndex === 'number' ? oldIndex + 1 : 0
     if (newIndex > this.visibleTasks().length - 1) {
       newIndex = 0
     }
+    console.info('focus', this.visibleTasks()[newIndex].storageKey)
     this.setState({ selectedIndex: newIndex })
   }
 
@@ -92,6 +111,7 @@ class TaskList extends React.Component {
     if (newIndex < 0) {
       newIndex = lastIndex
     }
+    console.info('focus', this.visibleTasks()[newIndex].storageKey)
     this.setState({ selectedIndex: newIndex })
   }
 
@@ -206,4 +226,5 @@ TaskList.propTypes = {
   editFilter: React.PropTypes.func.isRequired,
 }
 
-module.exports = connect(mapStateToProps)(hookUpStickyNav(TaskList, '.task-list-navigation'))
+const stickyNavd = hookUpStickyNav(TaskList, '.task-list-navigation')
+module.exports = connect(mapStateToProps)(stickyNavd)

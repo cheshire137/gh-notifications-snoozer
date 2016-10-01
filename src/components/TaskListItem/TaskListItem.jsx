@@ -12,9 +12,9 @@ class TaskListItem extends React.Component {
     this.ensureVisible()
   }
 
-  onChange(event) {
-    const { storageKey } = this.props
-    const type = event.target.checked ? 'TASKS_SELECT' : 'TASKS_DESELECT'
+  onToggleCheckbox() {
+    const { storageKey, isSelected } = this.props
+    const type = isSelected ? 'TASKS_DESELECT' : 'TASKS_SELECT'
 
     this.props.dispatch({ type, task: { storageKey } })
   }
@@ -73,7 +73,8 @@ class TaskListItem extends React.Component {
 
   render() {
     const { updatedAt, repository, title, repositoryOwner, user, storageKey,
-            url, state, repositoryOwnerAvatar, userAvatar } = this.props
+            url, state, repositoryOwnerAvatar, userAvatar,
+            isSelected } = this.props
 
     return (
       <li className={this.listItemClass()}>
@@ -82,7 +83,8 @@ class TaskListItem extends React.Component {
             id={storageKey}
             type="checkbox"
             className="task-list-item-checkbox"
-            onChange={event => this.onChange(event)}
+            checked={!!isSelected}
+            onChange={event => this.onToggleCheckbox(event)}
           />
         </div>
         <div className="column has-text-centered">
