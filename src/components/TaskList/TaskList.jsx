@@ -44,11 +44,6 @@ class TaskList extends React.Component {
     this.props.dispatch({ type: 'TASKS_IGNORE' })
   }
 
-  isFiltersMenuFocused() {
-    return document.activeElement &&
-        document.activeElement.id === 'filters-menu'
-  }
-
   onKeyUp(event) {
     if (this.isFiltersMenuFocused()) {
       return
@@ -70,6 +65,11 @@ class TaskList extends React.Component {
     } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
       event.preventDefault()
     }
+  }
+
+  isFiltersMenuFocused() {
+    return document.activeElement &&
+        document.activeElement.id === 'filters-menu'
   }
 
   changeFilter(event) {
