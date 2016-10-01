@@ -71,6 +71,7 @@ class EditFilter extends React.Component {
                 value={this.state.key}
                 onChange={e => this.keyChanged(e)}
                 placeholder="e.g., Team mentions"
+                autoFocus="autofocus"
               />
             </p>
             <label className="label">Search query:</label>
