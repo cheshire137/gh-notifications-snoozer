@@ -8,6 +8,24 @@ const LastFilter = require('../../models/LastFilter')
 const TaskVisibility = require('../../models/TaskVisibility')
 
 class TaskList extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { selectedIndex: null }
+    this.onKeyUp = this.onKeyUp.bind(this)
+  }
+
+  componentDidMount() {
+    document.addEventListener('keyup', this.onKeyUp)
+  }
+
+  componentDidUpdate() {
+    this.cachedVisibleTasks = null
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keyup', this.onKeyUp)
+  }
+
   onSnoozeClick(event) {
     event.currentTarget.blur() // defocus button
     this.props.dispatch({ type: 'TASKS_SNOOZE' })
@@ -21,6 +39,14 @@ class TaskList extends React.Component {
   onIgnoreClick(event) {
     event.currentTarget.blur() // defocus button
     this.props.dispatch({ type: 'TASKS_IGNORE' })
+  }
+
+  onKeyUp(event) {
+    if (event.key === 'ArrowUp') {
+      this.focusPreviousTask()
+    } else if (event.key === 'ArrowDown') {
+      this.focusNextTask()
+    }
   }
 
   changeFilter(event) {
@@ -41,12 +67,38 @@ class TaskList extends React.Component {
     this.props.changeFilter(filter)
   }
 
+  visibleTasks() {
+    if (this.cachedVisibleTasks) {
+      return this.cachedVisibleTasks
+    }
+    this.cachedVisibleTasks = this.props.tasks.
+        filter(task => TaskVisibility.isVisibleTask(task))
+    return this.cachedVisibleTasks
+  }
+
+  focusNextTask() {
+    const oldIndex = this.state.selectedIndex
+    let newIndex = typeof oldIndex === 'number' ? oldIndex + 1 : 0
+    if (newIndex > this.visibleTasks().length - 1) {
+      newIndex = 0
+    }
+    this.setState({ selectedIndex: newIndex })
+  }
+
+  focusPreviousTask() {
+    const oldIndex = this.state.selectedIndex
+    const lastIndex = this.visibleTasks().length - 1
+    let newIndex = typeof oldIndex === 'number' ? oldIndex - 1 : lastIndex
+    if (newIndex < 0) {
+      newIndex = lastIndex
+    }
+    this.setState({ selectedIndex: newIndex })
+  }
+
   render() {
     const filters = Filters.findAll()
     const lastFilterKey = LastFilter.retrieve()
-    const visibleTasks = this.props.tasks.
-        filter(task => TaskVisibility.isVisibleTask(task))
-    const isSnoozeDisabled = visibleTasks.
+    const isSnoozeDisabled = this.visibleTasks().
         filter(task => task.isSelected).length < 1
     const isArchiveDisabled = isSnoozeDisabled
     const isIgnoreDisabled = isSnoozeDisabled
@@ -126,8 +178,12 @@ class TaskList extends React.Component {
         </nav>
         <div className="task-list-container">
           <ol className="task-list">
-            {visibleTasks.map(task =>
-              <TaskListItem {...task} key={task.storageKey} />
+            {this.visibleTasks().map((task, index) =>
+              <TaskListItem
+                {...task}
+                key={task.storageKey}
+                isFocused={index === this.state.selectedIndex}
+              />
             )}
           </ol>
         </div>

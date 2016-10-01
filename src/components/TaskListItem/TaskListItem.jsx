@@ -1,13 +1,39 @@
 const React = require('react')
+const ReactDOM = require('react-dom')
 const { shell } = require('electron')
 const { connect } = require('react-redux')
 
 class TaskListItem extends React.Component {
+  componentDidMount() {
+    this.ensureVisible()
+  }
+
+  componentDidUpdate() {
+    this.ensureVisible()
+  }
+
   onChange(event) {
     const { storageKey } = this.props
     const type = event.target.checked ? 'TASKS_SELECT' : 'TASKS_DESELECT'
 
     this.props.dispatch({ type, task: { storageKey } })
+  }
+
+  ensureVisible() {
+    if (!this.props.isFocused) {
+      return
+    }
+    const el = ReactDOM.findDOMNode(this)
+    const rect = el.getBoundingClientRect()
+    const isInView = rect.top >= 0 && rect.left >= 0 &&
+        rect.bottom <= window.innerHeight && rect.right <= window.innerWidth
+    const nav = document.querySelector('.tertiary-nav')
+    const navRect = nav.getBoundingClientRect()
+    const isFullyInView = isInView && rect.top >= navRect.bottom
+    if (isFullyInView) {
+      return
+    }
+    window.scrollTo(0, el.offsetTop - navRect.bottom)
   }
 
   openExternal(event) {
@@ -36,12 +62,21 @@ class TaskListItem extends React.Component {
     return iconClasses.join(' ')
   }
 
+  listItemClass() {
+    const { isFocused } = this.props
+    const listItemClasses = ['task-list-item', 'control', 'columns']
+    if (isFocused) {
+      listItemClasses.push('focused')
+    }
+    return listItemClasses.join(' ')
+  }
+
   render() {
     const { updatedAt, repository, title, repositoryOwner, user, storageKey,
             url, state, repositoryOwnerAvatar, userAvatar } = this.props
 
     return (
-      <li className="task-list-item control columns">
+      <li className={this.listItemClass()}>
         <div className="column has-text-right">
           <input
             id={storageKey}
@@ -121,6 +156,8 @@ TaskListItem.propTypes = {
   state: React.PropTypes.string.isRequired,
   repository: React.PropTypes.string.isRequired,
   isPullRequest: React.PropTypes.bool.isRequired,
+  isSelected: React.PropTypes.bool,
+  isFocused: React.PropTypes.bool.isRequired,
 }
 
 module.exports = connect()(TaskListItem)
