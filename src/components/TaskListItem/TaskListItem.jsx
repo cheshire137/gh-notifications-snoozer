@@ -83,8 +83,8 @@ class TaskListItem extends React.Component {
             id={storageKey}
             type="checkbox"
             className="task-list-item-checkbox"
-            checked={!!isSelected}
-            onChange={event => this.onToggleCheckbox(event)}
+            defaultChecked={!!isSelected}
+            onChange={() => this.onToggleCheckbox()}
           />
         </div>
         <div className="column has-text-centered">
