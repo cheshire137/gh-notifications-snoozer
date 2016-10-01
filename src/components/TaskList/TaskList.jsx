@@ -104,8 +104,7 @@ class TaskList extends React.Component {
     if (newIndex > this.props.tasks.length - 1) {
       newIndex = 0
     }
-    console.info('focus', this.props.tasks[newIndex].storageKey)
-    this.setState({ selectedIndex: newIndex })
+    this.focusTaskAtIndex(newIndex)
   }
 
   focusPreviousTask() {
@@ -115,8 +114,12 @@ class TaskList extends React.Component {
     if (newIndex < 0) {
       newIndex = lastIndex
     }
-    console.info('focus', this.props.tasks[newIndex].storageKey)
-    this.setState({ selectedIndex: newIndex })
+    this.focusTaskAtIndex(newIndex)
+  }
+
+  focusTaskAtIndex(index) {
+    console.info('focus', this.props.tasks[index].storageKey)
+    this.setState({ selectedIndex: index })
   }
 
   render() {
