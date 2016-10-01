@@ -27,9 +27,11 @@ class FilterList extends React.Component {
       this.focusNextFilter()
     } else if (event.key === 'Escape') {
       this.setState({ selectedIndex: null })
-    } else if (event.key === 'Enter') {
-      if (typeof this.state.selectedIndex === 'number') {
+    } else if (typeof this.state.selectedIndex === 'number') {
+      if (event.key === 'Enter') {
         this.editFocusedFilter()
+      } else if (event.key === 'Backspace') {
+        this.deleteFocusedFilter()
       }
     }
   }
@@ -42,7 +44,14 @@ class FilterList extends React.Component {
 
   editFocusedFilter() {
     const key = this.props.filters[this.state.selectedIndex]
+    this.setState({ selectedIndex: null })
     this.props.edit(key)
+  }
+
+  deleteFocusedFilter() {
+    const key = this.props.filters[this.state.selectedIndex]
+    this.setState({ selectedIndex: null })
+    this.props.delete(key)
   }
 
   focusPreviousFilter() {
