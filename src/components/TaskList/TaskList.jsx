@@ -1,5 +1,6 @@
 const React = require('react')
 const { connect } = require('react-redux')
+const { shell } = require('electron')
 
 const TaskListItem = require('../TaskListItem')
 const hookUpStickyNav = require('../hookUpStickyNav')
@@ -50,6 +51,10 @@ class TaskList extends React.Component {
       this.focusNextTask()
     } else if (event.key === 'Escape') {
       this.setState({ selectedIndex: null })
+    } else if (event.key === 'Enter') {
+      if (typeof this.state.selectedIndex === 'number') {
+        this.openLinkToFocusedTask()
+      }
     }
   }
 
@@ -92,6 +97,11 @@ class TaskList extends React.Component {
     const task = this.props.tasks[this.state.selectedIndex]
     const type = task.isSelected ? 'TASKS_DESELECT' : 'TASKS_SELECT'
     this.props.dispatch({ type, task: { storageKey: task.storageKey } })
+  }
+
+  openLinkToFocusedTask() {
+    const task = this.props.tasks[this.state.selectedIndex]
+    shell.openExternal(task.url)
   }
 
   focusNextTask() {
