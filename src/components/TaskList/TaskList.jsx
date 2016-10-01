@@ -198,13 +198,11 @@ class TaskList extends React.Component {
         </nav>
         <div className="task-list-container">
           <ol className="task-list">
-            {this.visibleTasks().map((task, index) =>
-              <TaskListItem
-                {...task}
-                key={task.storageKey}
-                isFocused={index === this.state.selectedIndex}
-              />
-            )}
+            {this.visibleTasks().map((task, index) => {
+              const isFocused = index === this.state.selectedIndex
+              const key = `${task.storageKey}-${task.isSelected}-${isFocused}`
+              return <TaskListItem {...task} key={key} isFocused={isFocused} />
+            })}
           </ol>
         </div>
       </div>
