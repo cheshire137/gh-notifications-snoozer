@@ -60,6 +60,7 @@ class NewFilter extends React.Component {
                 type="text"
                 name="filterKey"
                 className="input"
+                autoFocus="autofocus"
                 placeholder="e.g., Team mentions"
               />
             </p>
