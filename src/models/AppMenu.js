@@ -61,15 +61,14 @@ class AppMenu extends EventEmitter {
         {
           label: 'Developer Tools',
           accelerator: 'CmdOrCtrl+Shift+I',
-          click (item, win) {
+          click(item, win) {
             if (win) {
-              win.webContents.toggleDevTools();
+              win.webContents.toggleDevTools()
             }
-          }
-        }
-      ]
+          },
+        },
+      ],
     }
-
   }
 
   buildOSXMenu() {
