@@ -20,10 +20,6 @@ class TaskList extends React.Component {
     document.addEventListener('keydown', this.onKeyDown)
   }
 
-  componentDidUpdate() {
-    this.cachedVisibleTasks = null
-  }
-
   componentWillUnmount() {
     document.removeEventListener('keyup', this.onKeyUp)
     document.removeEventListener('keydown', this.onKeyDown)
@@ -118,7 +114,7 @@ class TaskList extends React.Component {
   }
 
   focusTaskAtIndex(index) {
-    console.info('focus', this.props.tasks[index].storageKey)
+    console.info('focus task', this.props.tasks[index].storageKey)
     this.setState({ selectedIndex: index })
   }
 
