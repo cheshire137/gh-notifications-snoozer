@@ -52,6 +52,8 @@ class TaskList extends React.Component {
       this.focusPreviousTask()
     } else if (event.key === 'ArrowDown') {
       this.focusNextTask()
+    } else if (event.key === 'Escape') {
+      this.setState({ selectedIndex: null })
     }
   }
 
