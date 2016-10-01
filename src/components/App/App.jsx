@@ -59,12 +59,24 @@ class App extends React.Component {
   }
 
   setupAppMenu() {
-    const menu = new AppMenu()
-    menu.on('about-app', () => {
+    this.appMenu = new AppMenu({
+      isAuthenticated: GitHubAuth.isAuthenticated(),
+    })
+    this.appMenu.on('about-app', () => {
       this.showAbout()
     })
-    menu.on('authenticate', () => {
+    this.appMenu.on('authenticate', () => {
       this.showAuth()
+    })
+    this.appMenu.on('tasks', () => {
+      if (GitHubAuth.isAuthenticated()) {
+        this.showTaskList()
+      }
+    })
+    this.appMenu.on('filters', () => {
+      if (GitHubAuth.isAuthenticated()) {
+        this.manageFilters()
+      }
     })
   }
 
@@ -216,6 +228,7 @@ class App extends React.Component {
     if (user) {
       this.showTaskList()
     }
+    this.appMenu.setIsAuthenticated(typeof user === 'object')
   }
 
   render() {
