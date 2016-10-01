@@ -79,17 +79,8 @@ class TaskList extends React.Component {
     this.props.changeFilter(filter)
   }
 
-  visibleTasks() {
-    if (this.cachedVisibleTasks) {
-      return this.cachedVisibleTasks
-    }
-    this.cachedVisibleTasks = this.props.tasks.
-        filter(task => TaskVisibility.isVisibleTask(task))
-    return this.cachedVisibleTasks
-  }
-
   selectFocusedTask() {
-    const task = this.visibleTasks()[this.state.selectedIndex]
+    const task = this.props.tasks[this.state.selectedIndex]
     const type = task.isSelected ? 'TASKS_DESELECT' : 'TASKS_SELECT'
     this.props.dispatch({ type, task: { storageKey: task.storageKey } })
   }
@@ -97,28 +88,28 @@ class TaskList extends React.Component {
   focusNextTask() {
     const oldIndex = this.state.selectedIndex
     let newIndex = typeof oldIndex === 'number' ? oldIndex + 1 : 0
-    if (newIndex > this.visibleTasks().length - 1) {
+    if (newIndex > this.props.tasks.length - 1) {
       newIndex = 0
     }
-    console.info('focus', this.visibleTasks()[newIndex].storageKey)
+    console.info('focus', this.props.tasks[newIndex].storageKey)
     this.setState({ selectedIndex: newIndex })
   }
 
   focusPreviousTask() {
     const oldIndex = this.state.selectedIndex
-    const lastIndex = this.visibleTasks().length - 1
+    const lastIndex = this.props.tasks.length - 1
     let newIndex = typeof oldIndex === 'number' ? oldIndex - 1 : lastIndex
     if (newIndex < 0) {
       newIndex = lastIndex
     }
-    console.info('focus', this.visibleTasks()[newIndex].storageKey)
+    console.info('focus', this.props.tasks[newIndex].storageKey)
     this.setState({ selectedIndex: newIndex })
   }
 
   render() {
     const filters = Filters.findAll()
     const lastFilterKey = LastFilter.retrieve()
-    const isSnoozeDisabled = this.visibleTasks().
+    const isSnoozeDisabled = this.props.tasks.
         filter(task => task.isSelected).length < 1
     const isArchiveDisabled = isSnoozeDisabled
     const isIgnoreDisabled = isSnoozeDisabled
@@ -198,7 +189,7 @@ class TaskList extends React.Component {
         </nav>
         <div className="task-list-container">
           <ol className="task-list">
-            {this.visibleTasks().map((task, index) => {
+            {this.props.tasks.map((task, index) => {
               const isFocused = index === this.state.selectedIndex
               const key = `${task.storageKey}-${task.isSelected}-${isFocused}`
               return <TaskListItem {...task} key={key} isFocused={isFocused} />
@@ -209,8 +200,6 @@ class TaskList extends React.Component {
     )
   }
 }
-
-const mapStateToProps = state => ({ tasks: state.tasks })
 
 TaskList.propTypes = {
   tasks: React.PropTypes.array.isRequired,
@@ -225,4 +214,7 @@ TaskList.propTypes = {
 }
 
 const stickyNavd = hookUpStickyNav(TaskList, '.task-list-navigation')
+const mapStateToProps = state => ({
+  tasks: state.tasks.filter(task => TaskVisibility.isVisibleTask(task)),
+})
 module.exports = connect(mapStateToProps)(stickyNavd)
