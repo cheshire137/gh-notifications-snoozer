@@ -54,6 +54,23 @@ class AppMenu extends EventEmitter {
       ],
     }
   }
+  getToolMenu() {
+    return {
+      label: 'Tools',
+      submenu: [
+        {
+          label: 'Developer Tools',
+          accelerator: 'CmdOrCtrl+Shift+I',
+          click (item, win) {
+            if (win) {
+              win.webContents.toggleDevTools();
+            }
+          }
+        }
+      ]
+    }
+
+  }
 
   buildOSXMenu() {
     this.template.push({
@@ -71,6 +88,7 @@ class AppMenu extends EventEmitter {
       ],
     })
     this.template.push(this.getEditMenu())
+    this.template.push(this.getToolMenu())
     this.template.push({
       label: 'Help',
       role: 'help',
@@ -93,6 +111,7 @@ class AppMenu extends EventEmitter {
       ],
     })
     this.template.push(this.getEditMenu())
+    this.template.push(this.getToolMenu())
     this.template.push({
       label: 'Help',
       submenu: [
