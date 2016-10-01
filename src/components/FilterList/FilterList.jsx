@@ -27,6 +27,10 @@ class FilterList extends React.Component {
       this.focusNextFilter()
     } else if (event.key === 'Escape') {
       this.setState({ selectedIndex: null })
+    } else if (event.key === 'Enter') {
+      if (typeof this.state.selectedIndex === 'number') {
+        this.editFocusedFilter()
+      }
     }
   }
 
@@ -34,6 +38,11 @@ class FilterList extends React.Component {
     if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
       event.preventDefault()
     }
+  }
+
+  editFocusedFilter() {
+    const key = this.props.filters[this.state.selectedIndex]
+    this.props.edit(key)
   }
 
   focusPreviousFilter() {
