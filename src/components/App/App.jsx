@@ -175,7 +175,6 @@ class App extends React.Component {
   }
 
   loadFilter(key) {
-    this.props.dispatch({ type: 'TASKS_EMPTY' })
     LastFilter.save(key)
     const filter = new Filter(key)
     this.setState({ filter: key })
