@@ -1,31 +1,6 @@
 import ElectronConfig from 'electron-config'
 import GitHub from '../models/GitHub'
 
-const configName = process.env.NODE_ENV === 'test' ? 'config-test' : 'config'
-const storage = new ElectronConfig({ name: configName })
-const SNOOZED_KEY = 'snoozed'
-const ARCHIVED_KEY = 'archived'
-const IGNORED_KEY = 'ignored'
-
-// Fetch from the JSON storage file the task IDs saved under the given key.
-function getSavedTaskKeys(key) {
-  return storage.has(key) ? storage.get(key) : []
-}
-
-// Persist the given tasks under the given key in the JSON storage file.
-function writeChanges(tasks, typeKey) {
-  const existingTaskKeys = getSavedTaskKeys(typeKey)
-  const newTaskKeys = tasks.map(task => task.storageKey)
-  console.info(typeKey, newTaskKeys)
-  const allTaskKeys = []
-  existingTaskKeys.concat(newTaskKeys).forEach(key => {
-    if (allTaskKeys.indexOf(key) < 0) {
-      allTaskKeys.push(key)
-    }
-  })
-  storage.set(typeKey, allTaskKeys)
-}
-
 function notificationsBySubject(notifications) {
   const result = {}
   if (typeof notifications === 'undefined') {
@@ -37,24 +12,8 @@ function notificationsBySubject(notifications) {
   return result
 }
 
-// Remove the given tasks from the given key in the JSON storage file.
-function removeTasks(tasks, typeKey) {
-  const existingTaskKeys = getSavedTaskKeys(typeKey)
-  const keysToRemove = tasks.map(task => task.storageKey)
-  const allTaskKeys = []
-  existingTaskKeys.forEach(key => {
-    if (keysToRemove.indexOf(key) < 0) {
-      allTaskKeys.push(key)
-    }
-  })
-  storage.set(typeKey, allTaskKeys)
-}
-
 function updateTasks(tasks, action) {
   const tasksByKey = {}
-  const snoozedTasks = getSavedTaskKeys(SNOOZED_KEY)
-  const archivedTasks = getSavedTaskKeys(ARCHIVED_KEY)
-  const ignoredTasks = getSavedTaskKeys(IGNORED_KEY)
   const notificationUrls = notificationsBySubject(action.notifications)
 
   // Add the existing tasks
@@ -70,21 +29,7 @@ function updateTasks(tasks, action) {
     tasksByKey[task.storageKey] = updatedTask
   })
 
-  const updatedTasks = Object.keys(tasksByKey).map(key => {
-    const task = tasksByKey[key]
-    if (snoozedTasks.indexOf(key) > -1) {
-      task.snoozedAt = storage.get(key)
-    }
-    if (archivedTasks.indexOf(key) > -1) {
-      task.archivedAt = storage.get(key)
-    }
-    if (ignoredTasks.indexOf(key) > -1) {
-      task.ignore = true
-    }
-    return task
-  })
-
-  return updatedTasks
+  return Object.keys(tasksByKey).map(key => tasksByKey[key])
 }
 
 function selectTasks(tasks, action) {
@@ -135,7 +80,6 @@ function snoozeTasks(tasks) {
   const updatedTasks = tasks.map(task => {
     if (task.isSelected) {
       const snoozedAt = currentTimeString()
-      storage.set(task.storageKey, snoozedAt)
       snoozedTasks.push(task)
       return Object.assign({}, task, {
         snoozedAt,
@@ -147,7 +91,6 @@ function snoozeTasks(tasks) {
     return task
   })
   markNotificationsAsRead(snoozedTasks)
-  writeChanges(snoozedTasks, SNOOZED_KEY)
   return updatedTasks
 }
 
@@ -156,9 +99,6 @@ function ignoreTasks(tasks) {
   const updatedTasks = tasks.map(task => {
     if (task.isSelected) {
       ignoredTasks.push(task)
-      if (storage.has(task.storageKey)) {
-        storage.delete(task.storageKey)
-      }
       return Object.assign({}, task, {
         ignore: true,
         isSelected: false,
@@ -169,7 +109,6 @@ function ignoreTasks(tasks) {
     return task
   })
   markNotificationsAsRead(ignoredTasks)
-  writeChanges(ignoredTasks, IGNORED_KEY)
   return updatedTasks
 }
 
@@ -178,7 +117,6 @@ function archiveTasks(tasks) {
   const updatedTasks = tasks.map(task => {
     if (task.isSelected) {
       const archivedAt = currentTimeString()
-      storage.set(task.storageKey, archivedAt)
       archivedTasks.push(task)
       return Object.assign({}, task, {
         archivedAt,
@@ -190,7 +128,6 @@ function archiveTasks(tasks) {
     return task
   })
   markNotificationsAsRead(archivedTasks)
-  writeChanges(archivedTasks, ARCHIVED_KEY)
   return updatedTasks
 }
 
@@ -198,7 +135,6 @@ function restoreTasks(tasks) {
   const restoredTasks = []
   const updatedTasks = tasks.map(task => {
     if (task.isSelected) {
-      storage.delete(task.storageKey)
       restoredTasks.push(task)
       return Object.assign({}, task, {
         archivedAt: null,
@@ -210,9 +146,6 @@ function restoreTasks(tasks) {
     return task
   })
   console.info('restore', restoredTasks.map(task => task.storageKey))
-  removeTasks(restoredTasks, ARCHIVED_KEY)
-  removeTasks(restoredTasks, SNOOZED_KEY)
-  removeTasks(restoredTasks, IGNORED_KEY)
   return updatedTasks
 }
 
