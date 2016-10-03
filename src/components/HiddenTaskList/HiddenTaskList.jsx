@@ -30,7 +30,9 @@ class HiddenTaskList extends React.Component {
 
   render() {
     const { activeFilter } = this.props
-    const hiddenTasks = this.props.tasks.
+    const tasksForFilter = this.props.tasks.
+        filter(task => task.filters && task.filters.includes(lastFilterKey))
+    const hiddenTasks = tasksForFilter.
         filter(task => TaskVisibility.isHiddenTask(task))
     const isRestoreDisabled = hiddenTasks.
         filter(task => task.isSelected).length < 1
