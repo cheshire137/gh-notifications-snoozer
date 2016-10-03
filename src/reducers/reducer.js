@@ -21,13 +21,15 @@ function updateTasks(tasks, action) {
   tasks.forEach(task => (tasksByKey[task.storageKey] = task))
 
   // Update tasks with new values and add new tasks
-  action.tasks.forEach(task => {
-    const updatedTask = Object.assign({}, tasksByKey[task.storageKey], task)
-    const notificationUrl = notificationUrls[task.apiUrl]
+  action.tasks.forEach((newTask) => {
+    const oldTask = tasksByKey[newTask.storageKey] || {}
+    const filters = oldTask.filters ? [action.filter, ...oldTask.filters] : [action.filter]
+    const updatedTask = Object.assign({}, oldTask, newTask, { filters })
+    const notificationUrl = notificationUrls[newTask.apiUrl]
     if (notificationUrl) {
       updatedTask.notificationUrl = notificationUrl
     }
-    tasksByKey[task.storageKey] = updatedTask
+    tasksByKey[newTask.storageKey] = updatedTask
   })
 
   return Object.keys(tasksByKey).map(key => tasksByKey[key])
