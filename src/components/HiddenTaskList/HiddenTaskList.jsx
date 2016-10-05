@@ -37,7 +37,7 @@ class HiddenTaskList extends React.Component {
     return (
       <div>
         <nav id="hidden-task-list-navigation" className="secondary-nav nav">
-          <div className="nav-left is-8">
+          <div className="is-8">
             <h2 className="subtitle nav-item">
               Hidden Tasks in &ldquo;{activeFilter}&rdquo;
             </h2>
