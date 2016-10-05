@@ -3,6 +3,81 @@ const FilterListItem = require('../FilterListItem')
 const hookUpStickyNav = require('../hookUpStickyNav')
 
 class FilterList extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { selectedIndex: null }
+    this.onKeyUp = this.onKeyUp.bind(this)
+    this.onKeyDown = this.onKeyDown.bind(this)
+  }
+
+  componentDidMount() {
+    document.addEventListener('keyup', this.onKeyUp)
+    document.addEventListener('keydown', this.onKeyDown)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keyup', this.onKeyUp)
+    document.removeEventListener('keydown', this.onKeyDown)
+  }
+
+  onKeyUp(event) {
+    if (event.key === 'ArrowUp') {
+      this.focusPreviousFilter()
+    } else if (event.key === 'ArrowDown') {
+      this.focusNextFilter()
+    } else if (event.key === 'Escape') {
+      this.setState({ selectedIndex: null })
+    } else if (typeof this.state.selectedIndex === 'number') {
+      if (event.key === 'Enter') {
+        this.editFocusedFilter()
+      } else if (event.key === 'Backspace') {
+        this.deleteFocusedFilter()
+      }
+    }
+  }
+
+  onKeyDown(event) {
+    if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+      event.preventDefault()
+    }
+  }
+
+  editFocusedFilter() {
+    const key = this.props.filters[this.state.selectedIndex]
+    this.setState({ selectedIndex: null })
+    this.props.edit(key)
+  }
+
+  deleteFocusedFilter() {
+    const key = this.props.filters[this.state.selectedIndex]
+    this.setState({ selectedIndex: null })
+    this.props.delete(key)
+  }
+
+  focusPreviousFilter() {
+    const oldIndex = this.state.selectedIndex
+    const lastIndex = this.props.filters.length - 1
+    let newIndex = typeof oldIndex === 'number' ? oldIndex - 1 : lastIndex
+    if (newIndex < 0) {
+      newIndex = lastIndex
+    }
+    this.focusFilterAtIndex(newIndex)
+  }
+
+  focusNextFilter() {
+    const oldIndex = this.state.selectedIndex
+    let newIndex = typeof oldIndex === 'number' ? oldIndex + 1 : 0
+    if (newIndex > this.props.filters.length - 1) {
+      newIndex = 0
+    }
+    this.focusFilterAtIndex(newIndex)
+  }
+
+  focusFilterAtIndex(index) {
+    console.info('focus filter', this.props.filters[index])
+    this.setState({ selectedIndex: index })
+  }
+
   cancel(event) {
     event.preventDefault()
     this.props.cancel()
@@ -19,12 +94,13 @@ class FilterList extends React.Component {
     }
     return (
       <ul className="filter-list">
-        {this.props.filters.map(key => (
+        {this.props.filters.map((key, index) => (
           <FilterListItem
             key={key}
             filter={key}
             delete={this.props.delete}
             edit={this.props.edit}
+            isFocused={index === this.state.selectedIndex}
           />
         ))}
       </ul>

@@ -16,8 +16,8 @@ class HiddenTaskList extends React.Component {
     this.props.cancel()
   }
 
-  emptyListMessage(tasks) {
-    if (tasks.length > 0) {
+  emptyListMessage() {
+    if (this.props.tasks.length > 0) {
       return
     }
     return (
@@ -30,9 +30,7 @@ class HiddenTaskList extends React.Component {
 
   render() {
     const { activeFilter } = this.props
-    const hiddenTasks = this.props.tasks.
-        filter(task => TaskVisibility.isHiddenTask(task))
-    const isRestoreDisabled = hiddenTasks.
+    const isRestoreDisabled = this.props.tasks.
         filter(task => task.isSelected).length < 1
     return (
       <div>
@@ -42,7 +40,7 @@ class HiddenTaskList extends React.Component {
               Hidden Tasks in &ldquo;{activeFilter}&rdquo;
             </h2>
           </div>
-          {hiddenTasks.length < 1 ? '' : (
+          {this.props.tasks.length < 1 ? '' : (
             <div className="nav-right">
               <span className="nav-item">
                 <button
@@ -58,9 +56,9 @@ class HiddenTaskList extends React.Component {
           )}
         </nav>
         <div className="view-container">
-          {this.emptyListMessage(hiddenTasks)}
+          {this.emptyListMessage()}
           <ol className="task-list">
-            {hiddenTasks.map(task =>
+            {this.props.tasks.map(task =>
               <HiddenTaskListItem {...task} key={task.storageKey} />
             )}
           </ol>
@@ -77,8 +75,9 @@ HiddenTaskList.propTypes = {
   activeFilter: React.PropTypes.string.isRequired,
 }
 
-const mapStateToProps = state => ({ tasks: state.tasks })
-
 const stickyNavd = hookUpStickyNav(HiddenTaskList,
                                    '#hidden-task-list-navigation')
+const mapStateToProps = state => ({
+  tasks: state.tasks.filter(task => TaskVisibility.isHiddenTask(task)),
+})
 module.exports = connect(mapStateToProps)(stickyNavd)

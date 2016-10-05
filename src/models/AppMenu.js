@@ -8,8 +8,9 @@ const packagePath = path.join(__dirname, '..', '..', 'package.json')
 const packageInfo = require(packagePath)
 
 class AppMenu extends EventEmitter {
-  constructor() {
+  constructor(options) {
     super()
+    this.options = options
     this.template = []
     const self = this
     this.aboutOption = {
@@ -25,7 +26,8 @@ class AppMenu extends EventEmitter {
       click() { self.emit('authenticate') },
     }
     this.buildMenu()
-    Menu.setApplicationMenu(Menu.buildFromTemplate(this.template))
+    this.menu = Menu.buildFromTemplate(this.template)
+    Menu.setApplicationMenu(this.menu)
   }
 
   buildMenu() {
@@ -54,26 +56,60 @@ class AppMenu extends EventEmitter {
       ],
     }
   }
-  getToolMenu() {
+
+  setIsAuthenticated(isAuthenticated) {
+    this.options = this.options || {}
+    this.options.isAuthenticated = isAuthenticated
+    const viewMenu = this.menu.items[2].submenu
+    viewMenu.items[0].enabled = isAuthenticated // Tasks
+    viewMenu.items[1].enabled = isAuthenticated // Filters
+  }
+
+  getViewMenu() {
+    const self = this
+    return {
+      label: 'View',
+      submenu: [
+        {
+          label: 'Tasks',
+          accelerator: 'CmdOrCtrl+1',
+          click() { self.emit('tasks') },
+          enabled: this.options.isAuthenticated,
+        },
+        {
+          label: 'Filters',
+          accelerator: 'CmdOrCtrl+2',
+          click() { self.emit('filters') },
+          enabled: this.options.isAuthenticated,
+        },
+        {
+          label: 'Authentication',
+          accelerator: 'CmdOrCtrl+3',
+          click() { self.emit('authenticate') },
+        },
+      ],
+    }
+  }
+
+  getToolsMenu() {
     return {
       label: 'Tools',
       submenu: [
         {
           label: 'Developer Tools',
           accelerator: 'CmdOrCtrl+Shift+I',
-          click (item, win) {
+          click(item, win) {
             if (win) {
-              win.webContents.toggleDevTools();
+              win.webContents.toggleDevTools()
             }
-          }
-        }
-      ]
+          },
+        },
+      ],
     }
-
   }
 
-  buildOSXMenu() {
-    this.template.push({
+  getAppMenu() {
+    return {
       label: app.getName(),
       submenu: [
         this.aboutOption,
@@ -86,9 +122,14 @@ class AppMenu extends EventEmitter {
           click() { app.quit() },
         },
       ],
-    })
+    }
+  }
+
+  buildOSXMenu() {
+    this.template.push(this.getAppMenu())
     this.template.push(this.getEditMenu())
-    this.template.push(this.getToolMenu())
+    this.template.push(this.getViewMenu())
+    this.template.push(this.getToolsMenu())
     this.template.push({
       label: 'Help',
       role: 'help',
@@ -98,8 +139,8 @@ class AppMenu extends EventEmitter {
     })
   }
 
-  buildNonOSXMenu() {
-    this.template.push({
+  getFileMenu() {
+    return {
       label: 'File',
       submenu: [
         this.authOption,
@@ -109,9 +150,14 @@ class AppMenu extends EventEmitter {
           click() { app.quit() },
         },
       ],
-    })
+    }
+  }
+
+  buildNonOSXMenu() {
+    this.template.push(this.getFileMenu())
     this.template.push(this.getEditMenu())
-    this.template.push(this.getToolMenu())
+    this.template.push(this.getViewMenu())
+    this.template.push(this.getToolsMenu())
     this.template.push({
       label: 'Help',
       submenu: [

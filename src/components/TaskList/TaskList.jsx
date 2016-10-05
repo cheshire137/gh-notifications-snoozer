@@ -1,5 +1,6 @@
 const React = require('react')
 const { connect } = require('react-redux')
+const { shell } = require('electron')
 
 const TaskListItem = require('../TaskListItem')
 const hookUpStickyNav = require('../hookUpStickyNav')
@@ -8,6 +9,23 @@ const LastFilter = require('../../models/LastFilter')
 const TaskVisibility = require('../../models/TaskVisibility')
 
 class TaskList extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { selectedIndex: null }
+    this.onKeyUp = this.onKeyUp.bind(this)
+    this.onKeyDown = this.onKeyDown.bind(this)
+  }
+
+  componentDidMount() {
+    document.addEventListener('keyup', this.onKeyUp)
+    document.addEventListener('keydown', this.onKeyDown)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keyup', this.onKeyUp)
+    document.removeEventListener('keydown', this.onKeyDown)
+  }
+
   onSnoozeClick(event) {
     event.currentTarget.blur() // defocus button
     this.props.dispatch({ type: 'TASKS_SNOOZE' })
@@ -21,6 +39,40 @@ class TaskList extends React.Component {
   onIgnoreClick(event) {
     event.currentTarget.blur() // defocus button
     this.props.dispatch({ type: 'TASKS_IGNORE' })
+  }
+
+  onKeyUp(event) {
+    if (this.isFiltersMenuFocused()) {
+      return
+    }
+    if (event.key === 'ArrowUp') {
+      this.focusPreviousTask()
+    } else if (event.key === 'ArrowDown') {
+      this.focusNextTask()
+    } else if (event.key === 'Escape') {
+      this.setState({ selectedIndex: null })
+    } else if (event.key === 'Enter') {
+      if (typeof this.state.selectedIndex === 'number') {
+        this.openLinkToFocusedTask()
+      }
+    }
+  }
+
+  onKeyDown(event) {
+    if (this.isFiltersMenuFocused()) {
+      return
+    }
+    if (event.key === ' ' && typeof this.state.selectedIndex === 'number') {
+      event.preventDefault()
+      this.selectFocusedTask()
+    } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+      event.preventDefault()
+    }
+  }
+
+  isFiltersMenuFocused() {
+    return document.activeElement &&
+        document.activeElement.id === 'filters-menu'
   }
 
   changeFilter(event) {
@@ -41,12 +93,45 @@ class TaskList extends React.Component {
     this.props.changeFilter(filter)
   }
 
+  selectFocusedTask() {
+    const task = this.props.tasks[this.state.selectedIndex]
+    const type = task.isSelected ? 'TASKS_DESELECT' : 'TASKS_SELECT'
+    this.props.dispatch({ type, task: { storageKey: task.storageKey } })
+  }
+
+  openLinkToFocusedTask() {
+    const task = this.props.tasks[this.state.selectedIndex]
+    shell.openExternal(task.url)
+  }
+
+  focusNextTask() {
+    const oldIndex = this.state.selectedIndex
+    let newIndex = typeof oldIndex === 'number' ? oldIndex + 1 : 0
+    if (newIndex > this.props.tasks.length - 1) {
+      newIndex = 0
+    }
+    this.focusTaskAtIndex(newIndex)
+  }
+
+  focusPreviousTask() {
+    const oldIndex = this.state.selectedIndex
+    const lastIndex = this.props.tasks.length - 1
+    let newIndex = typeof oldIndex === 'number' ? oldIndex - 1 : lastIndex
+    if (newIndex < 0) {
+      newIndex = lastIndex
+    }
+    this.focusTaskAtIndex(newIndex)
+  }
+
+  focusTaskAtIndex(index) {
+    console.info('focus task', this.props.tasks[index].storageKey)
+    this.setState({ selectedIndex: index })
+  }
+
   render() {
     const filters = Filters.findAll()
     const lastFilterKey = LastFilter.retrieve()
-    const visibleTasks = this.props.tasks.
-        filter(task => TaskVisibility.isVisibleTask(task))
-    const isSnoozeDisabled = visibleTasks.
+    const isSnoozeDisabled = this.props.tasks.
         filter(task => task.isSelected).length < 1
     const isArchiveDisabled = isSnoozeDisabled
     const isIgnoreDisabled = isSnoozeDisabled
@@ -126,17 +211,17 @@ class TaskList extends React.Component {
         </nav>
         <div className="task-list-container">
           <ol className="task-list">
-            {visibleTasks.map(task =>
-              <TaskListItem {...task} key={task.storageKey} />
-            )}
+            {this.props.tasks.map((task, index) => {
+              const isFocused = index === this.state.selectedIndex
+              const key = `${task.storageKey}-${task.isSelected}-${isFocused}`
+              return <TaskListItem {...task} key={key} isFocused={isFocused} />
+            })}
           </ol>
         </div>
       </div>
     )
   }
 }
-
-const mapStateToProps = state => ({ tasks: state.tasks })
 
 TaskList.propTypes = {
   tasks: React.PropTypes.array.isRequired,
@@ -150,4 +235,8 @@ TaskList.propTypes = {
   editFilter: React.PropTypes.func.isRequired,
 }
 
-module.exports = connect(mapStateToProps)(hookUpStickyNav(TaskList, '.task-list-navigation'))
+const stickyNavd = hookUpStickyNav(TaskList, '.task-list-navigation')
+const mapStateToProps = state => ({
+  tasks: state.tasks.filter(task => TaskVisibility.isVisibleTask(task)),
+})
+module.exports = connect(mapStateToProps)(stickyNavd)

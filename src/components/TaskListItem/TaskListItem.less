@@ -8,6 +8,18 @@
   .checkbox {
     display: block;
   }
+
+  &.focused, &:nth-child(even).focused {
+    background-color: #ffdd57;
+
+    &, .task-list-meta, .task-list-item-time, a:hover, a:focus, a:active {
+      color: rgba(0, 0, 0, 0.7);
+    }
+
+    a, a:link, a:visited {
+      color: #3273dc;
+    }
+  }
 }
 
 input.task-list-item-checkbox[type="checkbox"] {
