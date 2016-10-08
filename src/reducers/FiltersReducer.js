@@ -10,12 +10,24 @@ const filtersRemove = (filters, action) => {
   return updatedFilters
 }
 
+const filtersSelect = (filters, action) => {
+  const updatedFilters = Object.assign({}, filters)
+  Object.keys(updatedFilters).forEach(name => {
+    const select = (name === action.name)
+    updatedFilters[name].selected = select
+  })
+
+  return updatedFilters
+}
+
 module.exports = (filters = {}, action) => {
   switch (action.type) {
     case 'FILTERS_UPDATE':
       return filtersUpdate(filters, action)
     case 'FILTERS_REMOVE':
       return filtersRemove(filters, action)
+    case 'FILTERS_SELECT':
+      return filtersSelect(filters, action)
     default:
       return filters
   }

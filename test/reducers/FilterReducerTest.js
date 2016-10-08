@@ -45,4 +45,21 @@ describe.only('Filters reducer', () => {
       assert.deepEqual({ }, store.getState())
     })
   })
+
+  describe('FILTERS_SELECT', () => {
+    it('selects a filter', () => {
+      const initialFilters = {
+        'first filter': { query: 'label:first', selected: true },
+        'second filter': { query: 'label:second', selected: false },
+      }
+      const store = Redux.createStore(FiltersReducer, initialFilters)
+
+      store.dispatch({ type: 'FILTERS_SELECT', name: 'second filter' })
+      const expectedFilters = {
+        'first filter': { query: 'label:first', selected: false },
+        'second filter': { query: 'label:second', selected: true },
+      }
+      assert.deepEqual(expectedFilters, store.getState())
+    })
+  })
 })
