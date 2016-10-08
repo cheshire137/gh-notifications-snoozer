@@ -1,6 +1,6 @@
 const filtersUpdate = (filters, action) => {
   const newFilter = {}
-  newFilter[action.name] = action.query
+  newFilter[action.name] = Object.assign({}, filters[action.name], { query: action.query })
   return Object.assign({}, filters, newFilter)
 }
 
