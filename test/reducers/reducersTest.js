@@ -6,6 +6,6 @@ const reducer = require('../../src/reducers/reducer')
 describe('Reducer', () => {
   it('has the correct default initial state', () => {
     const store = Redux.createStore(reducer)
-    assert.deepEqual({ tasks: [], filters: {} }, store.getState())
+    assert.deepEqual({ tasks: [], filters: [] }, store.getState())
   })
 })
