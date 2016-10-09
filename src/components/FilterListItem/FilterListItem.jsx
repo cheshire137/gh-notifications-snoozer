@@ -1,8 +1,6 @@
 const React = require('react')
 const ReactDOM = require('react-dom')
 
-const Filter = require('../../models/Filter')
-
 class FilterListItem extends React.Component {
   componentDidMount() {
     this.ensureVisible()
@@ -38,15 +36,14 @@ class FilterListItem extends React.Component {
   }
 
   render() {
-    const filter = new Filter(this.props.filter)
     return (
       <li className={this.listItemClass()}>
         <div className="columns">
           <div className="column filter-key is-3">
-            {filter.key}
+            {filter.name}
           </div>
           <div className="column is-7">
-            {filter.retrieve()}
+            {filter.query}
           </div>
           <div className="column is-2 has-text-right">
             <button
@@ -73,9 +70,7 @@ class FilterListItem extends React.Component {
 }
 
 FilterListItem.propTypes = {
-  filter: React.PropTypes.string.isRequired,
-  delete: React.PropTypes.func.isRequired,
-  edit: React.PropTypes.func.isRequired,
+  filter: React.PropTypes.object.isRequired,
   isFocused: React.PropTypes.bool.isRequired,
 }
 
