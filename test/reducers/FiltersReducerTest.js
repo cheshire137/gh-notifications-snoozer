@@ -3,7 +3,7 @@ const Redux = require('redux')
 
 const FiltersReducer = require('../../src/reducers/FiltersReducer')
 
-describe.only('Filters reducer', () => {
+describe('Filters reducer', () => {
   it('has the correct default initial state', () => {
     const store = Redux.createStore(FiltersReducer)
     assert.deepEqual({ }, store.getState())
