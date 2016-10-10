@@ -9,7 +9,7 @@ const reducer = require('../../src/reducers/reducer')
 describe('Tasks reducer', () => {
   it('has the correct default initial state', () => {
     const store = Redux.createStore(reducer)
-    assert.deepEqual({ tasks: [] }, store.getState())
+    assert.deepEqual({ filters: [], tasks: [] }, store.getState())
   })
 
   describe('TASKS_SELECT', () => {
