@@ -112,10 +112,7 @@ class App extends React.Component {
       case 'edit-filter': return (
         <EditFilter
           filter={this.state.filter}
-          save={save}
-          addFilter={addFilter}
           cancel={cancel}
-          delete={key => this.deleteFilter(key)}
         />)
       case 'about': return <About cancel={cancel} />
       case 'new-filter': return (

@@ -1,5 +1,5 @@
+const { connect } = require('react-redux')
 const React = require('react')
-const Filter = require('../../models/Filter')
 const FilterSuggester = require('../FilterSuggester')
 const hookUpStickyNav = require('../hookUpStickyNav')
 
@@ -9,8 +9,7 @@ class EditFilter extends React.Component {
     const { filter } = props
     this.state = {
       valueHasError: false,
-      key: filter,
-      value: new Filter(filter).retrieve(),
+      value: filter.query,
     }
   }
 
@@ -21,16 +20,10 @@ class EditFilter extends React.Component {
       return
     }
     this.setState({ valueHasError: false })
-    let key = this.state.key.trim()
-    if (key.length < 1) {
-      key = this.state.value
-    }
-    const filter = new Filter(key)
-    filter.store(this.state.value)
-    if (this.props.filter !== key) {
-      this.props.delete(this.props.filter)
-    }
-    this.props.save(key)
+
+    const filter = Object.assign({}, this.props.filter, { query: this.state.value })
+    const dispatchArgs = Object.assign({}, { type: 'FILTERS_UPDATE' }, filter)
+    this.props.dispatch(dispatchArgs)
   }
 
   cancel(event) {
@@ -102,10 +95,9 @@ class EditFilter extends React.Component {
 
 EditFilter.propTypes = {
   filter: React.PropTypes.string.isRequired,
-  save: React.PropTypes.func.isRequired,
   cancel: React.PropTypes.func.isRequired,
-  addFilter: React.PropTypes.func.isRequired,
-  delete: React.PropTypes.func.isRequired,
+  dispatch: React.PropTypes.func.isRequired,
 }
 
-module.exports = hookUpStickyNav(EditFilter, '#edit-filter-top-navigation')
+const stickyNav = hookUpStickyNav(EditFilter, '#edit-filter-top-navigation')
+module.exports = connect()(stickyNav)
