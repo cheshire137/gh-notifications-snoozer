@@ -3,7 +3,7 @@ const Redux = require('redux')
 
 const FiltersReducer = require('../../src/reducers/FiltersReducer')
 
-describe('Filters reducer', () => {
+describe.only('Filters reducer', () => {
   it('has the correct default initial state', () => {
     const store = Redux.createStore(FiltersReducer)
     assert.deepEqual([], store.getState())
@@ -14,7 +14,13 @@ describe('Filters reducer', () => {
       const initialFilters = [{ name: 'first filter', query: 'label:first' }]
       const store = Redux.createStore(FiltersReducer, initialFilters)
 
-      store.dispatch({ type: 'FILTERS_UPDATE', name: 'new filter', query: 'label:new' })
+      store.dispatch({
+        type: 'FILTERS_UPDATE',
+        filter: {
+          name: 'new filter', query: 'label:new',
+        },
+      })
+
       const expectedFilters = [
         { name: 'first filter', query: 'label:first' },
         { name: 'new filter', query: 'label:new' },
@@ -27,7 +33,13 @@ describe('Filters reducer', () => {
       const initialFilters = [{ name: 'first filter', query: 'label:first' }]
       const store = Redux.createStore(FiltersReducer, initialFilters)
 
-      store.dispatch({ type: 'FILTERS_UPDATE', name: 'first filter', query: 'label:updated' })
+      store.dispatch({
+        type: 'FILTERS_UPDATE',
+        filter: {
+          name: 'first filter', query: 'label:updated',
+        },
+      })
+
       const expectedFilters = [
         { name: 'first filter', query: 'label:updated' },
       ]
@@ -41,7 +53,13 @@ describe('Filters reducer', () => {
       const initialFilters = [{ name: 'first filter', query: 'label:first' }]
       const store = Redux.createStore(FiltersReducer, initialFilters)
 
-      store.dispatch({ type: 'FILTERS_REMOVE', name: 'first filter' })
+      store.dispatch({
+        type: 'FILTERS_REMOVE',
+        filter: {
+          name: 'first filter',
+        },
+      })
+
       assert.deepEqual([], store.getState())
     })
   })
@@ -54,7 +72,13 @@ describe('Filters reducer', () => {
       ]
       const store = Redux.createStore(FiltersReducer, initialFilters)
 
-      store.dispatch({ type: 'FILTERS_SELECT', name: 'second filter' })
+      store.dispatch({
+        type: 'FILTERS_SELECT',
+        filter: {
+          name: 'second filter',
+        },
+      })
+
       const expectedFilters = [
         { name: 'first filter', query: 'label:first', selected: false },
         { name: 'second filter', query: 'label:second', selected: true },
