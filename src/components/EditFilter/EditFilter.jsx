@@ -11,17 +11,18 @@ class EditFilter extends React.Component {
 
   save(event) {
     event.preventDefault()
-    if (this.state.value.length < 1) {
+    if (this.props.filter.query.length < 1) {
       this.setState({ valueHasError: true })
       return
     }
     this.setState({ valueHasError: false })
     this.props.dispatch({ type: 'FILTERS_UPDATE', filter: this.props.filter })
+    this.props.showtasks()
   }
 
   cancel(event) {
     event.preventDefault()
-    this.props.cancel()
+    this.props.showtasks()
   }
 
   render() {
@@ -79,8 +80,8 @@ class EditFilter extends React.Component {
 }
 
 EditFilter.propTypes = {
-  filter: React.PropTypes.string.isRequired,
-  cancel: React.PropTypes.func.isRequired,
+  filter: React.PropTypes.object.isRequired,
+  showtasks: React.PropTypes.func.isRequired,
   dispatch: React.PropTypes.func.isRequired,
 }
 
