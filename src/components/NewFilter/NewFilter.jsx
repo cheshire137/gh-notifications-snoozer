@@ -90,7 +90,6 @@ class NewFilter extends React.Component {
 
 NewFilter.propTypes = {
   dispatch: React.PropTypes.func.isRequired,
-  save: React.PropTypes.func.isRequired,
   cancel: React.PropTypes.func.isRequired,
   manageFilters: React.PropTypes.func.isRequired,
   loadFilter: React.PropTypes.func.isRequired,

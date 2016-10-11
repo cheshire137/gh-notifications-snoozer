@@ -52,7 +52,7 @@ class FilterList extends React.Component {
   deleteFocusedFilter() {
     const filter = this.props.filters[this.state.selectedIndex]
     this.setState({ selectedIndex: null })
-    this.props.delete(filter)
+    this.props.dispatch({ type: 'FILTERS_REMOVE', filter })
   }
 
   focusPreviousFilter() {
@@ -99,7 +99,6 @@ class FilterList extends React.Component {
           <FilterListItem
             key={filter.name}
             filter={filter}
-            delete={this.props.delete}
             edit={this.props.edit}
             isFocused={index === this.state.selectedIndex}
           />
@@ -139,8 +138,8 @@ class FilterList extends React.Component {
 }
 
 FilterList.propTypes = {
+  dispatch: React.PropTypes.func.isRequired,
   filters: React.PropTypes.array.isRequired,
-  delete: React.PropTypes.func.isRequired,
   edit: React.PropTypes.func.isRequired,
   addFilter: React.PropTypes.func.isRequired,
   cancel: React.PropTypes.func.isRequired,

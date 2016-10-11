@@ -1,3 +1,4 @@
+const { connect } = require('react-redux')
 const React = require('react')
 const ReactDOM = require('react-dom')
 
@@ -16,6 +17,10 @@ class FilterListItem extends React.Component {
       classes.push('focused')
     }
     return classes.join(' ')
+  }
+
+  deleteFilter() {
+    this.props.dispatch({ type: 'FILTERS_REMOVE', filter: this.props.filter })
   }
 
   ensureVisible() {
@@ -55,7 +60,7 @@ class FilterListItem extends React.Component {
               ✏️
             </button>
             <button
-              onClick={() => this.props.delete(this.props.filter)}
+              onClick={() => this.deleteFilter()}
               type="button"
               className="button is-link"
               title="Delete filter"
@@ -70,8 +75,10 @@ class FilterListItem extends React.Component {
 }
 
 FilterListItem.propTypes = {
+  dispatch: React.PropTypes.func.isRequired,
+  edit: React.PropTypes.func.isRequired,
   filter: React.PropTypes.object.isRequired,
   isFocused: React.PropTypes.bool.isRequired,
 }
 
-module.exports = FilterListItem
+module.exports = connect()(FilterListItem)

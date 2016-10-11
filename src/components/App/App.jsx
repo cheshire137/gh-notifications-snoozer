@@ -85,7 +85,6 @@ class App extends React.Component {
         />)
       case 'filters': return (
         <FilterList
-          delete={filter => this.deleteFilter(filter)}
           edit={editFilter}
           addFilter={addFilter}
           cancel={cancel}
@@ -167,10 +166,6 @@ class App extends React.Component {
   manageFilters() {
     ipcRenderer.send('title', 'Manage Filters')
     this.changeView('filters')
-  }
-
-  deleteFilter(filter) {
-    this.props.dispatch({ type: 'FILTERS_REMOVE', name: filter.name })
   }
 
   showHidden() {
