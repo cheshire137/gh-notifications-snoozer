@@ -16,9 +16,7 @@ class EditFilter extends React.Component {
       return
     }
     this.setState({ valueHasError: false })
-
-    const dispatchArgs = Object.assign({}, { type: 'FILTERS_UPDATE' }, this.props.filter)
-    this.props.dispatch(dispatchArgs)
+    this.props.dispatch({ type: 'FILTERS_UPDATE', filter: this.props.filter })
   }
 
   cancel(event) {

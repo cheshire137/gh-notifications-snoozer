@@ -1,7 +1,6 @@
+const { connect } = require('react-redux')
 const React = require('react')
-const Filter = require('../../models/Filter')
 const FilterSuggester = require('../FilterSuggester')
-const LastFilter = require('../../models/LastFilter')
 const hookUpStickyNav = require('../hookUpStickyNav')
 
 class NewFilter extends React.Component {
@@ -13,21 +12,22 @@ class NewFilter extends React.Component {
   save(event) {
     event.preventDefault()
     const form = event.target
-    const value = form.filterValue.value.trim()
-    if (value.length < 1) {
+    const query = form.filterValue.value.trim()
+    if (query.length < 1) {
       this.setState({ valueHasError: true })
       return
     }
     this.setState({ valueHasError: false })
-    let key = form.filterKey.value.trim()
-    if (key.length < 1) {
-      key = value
+
+    let name = form.filterKey.value.trim()
+    if (name.length < 1) {
+      name = query
     }
-    const filter = new Filter(key)
-    filter.store(value)
-    LastFilter.save(key)
-    this.props.loadFilter(key)
-    this.props.save(key)
+
+    const filter = { name, query }
+    this.props.dispatch({ type: 'FILTERS_UPDATE', filter })
+    this.props.dispatch({ type: 'FILTERS_SELECT', filter })
+    this.props.cancel() // Not really canceled, it will force the task list to show
   }
 
   cancel(event) {
@@ -89,10 +89,12 @@ class NewFilter extends React.Component {
 }
 
 NewFilter.propTypes = {
+  dispatch: React.PropTypes.func.isRequired,
   save: React.PropTypes.func.isRequired,
   cancel: React.PropTypes.func.isRequired,
   manageFilters: React.PropTypes.func.isRequired,
   loadFilter: React.PropTypes.func.isRequired,
 }
 
-module.exports = hookUpStickyNav(NewFilter, '#new-filter-top-navigation')
+const stickyNav = hookUpStickyNav(NewFilter, '#new-filter-top-navigation')
+module.exports = connect()(stickyNav)

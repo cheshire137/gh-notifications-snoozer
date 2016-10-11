@@ -21,11 +21,7 @@ class App extends React.Component {
   constructor() {
     super()
     const view = GitHubAuth.isAuthenticated() ? 'tasks' : 'auth'
-    this.state = {
-      view,
-      filters: Filters.findAll(),
-      filter: LastFilter.retrieve(),
-    }
+    this.state = { view }
   }
 
   componentDidMount() {
@@ -33,29 +29,16 @@ class App extends React.Component {
     this.setupAppMenu()
     if (GitHubAuth.isAuthenticated()) {
       this.loadUser()
-      if (this.state.filter) {
-        this.loadFilter(this.state.filter)
+      if (this.props.activeFilter) {
+        this.loadTasks()
       } else {
         this.manageFilters()
       }
     }
   }
 
-  onNotificationsFetched(notifications, query) {
-    const github = new GitHub()
-    github.getTasks(query).then(tasks => {
-      this.props.dispatch({ type: 'TASKS_UPDATE', tasks, notifications })
-    }).catch(err => {
-      console.error('failed to get tasks from GitHub', err)
-    })
-  }
-
   onUserLoad(user) {
-    if (user) {
-      const filters = new DefaultFilters(user.login)
-      filters.addDefaults()
-    }
-    this.setState({ user, filters: Filters.findAll() })
+    this.setState({ user })
   }
 
   setupAppMenu() {
@@ -87,7 +70,6 @@ class App extends React.Component {
     }
     const addFilter = () => this.showNewFilterForm()
     const editFilter = key => this.editFilter(key)
-    const save = key => this.savedFilter(key)
     const manageFilters = () => this.manageFilters()
     const loadFilter = key => this.loadFilter(key)
     switch (this.state.view) {
@@ -103,21 +85,19 @@ class App extends React.Component {
         />)
       case 'filters': return (
         <FilterList
-          filters={this.state.filters}
-          delete={key => this.deleteFilter(key)}
+          delete={filter => this.deleteFilter(filter)}
           edit={editFilter}
           addFilter={addFilter}
           cancel={cancel}
         />)
       case 'edit-filter': return (
         <EditFilter
-          filter={this.state.filter}
+          filter={this.props.activeFilter}
           cancel={cancel}
         />)
       case 'about': return <About cancel={cancel} />
       case 'new-filter': return (
         <NewFilter
-          save={save}
           cancel={cancel}
           manageFilters={manageFilters}
           loadFilter={loadFilter}
@@ -147,10 +127,14 @@ class App extends React.Component {
     this.changeView('auth')
   }
 
-  loadTasks(query) {
+  loadTasks() {
     const github = new GitHub()
     github.getNotifications().then(notifications => {
-      this.onNotificationsFetched(notifications, query)
+      github.getTasks(this.props.activeFilter.query).then(tasks => {
+        this.props.dispatch({ type: 'TASKS_UPDATE', tasks, notifications })
+      }).catch(err => {
+        console.error('failed to get tasks from GitHub', err)
+      })
     }).catch(err => {
       console.error('failed to get notifications from GitHub', err)
     })
@@ -170,26 +154,14 @@ class App extends React.Component {
     this.changeView('new-filter')
   }
 
-  savedFilter(key) {
-    ipcRenderer.send('title', 'Tasks')
-    this.setState({ filters: Filters.findAll() }, () => {
-      this.changeView('tasks')
-      this.loadFilter(key)
-    })
-  }
-
   showTaskList() {
     ipcRenderer.send('title', 'Tasks')
     this.changeView('tasks')
   }
 
-  loadFilter(key) {
-    this.props.dispatch({ type: 'TASKS_EMPTY' })
-    LastFilter.save(key)
-    const filter = new Filter(key)
-    this.setState({ filter: key })
-    const query = filter.retrieve()
-    this.loadTasks(query)
+  loadFilter(filter) {
+    this.props.dispatch({ type: 'FILTERS_SELECT', filter })
+    this.loadTasks()
   }
 
   manageFilters() {
@@ -197,10 +169,8 @@ class App extends React.Component {
     this.changeView('filters')
   }
 
-  deleteFilter(key) {
-    const filter = new Filter(key)
-    const remainingFilters = filter.delete()
-    this.setState({ filters: remainingFilters })
+  deleteFilter(filter) {
+    this.props.dispatch({ type: 'FILTERS_REMOVE', name: filter.name })
   }
 
   showHidden() {
@@ -248,4 +218,8 @@ App.propTypes = {
   dispatch: React.PropTypes.func.isRequired,
 }
 
-module.exports = connect()(App)
+const mapStateToProps = state => ({
+  filters: state.filters,
+  activeFilter: state.filters.find(filter => filter.selected),
+})
+module.exports = connect(mapStateToProps)(App)
