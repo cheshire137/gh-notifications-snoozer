@@ -6,11 +6,7 @@ const hookUpStickyNav = require('../hookUpStickyNav')
 class EditFilter extends React.Component {
   constructor(props) {
     super(props)
-    const { filter } = props
-    this.state = {
-      valueHasError: false,
-      value: filter.query,
-    }
+    this.state = { valueHasError: false }
   }
 
   save(event) {
@@ -21,22 +17,13 @@ class EditFilter extends React.Component {
     }
     this.setState({ valueHasError: false })
 
-    const filter = Object.assign({}, this.props.filter, { query: this.state.value })
-    const dispatchArgs = Object.assign({}, { type: 'FILTERS_UPDATE' }, filter)
+    const dispatchArgs = Object.assign({}, { type: 'FILTERS_UPDATE' }, this.props.filter)
     this.props.dispatch(dispatchArgs)
   }
 
   cancel(event) {
     event.preventDefault()
     this.props.cancel()
-  }
-
-  valueChanged(newValue) {
-    this.setState({ value: newValue })
-  }
-
-  keyChanged(event) {
-    this.setState({ key: event.target.value })
   }
 
   render() {
@@ -61,8 +48,8 @@ class EditFilter extends React.Component {
                 type="text"
                 name="filterKey"
                 className="input"
-                value={this.state.key}
-                onChange={e => this.keyChanged(e)}
+                value={this.props.filter.name}
+                onChange={event => (this.props.filter.key = event.target.value)}
                 placeholder="e.g., Team mentions"
                 autoFocus="autofocus"
               />
@@ -71,8 +58,8 @@ class EditFilter extends React.Component {
             <div className="control">
               <FilterSuggester
                 className={valueClass}
-                value={this.state.value}
-                onChange={val => this.valueChanged(val)}
+                value={this.props.filter.query}
+                onChange={val => (this.props.filter.query = val)}
                 inputID="edit-filter-query"
               />
             </div>
