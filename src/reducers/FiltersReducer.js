@@ -1,15 +1,16 @@
-const filtersAdd = (filters, action) => {
-  const newFilter = { name: action.name, query: action.query }
-  return filters.concat([newFilter])
-}
-
 const filtersUpdate = (filters, action) => {
+  if (!filters.find(filter => filter.name === action.name)) {
+    const newFilter = { name: action.name, query: action.query }
+    return filters.concat([newFilter])
+  }
+
   const updatedFilters = filters.map(filter => {
     if (filter.name === action.name) {
       return Object.assign({}, filter, { query: action.query })
     }
     return filter
   })
+
   return updatedFilters
 }
 
@@ -28,9 +29,7 @@ const filtersSelect = (filters, action) => {
 
 module.exports = (filters = [], action) => {
   switch (action.type) {
-    case 'FILTERS_ADD':
-      return filtersAdd(filters, action)
-    case 'FILTERS_UPDATE_QUERY':
+    case 'FILTERS_UPDATE':
       return filtersUpdate(filters, action)
     case 'FILTERS_REMOVE':
       return filtersRemove(filters, action)

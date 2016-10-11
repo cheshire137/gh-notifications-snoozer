@@ -9,12 +9,12 @@ describe('Filters reducer', () => {
     assert.deepEqual([], store.getState())
   })
 
-  describe('FILTERS_ADD', () => {
+  describe('FILTERS_UPDATE', () => {
     it('adds a filter', () => {
       const initialFilters = [{ name: 'first filter', query: 'label:first' }]
       const store = Redux.createStore(FiltersReducer, initialFilters)
 
-      store.dispatch({ type: 'FILTERS_ADD', name: 'new filter', query: 'label:new' })
+      store.dispatch({ type: 'FILTERS_UPDATE', name: 'new filter', query: 'label:new' })
       const expectedFilters = [
         { name: 'first filter', query: 'label:first' },
         { name: 'new filter', query: 'label:new' },
@@ -22,14 +22,12 @@ describe('Filters reducer', () => {
 
       assert.deepEqual(expectedFilters, store.getState())
     })
-  })
 
-  describe('FILTERS_UPDATE_QUERY', () => {
     it('updates an existing filter', () => {
       const initialFilters = [{ name: 'first filter', query: 'label:first' }]
       const store = Redux.createStore(FiltersReducer, initialFilters)
 
-      store.dispatch({ type: 'FILTERS_UPDATE_QUERY', name: 'first filter', query: 'label:updated' })
+      store.dispatch({ type: 'FILTERS_UPDATE', name: 'first filter', query: 'label:updated' })
       const expectedFilters = [
         { name: 'first filter', query: 'label:updated' },
       ]
