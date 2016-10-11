@@ -40,10 +40,10 @@ class FilterListItem extends React.Component {
       <li className={this.listItemClass()}>
         <div className="columns">
           <div className="column filter-key is-3">
-            {filter.name}
+            {this.props.filter.name}
           </div>
           <div className="column is-7">
-            {filter.query}
+            {this.props.filter.query}
           </div>
           <div className="column is-2 has-text-right">
             <button
