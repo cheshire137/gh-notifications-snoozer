@@ -1,14 +1,10 @@
 const { connect } = require('react-redux')
 const React = require('react')
 const { ipcRenderer } = require('electron')
-const Filter = require('../../models/Filter')
-const Filters = require('../../models/Filters')
 const GitHub = require('../../models/GitHub')
 const AppMenu = require('../../models/AppMenu')
 const GitHubAuth = require('../../models/GitHubAuth')
-const LastFilter = require('../../models/LastFilter')
 const TabbedNav = require('../TabbedNav')
-const DefaultFilters = require('../../models/DefaultFilters')
 const TaskList = require('../TaskList')
 const FilterList = require('../FilterList')
 const NewFilter = require('../NewFilter')
@@ -68,25 +64,16 @@ class App extends React.Component {
     if (this.state.previousView === 'filters') {
       cancel = () => this.manageFilters()
     }
-    const addFilter = () => this.showNewFilterForm()
-    const editFilter = key => this.editFilter(key)
-    const manageFilters = () => this.manageFilters()
-    const loadFilter = key => this.loadFilter(key)
     switch (this.state.view) {
       case 'tasks': return (
         <TaskList
-          addFilter={addFilter}
-          changeFilter={loadFilter}
-          manageFilters={manageFilters}
-          user={this.state.user}
-          showAuth={() => this.showAuth()}
           showHidden={() => this.showHidden()}
-          editFilter={editFilter}
+          editFilter={key => this.editFilter(key)}
         />)
       case 'filters': return (
         <FilterList
-          edit={editFilter}
-          addFilter={addFilter}
+          edit={key => this.editFilter(key)}
+          addFilter={() => this.showNewFilterForm()}
           cancel={cancel}
         />)
       case 'edit-filter': return (
@@ -98,13 +85,13 @@ class App extends React.Component {
       case 'new-filter': return (
         <NewFilter
           cancel={cancel}
-          manageFilters={manageFilters}
-          loadFilter={loadFilter}
+          manageFilters={() => this.manageFilters()}
+          loadFilter={key => this.loadFilter(key)}
         />)
       case 'hidden': return (
         <HiddenTaskList
           cancel={cancel}
-          activeFilter={this.state.filter}
+          activeFilter={this.props.activeFilter}
         />)
       default: return (
         <Auth
@@ -210,6 +197,8 @@ class App extends React.Component {
 }
 
 App.propTypes = {
+  filters: React.PropTypes.array.isRequired,
+  activeFilter: React.PropTypes.object.isRequired,
   dispatch: React.PropTypes.func.isRequired,
 }
 

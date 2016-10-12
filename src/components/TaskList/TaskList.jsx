@@ -4,8 +4,6 @@ const { shell } = require('electron')
 
 const TaskListItem = require('../TaskListItem')
 const hookUpStickyNav = require('../hookUpStickyNav')
-const Filters = require('../../models/Filters')
-const LastFilter = require('../../models/LastFilter')
 const TaskVisibility = require('../../models/TaskVisibility')
 
 class TaskList extends React.Component {
@@ -75,22 +73,21 @@ class TaskList extends React.Component {
         document.activeElement.id === 'filters-menu'
   }
 
-  changeFilter(event) {
-    const filter = event.target.value
-    if (filter === '') {
-      return
-    }
-    this.props.changeFilter(filter)
+  changeFilter(filterName) {
+    const selectedFilter = this.props.filters.find(filter => filter.name === filterName)
+    this.props.dispatch({ type: 'FILTERS_SELECT', selectedFilter })
   }
 
   editSelectedFilter() {
-    this.props.editFilter(LastFilter.retrieve())
+    debugger
+    this.props.editFilter(this.props.activeFilter)
   }
 
   refresh(event) {
     event.currentTarget.blur() // defocus button
-    const filter = document.getElementById('filters-menu').value
-    this.props.changeFilter(filter)
+    console.log("COREY BROKE THIS AND FORGOT TO FIX IT!")
+    // const filter = document.getElementById('filters-menu').value
+    // this.props.changeFilter(filter)
   }
 
   selectFocusedTask() {
@@ -129,8 +126,6 @@ class TaskList extends React.Component {
   }
 
   render() {
-    const filters = Filters.findAll()
-    const lastFilterKey = LastFilter.retrieve()
     const isSnoozeDisabled = this.props.tasks.
         filter(task => task.isSelected).length < 1
     const isArchiveDisabled = isSnoozeDisabled
@@ -143,11 +138,11 @@ class TaskList extends React.Component {
               <span className="select">
                 <select
                   id="filters-menu"
-                  onChange={event => this.changeFilter(event)}
-                  defaultValue={lastFilterKey}
+                  onChange={event => this.changeFilter(event.target.value)}
+                  defaultValue={(this.props.activeFilter || {}).name}
                 >
-                  {filters.map(key => (
-                    <option key={key} value={key}>{key}</option>
+                  {this.props.filters.map(filter => (
+                    <option key={filter.name} value={filter.name}>{filter.name}</option>
                   ))}
                 </select>
               </span>
@@ -225,12 +220,10 @@ class TaskList extends React.Component {
 
 TaskList.propTypes = {
   tasks: React.PropTypes.array.isRequired,
+  filters: React.PropTypes.array.isRequired,
+  activeFilter: React.PropTypes.object.isRequired,
   dispatch: React.PropTypes.func.isRequired,
-  addFilter: React.PropTypes.func.isRequired,
-  changeFilter: React.PropTypes.func.isRequired,
-  user: React.PropTypes.object,
-  manageFilters: React.PropTypes.func.isRequired,
-  showAuth: React.PropTypes.func.isRequired,
+
   showHidden: React.PropTypes.func.isRequired,
   editFilter: React.PropTypes.func.isRequired,
 }
@@ -238,5 +231,7 @@ TaskList.propTypes = {
 const stickyNavd = hookUpStickyNav(TaskList, '.task-list-navigation')
 const mapStateToProps = state => ({
   tasks: state.tasks.filter(task => TaskVisibility.isVisibleTask(task)),
+  activeFilter: state.filters.find(filter => filter.selected),
+  filters: state.filters,
 })
 module.exports = connect(mapStateToProps)(stickyNavd)
