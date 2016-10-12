@@ -29,6 +29,24 @@ describe.only('Filters reducer', () => {
       assert.deepEqual(expectedFilters, store.getState())
     })
 
+    it('the first filter added is automatically selected', () => {
+      const initialFilters = []
+      const store = Redux.createStore(FiltersReducer, initialFilters)
+
+      store.dispatch({
+        type: 'FILTERS_UPDATE',
+        filter: {
+          name: 'new filter', query: 'label:new',
+        },
+      })
+
+      const expectedFilters = [
+        { name: 'first filter', query: 'label:first', selected: true },
+      ]
+
+      assert.deepEqual(expectedFilters, store.getState())
+    })
+
     it('updates an existing filter', () => {
       const initialFilters = [{ name: 'first filter', query: 'label:first' }]
       const store = Redux.createStore(FiltersReducer, initialFilters)
@@ -61,6 +79,26 @@ describe.only('Filters reducer', () => {
       })
 
       assert.deepEqual([], store.getState())
+    })
+
+    it('sets another filter as selected if the selected filter is removed', () => {
+      const initialFilters = [
+        { name: 'first filter', query: 'label:first', selected: true },
+        { name: 'second filter', query: 'label:second' }
+      ]
+      const store = Redux.createStore(FiltersReducer, initialFilters)
+
+      store.dispatch({
+        type: 'FILTERS_REMOVE',
+        filter: {
+          name: 'first filter',
+        },
+      })
+
+      const expectedFilters = [
+        { name: 'second filter', query: 'label:second', selected: true },
+      ]
+      assert.deepEqual(expectedFilters, store.getState())
     })
   })
 
