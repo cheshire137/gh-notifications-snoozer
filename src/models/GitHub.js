@@ -94,11 +94,15 @@ class GitHub extends Fetcher {
     }
   }
 
-  get(relativeOrAbsoluteUrl, previousJson) {
-    let url = relativeOrAbsoluteUrl
-    if (url.indexOf('http') !== 0) {
-      url = `${Config.githubApiUrl}/${relativeOrAbsoluteUrl}`
+  getFullUrl(relativeOrAbsoluteUrl) {
+    if (relativeOrAbsoluteUrl.indexOf('http') !== 0) {
+      return `${Config.githubApiUrl}/${relativeOrAbsoluteUrl}`
     }
+    return relativeOrAbsoluteUrl
+  }
+
+  get(relativeOrAbsoluteUrl, previousJson) {
+    const url = this.getFullUrl(relativeOrAbsoluteUrl)
     const opts = { headers: this.getHeaders() }
     return new Promise((resolve, reject) => super.get(url, opts).then(res => {
       const { json, headers } = res
