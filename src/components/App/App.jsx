@@ -169,6 +169,7 @@ class App extends React.Component {
     if (!this.state.urls) {
       return
     }
+    this.props.dispatch({ type: 'TASKS_EMPTY' })
     const github = new GitHub()
     const url = this.state.urls[this.state.urls.length - 1]
     github.getTasksFromUrl(url).then(result => {
@@ -188,6 +189,7 @@ class App extends React.Component {
     if (!this.state.urls) {
       return
     }
+    this.props.dispatch({ type: 'TASKS_EMPTY' })
     const github = new GitHub()
     const url = this.state.urls[this.state.urls.length - 2]
     github.getTasksFromUrl(url).then(result => {
