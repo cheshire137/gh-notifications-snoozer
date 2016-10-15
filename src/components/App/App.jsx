@@ -58,8 +58,8 @@ class App extends React.Component {
   getTasksAfterNotifications(query) {
     const github = new GitHub()
     github.getTasks(query).then(result => {
-      const { tasks, nextUrl } = result
-      this.setState({ urls: [nextUrl] })
+      const { tasks, nextUrl, currentUrl } = result
+      this.setState({ urls: [currentUrl, nextUrl], currentUrlIndex: 0 })
       this.props.dispatch({ type: 'TASKS_UPDATE', tasks,
                             notifications: this.state.notifications })
     }).catch(err => {
@@ -100,12 +100,17 @@ class App extends React.Component {
     const manageFilters = () => this.manageFilters()
     const loadFilter = key => this.loadFilter(key)
     let loadNextPage = null
-    if (this.state.urls && this.state.urls.length > 0) {
+    if (this.state.urls &&
+        this.state.currentUrlIndex < this.state.urls.length - 1) {
       loadNextPage = () => this.loadNextPage()
     }
     let loadPrevPage = null
-    if (this.state.urls && this.state.urls.length > 1) {
+    if (this.state.currentUrlIndex > 0) {
       loadPrevPage = () => this.loadPrevPage()
+    }
+    let currentPage = null
+    if (typeof this.state.currentUrlIndex === 'number') {
+      currentPage = this.state.currentUrlIndex + 1
     }
     switch (this.state.view) {
       case 'tasks': return (
@@ -119,6 +124,7 @@ class App extends React.Component {
           editFilter={editFilter}
           loadNextPage={loadNextPage}
           loadPrevPage={loadPrevPage}
+          currentPage={currentPage}
         />)
       case 'filters': return (
         <FilterList
@@ -168,8 +174,7 @@ class App extends React.Component {
     github.getTasksFromUrl(url).then(result => {
       const { tasks, nextUrl } = result
       const urls = this.state.urls.concat([nextUrl])
-      console.log('urls going forward', urls)
-      this.setState({ urls })
+      this.setState({ urls, currentUrlIndex: urls.indexOf(url) })
       this.props.dispatch({ type: 'TASKS_UPDATE', tasks,
                             notifications: this.state.notifications })
       window.scrollTo(0, 0)
@@ -188,8 +193,7 @@ class App extends React.Component {
     github.getTasksFromUrl(url).then(result => {
       const { tasks } = result
       const urls = this.state.urls.slice(0, this.state.urls.length - 1)
-      console.log('urls going back', urls)
-      this.setState({ urls })
+      this.setState({ urls, currentUrlIndex: urls.indexOf(url) - 1 })
       this.props.dispatch({ type: 'TASKS_UPDATE', tasks,
                             notifications: this.state.notifications })
       window.scrollTo(0, 0)

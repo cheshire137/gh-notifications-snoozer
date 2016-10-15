@@ -68,7 +68,8 @@ class GitHub extends Fetcher {
   getTasksFromUrl(urlPath) {
     return this.get(urlPath).then(result => {
       const { json, nextUrl } = result
-      return { tasks: json.items.map(d => getTask(d)), nextUrl }
+      return { tasks: json.items.map(d => getTask(d)), nextUrl,
+               currentUrl: urlPath }
     })
   }
 

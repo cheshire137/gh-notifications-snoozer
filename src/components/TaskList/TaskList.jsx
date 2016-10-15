@@ -219,6 +219,11 @@ class TaskList extends React.Component {
                 className="is-link is-small button"
                 title="Edit selected filter"
               >Edit</button>
+              {typeof this.props.currentPage === 'number' ? (
+                <span className="is-small button is-link">
+                  Page {this.props.currentPage}
+                </span>
+              ) : ''}
             </span>
           </div>
         </nav>
@@ -266,6 +271,7 @@ TaskList.propTypes = {
   editFilter: React.PropTypes.func.isRequired,
   loadPrevPage: React.PropTypes.func,
   loadNextPage: React.PropTypes.func,
+  currentPage: React.PropTypes.number,
 }
 
 const stickyNavd = hookUpStickyNav(TaskList, '.task-list-navigation')
