@@ -70,12 +70,12 @@ class TaskList extends React.Component {
     }
   }
 
-  loadNextPage() {
+  loadNextPage(event) {
     event.currentTarget.blur() // defocus button
     this.props.loadNextPage()
   }
 
-  loadPrevPage() {
+  loadPrevPage(event) {
     event.currentTarget.blur() // defocus button
     this.props.loadPrevPage()
   }
@@ -237,20 +237,19 @@ class TaskList extends React.Component {
           </ol>
           {havePagination ? (
             <nav className="pagination">
-              {havePrevPage ? (
-                <button
-                  type="button"
-                  className="button"
-                  onClick={() => this.loadPrevPage()}
-                >&larr; Previous Page</button>
-              ) : ''}
-              {haveNextPage ? (
-                <button
-                  type="button"
-                  className="button"
-                  onClick={() => this.loadNextPage()}
-                >Next Page &rarr;</button>
-              ) : ''}
+              <button
+                type="button"
+                className="button"
+                onClick={e => this.loadPrevPage(e)}
+                disabled={!havePrevPage}
+              >&larr; Previous Page</button>
+              <button
+                type="button"
+                className="button"
+                onClick={e => this.loadNextPage(e)}
+                disabled={!haveNextPage}
+              >Next Page &rarr;</button>
+              <ul></ul>
             </nav>
           ) : ''}
         </div>
