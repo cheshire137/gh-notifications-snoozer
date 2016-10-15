@@ -154,7 +154,7 @@ class Auth extends React.Component {
               </div>
               <p className="control is-fullwidth has-icon">
                 <input
-                  type="text"
+                  type="password"
                   name="token"
                   className={this.inputClass()}
                   value={this.state.token}
