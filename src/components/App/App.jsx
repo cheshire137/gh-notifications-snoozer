@@ -59,7 +59,7 @@ class App extends React.Component {
     const github = new GitHub()
     github.getTasks(query).then(result => {
       const { tasks, nextUrl } = result
-      this.setState({ nextUrl })
+      this.setState({ urls: [nextUrl] })
       this.props.dispatch({ type: 'TASKS_UPDATE', tasks,
                             notifications: this.state.notifications })
     }).catch(err => {
@@ -99,7 +99,14 @@ class App extends React.Component {
     const save = key => this.savedFilter(key)
     const manageFilters = () => this.manageFilters()
     const loadFilter = key => this.loadFilter(key)
-    const loadNextPage = this.state.nextUrl ? () => this.loadNextPage() : null
+    let loadNextPage = null
+    if (this.state.urls && this.state.urls.length > 0) {
+      loadNextPage = () => this.loadNextPage()
+    }
+    let loadPrevPage = null
+    if (this.state.urls && this.state.urls.length > 1) {
+      loadPrevPage = () => this.loadPrevPage()
+    }
     switch (this.state.view) {
       case 'tasks': return (
         <TaskList
@@ -111,6 +118,7 @@ class App extends React.Component {
           showHidden={() => this.showHidden()}
           editFilter={editFilter}
           loadNextPage={loadNextPage}
+          loadPrevPage={loadPrevPage}
         />)
       case 'filters': return (
         <FilterList
@@ -152,20 +160,42 @@ class App extends React.Component {
   }
 
   loadNextPage() {
-    if (!this.state.nextUrl) {
+    if (!this.state.urls) {
       return
     }
     const github = new GitHub()
-    const prevUrl = this.state.nextUrl
-    github.getTasksFromUrl(prevUrl).then(result => {
+    const url = this.state.urls[this.state.urls.length - 1]
+    github.getTasksFromUrl(url).then(result => {
       const { tasks, nextUrl } = result
-      this.setState({ nextUrl, prevUrl })
+      const urls = this.state.urls.concat([nextUrl])
+      console.log('urls going forward', urls)
+      this.setState({ urls })
       this.props.dispatch({ type: 'TASKS_UPDATE', tasks,
                             notifications: this.state.notifications })
       window.scrollTo(0, 0)
     }).catch(err => {
       console.error('failed to get next page of tasks from GitHub',
-                    this.nextUrl, err)
+                    this.state.urls, err)
+    })
+  }
+
+  loadPrevPage() {
+    if (!this.state.urls) {
+      return
+    }
+    const github = new GitHub()
+    const url = this.state.urls[this.state.urls.length - 2]
+    github.getTasksFromUrl(url).then(result => {
+      const { tasks } = result
+      const urls = this.state.urls.slice(0, this.state.urls.length - 1)
+      console.log('urls going back', urls)
+      this.setState({ urls })
+      this.props.dispatch({ type: 'TASKS_UPDATE', tasks,
+                            notifications: this.state.notifications })
+      window.scrollTo(0, 0)
+    }).catch(err => {
+      console.error('failed to get previous page of tasks from GitHub',
+                    this.state.urls, err)
     })
   }
 

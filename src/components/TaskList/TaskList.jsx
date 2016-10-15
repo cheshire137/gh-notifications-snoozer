@@ -75,6 +75,11 @@ class TaskList extends React.Component {
     this.props.loadNextPage()
   }
 
+  loadPrevPage() {
+    event.currentTarget.blur() // defocus button
+    this.props.loadPrevPage()
+  }
+
   isFiltersMenuFocused() {
     return document.activeElement &&
         document.activeElement.id === 'filters-menu'
@@ -140,6 +145,9 @@ class TaskList extends React.Component {
         filter(task => task.isSelected).length < 1
     const isArchiveDisabled = isSnoozeDisabled
     const isIgnoreDisabled = isSnoozeDisabled
+    const haveNextPage = typeof this.props.loadNextPage === 'function'
+    const havePrevPage = typeof this.props.loadPrevPage === 'function'
+    const havePagination = haveNextPage || havePrevPage
     return (
       <div>
         <nav className="task-list-navigation secondary-nav nav has-tertiary-nav">
@@ -222,13 +230,22 @@ class TaskList extends React.Component {
               return <TaskListItem {...task} key={key} isFocused={isFocused} />
             })}
           </ol>
-          {typeof this.props.loadNextPage === 'function' ? (
+          {havePagination ? (
             <nav className="pagination">
-              <button
-                type="button"
-                className="button"
-                onClick={() => this.loadNextPage()}
-              >Next &rarr;</button>
+              {havePrevPage ? (
+                <button
+                  type="button"
+                  className="button"
+                  onClick={() => this.loadPrevPage()}
+                >&larr; Previous</button>
+              ) : ''}
+              {haveNextPage ? (
+                <button
+                  type="button"
+                  className="button"
+                  onClick={() => this.loadNextPage()}
+                >Next &rarr;</button>
+              ) : ''}
             </nav>
           ) : ''}
         </div>
@@ -247,6 +264,7 @@ TaskList.propTypes = {
   showAuth: React.PropTypes.func.isRequired,
   showHidden: React.PropTypes.func.isRequired,
   editFilter: React.PropTypes.func.isRequired,
+  loadPrevPage: React.PropTypes.func,
   loadNextPage: React.PropTypes.func,
 }
 
