@@ -157,6 +157,7 @@ const task = {
   userUrl: 'https://github.com/jgrowl',
   userAvatar: 'https://github.com/jgrowl.png?size=16',
   userType: 'User',
+  apiUrl: 'https://api.github.com/repos/ansible/ansible/pulls/16510',
 }
 
 const notification = {
