@@ -166,7 +166,7 @@ class App extends React.Component {
   }
 
   loadNextPage() {
-    if (!this.state.urls) {
+    if (!this.state.urls || this.state.urls.length < 1) {
       return
     }
     this.props.dispatch({ type: 'TASKS_EMPTY' })
@@ -186,7 +186,7 @@ class App extends React.Component {
   }
 
   loadPrevPage() {
-    if (!this.state.urls) {
+    if (!this.state.urls || this.state.urls.length < 1) {
       return
     }
     this.props.dispatch({ type: 'TASKS_EMPTY' })
