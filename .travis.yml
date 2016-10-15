@@ -27,5 +27,4 @@ install:
   - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
   - npm install
   - ./node_modules/.bin/electron-rebuild
-  - eval $(gnome-keyring-daemon)
   - export GNOME_KEYRING_CONTROL GNOME_KEYRING_PID GPG_AGENT_INFO SSH_AUTH_SOCK
