@@ -138,7 +138,7 @@ class TaskList extends React.Component {
                 <select
                   id="filters-menu"
                   onChange={event => this.changeFilter(event.target.value)}
-                  defaultValue={this.props.activeFilter.name}
+                  defaultValue={(this.props.activeFilter || {}).name}
                 >
                   {this.props.filters.map(filter => (
                     <option key={filter.name} value={filter.name}>{filter.name}</option>
@@ -218,13 +218,12 @@ class TaskList extends React.Component {
 }
 
 TaskList.propTypes = {
-  tasks: React.PropTypes.array.isRequired,
-  filters: React.PropTypes.array.isRequired,
-  activeFilter: React.PropTypes.object.isRequired,
+  activeFilter: React.PropTypes.object,
   dispatch: React.PropTypes.func.isRequired,
-
-  showHidden: React.PropTypes.func.isRequired,
   editFilter: React.PropTypes.func.isRequired,
+  filters: React.PropTypes.array.isRequired,
+  showHidden: React.PropTypes.func.isRequired,
+  tasks: React.PropTypes.array.isRequired,
 }
 
 const stickyNavd = hookUpStickyNav(TaskList, '.task-list-navigation')

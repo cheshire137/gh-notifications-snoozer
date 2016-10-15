@@ -32,11 +32,7 @@ class App extends React.Component {
     this.setupAppMenu()
     if (GitHubAuth.isAuthenticated()) {
       this.loadUser()
-      if (this.props.activeFilter) {
-        this.loadTasks()
-      } else {
-        this.manageFilters()
-      }
+      this.loadTasks()
     }
   }
 
@@ -148,11 +144,7 @@ class App extends React.Component {
 
   showTaskList() {
     ipcRenderer.send('title', 'Tasks')
-    if (this.props.activeFilter) {
-      this.changeView('tasks')
-    } else {
-      this.manageFilters()
-    }
+    this.changeView('tasks')
   }
 
   loadFilter(filter) {
