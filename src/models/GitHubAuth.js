@@ -3,7 +3,7 @@
 import keytar from 'keytar'
 
 const SERVICE = 'gh-notifications-snoozer'
-const ACCOUNT = 'github'
+const ACCOUNT = process.env.NODE_ENV === 'test' ? 'github-test' : 'github'
 
 class GitHubAuth {
   static isAuthenticated() {
