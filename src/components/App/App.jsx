@@ -198,7 +198,7 @@ class App extends React.Component {
     github.getTasksFromUrl(url).then(result => {
       const { tasks } = result
       const urls = this.state.urls.slice(0, this.state.urls.length - 1)
-      this.setState({ urls, currentUrlIndex: urls.indexOf(url) - 1 })
+      this.setState({ urls, currentUrlIndex: this.state.currentUrlIndex - 1 })
       this.props.dispatch({ type: 'TASKS_UPDATE', tasks,
                             notifications: this.state.notifications })
       window.scrollTo(0, 0)
