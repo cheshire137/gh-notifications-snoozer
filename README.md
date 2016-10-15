@@ -14,9 +14,18 @@ scope.
 
 ## How to Develop
 
-This was developed with npm version 3.10.3 and node version 6.3.1
+This was developed with npm version 3.10.3 and node version 6.3.1.
 
 ### First-time Setup
+
+In Linux, you may need to run
+
+```bash
+sudo apt-get install libgnome-keyring-dev
+```
+
+first because this app uses gnome-keyring. Afterward, including for macOS and
+Windows:
 
 ```bash
 # Clone this repository
