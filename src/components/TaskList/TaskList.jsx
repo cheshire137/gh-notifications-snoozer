@@ -73,17 +73,13 @@ class TaskList extends React.Component {
         document.activeElement.id === 'filters-menu'
   }
 
-  activeFilter() {
-    return this.props.filters.find(filter => filter.selected)
-  }
-
   changeFilter(filterName) {
     const selectedFilter = this.props.filters.find(filter => filter.name === filterName)
     this.props.dispatch({ type: 'FILTERS_SELECT', selectedFilter })
   }
 
   editSelectedFilter() {
-    this.props.editFilter(this.activeFilter())
+    this.props.editFilter(this.props.activeFilter)
   }
 
   refresh(event) {
@@ -142,7 +138,7 @@ class TaskList extends React.Component {
                 <select
                   id="filters-menu"
                   onChange={event => this.changeFilter(event.target.value)}
-                  defaultValue={(this.activeFilter() || {}).name}
+                  defaultValue={this.props.activeFilter.name}
                 >
                   {this.props.filters.map(filter => (
                     <option key={filter.name} value={filter.name}>{filter.name}</option>
@@ -224,6 +220,7 @@ class TaskList extends React.Component {
 TaskList.propTypes = {
   tasks: React.PropTypes.array.isRequired,
   filters: React.PropTypes.array.isRequired,
+  activeFilter: React.PropTypes.object.isRequired,
   dispatch: React.PropTypes.func.isRequired,
 
   showHidden: React.PropTypes.func.isRequired,
@@ -231,8 +228,11 @@ TaskList.propTypes = {
 }
 
 const stickyNavd = hookUpStickyNav(TaskList, '.task-list-navigation')
-const mapStateToProps = state => ({
-  tasks: state.tasks.filter(task => TaskVisibility.isVisibleTask(task)),
-  filters: state.filters,
-})
+const mapStateToProps = state => {
+  return ({
+    tasks: state.tasks.filter(task => TaskVisibility.isVisibleTask(task)),
+    activeFilter: state.filters.find(filter => filter.selected),
+    filters: state.filters,
+  })
+}
 module.exports = connect(mapStateToProps)(stickyNavd)
