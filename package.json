@@ -7,6 +7,7 @@
   "dependencies": {
     "electron-config": "^0.2.1",
     "isomorphic-fetch": "^2.2.1",
+    "keytar": "^3.0.2",
     "react": "^15.2.1",
     "react-autosuggest": "^6.0.4",
     "react-dom": "^15.2.1",
