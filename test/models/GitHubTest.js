@@ -2,6 +2,7 @@ const assert = require('assert')
 const GitHub = require('../../src/models/GitHub')
 const fetchMock = require('fetch-mock')
 const Config = require('../../src/config.json')
+const fixtures = require('../fixtures')
 
 describe('GitHub', () => {
   describe('getNotifications', () => {
@@ -23,6 +24,26 @@ describe('GitHub', () => {
       const github = new GitHub()
       github.getNotifications(date).then(actual => {
         assert.deepEqual(notifications, actual)
+        done()
+      })
+    })
+  })
+
+  describe('getTasks', () => {
+    before(() => {
+      fetchMock.get(`${Config.githubApiUrl}/search/issues?per_page=2&q=cats`,
+                    { items: [fixtures.pullRequest] })
+    })
+
+    it('returns a list of tasks', done => {
+      const github = new GitHub('123abc', 2)
+      github.getTasks('cats').then(actual => {
+        assert.equal('object', typeof actual.tasks,
+                     'should have list of tasks property')
+        assert.equal(1, actual.tasks.length,
+                     'should have one task')
+        assert.deepEqual(fixtures.task, actual.tasks[0],
+                         'should have the expected task')
         done()
       })
     })
