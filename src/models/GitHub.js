@@ -55,18 +55,22 @@ class GitHub extends Fetcher {
       date.setDate(date.getDate() - 31)
     }
     const dateStr = date.toISOString()
-    return this.get(`notifications?since=${encodeURIComponent(dateStr)}`)
+    return this.get(`notifications?since=${encodeURIComponent(dateStr)}`,
+                    { fetchAll: true }).then(result => result.json)
   }
 
   // https://developer.github.com/v3/search/#search-issues
   getTasks(query = Config.searchQuery) {
     const urlPath = `search/issues?q=${encodeURIComponent(query)}`
-    return this.get(urlPath).then(({ items }) => items.map(d => getTask(d)))
+    return this.get(urlPath).then(result => {
+      const { json, nextUrl } = result
+      return { tasks: json.items.map(d => getTask(d)), nextUrl }
+    })
   }
 
   // https://developer.github.com/v3/users/#get-the-authenticated-user
   getCurrentUser() {
-    return this.get('user')
+    return this.get('user').then(result => result.json)
   }
 
   // https://developer.github.com/v3/activity/notifications/#mark-a-thread-as-read
@@ -94,17 +98,17 @@ class GitHub extends Fetcher {
     }
   }
 
-  get(relativeOrAbsoluteUrl, previousJson) {
-    const url = this.getFullUrl(relativeOrAbsoluteUrl)
+  get(path, args = {}) {
+    const url = this.getFullUrl(path)
     const opts = { headers: this.getHeaders() }
     return new Promise((resolve, reject) => super.get(url, opts).then(res => {
-      const { json, headers } = res
-      const combinedJson = this.combineJson(json, previousJson)
-      const nextUrl = this.getNextUrl(headers)
-      if (nextUrl) {
-        return this.get(nextUrl, combinedJson).then(resolve).catch(reject)
+      const combinedJson = this.combineJson(res.json, args.previousJson)
+      const nextUrl = this.getNextUrl(res.headers)
+      if (nextUrl && args.fetchAll) {
+        return this.get(nextUrl, { previousJson: combinedJson }).
+            then(resolve).catch(reject)
       }
-      return resolve(combinedJson)
+      return resolve({ json: combinedJson, nextUrl })
     }).catch(reject))
   }
 

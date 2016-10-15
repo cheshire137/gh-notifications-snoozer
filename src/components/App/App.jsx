@@ -43,7 +43,8 @@ class App extends React.Component {
 
   onNotificationsFetched(notifications, query) {
     const github = new GitHub()
-    github.getTasks(query).then(tasks => {
+    github.getTasks(query).then(result => {
+      const { tasks } = result
       this.props.dispatch({ type: 'TASKS_UPDATE', tasks, notifications })
     }).catch(err => {
       console.error('failed to get tasks from GitHub', err)

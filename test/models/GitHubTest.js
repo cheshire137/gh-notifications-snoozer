@@ -28,7 +28,7 @@ describe('GitHub', () => {
     })
   })
 
-  describe('getNextUrl', () => {
+  describe('getNextUrlFromLink', () => {
     it('returns next link', () => {
       const header = '<https://api.github.com/search/code?q=addClass' +
           '+user%3Amozilla&page=15>; rel="next", <https://api.github.com' +
@@ -40,7 +40,7 @@ describe('GitHub', () => {
       const expected = 'https://api.github.com/search/code?q=addClass+user%3Amozilla&page=15'
 
       const github = new GitHub()
-      const actual = github.getNextUrl(header)
+      const actual = github.getNextUrlFromLink(header)
 
       assert.equal(expected, actual)
     })
