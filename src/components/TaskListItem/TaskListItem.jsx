@@ -110,7 +110,7 @@ class TaskListItem extends React.Component {
           <label className="checkbox main-label" htmlFor={storageKey}>
             <span className="task-list-item-title">{title}</span>
             <span className="task-list-meta">
-              <span>Created by </span>
+              <span>Opened by </span>
               <span className="task-list-item-user">{user}</span>
               <span> in </span>
               <span className="task-list-item-repository">
