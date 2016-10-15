@@ -70,6 +70,11 @@ class TaskList extends React.Component {
     }
   }
 
+  loadNextPage() {
+    event.currentTarget.blur() // defocus button
+    this.props.loadNextPage()
+  }
+
   isFiltersMenuFocused() {
     return document.activeElement &&
         document.activeElement.id === 'filters-menu'
@@ -217,6 +222,15 @@ class TaskList extends React.Component {
               return <TaskListItem {...task} key={key} isFocused={isFocused} />
             })}
           </ol>
+          {typeof this.props.loadNextPage === 'function' ? (
+            <nav className="pagination">
+              <button
+                type="button"
+                className="button"
+                onClick={() => this.loadNextPage()}
+              >Next &rarr;</button>
+            </nav>
+          ) : ''}
         </div>
       </div>
     )
@@ -233,6 +247,7 @@ TaskList.propTypes = {
   showAuth: React.PropTypes.func.isRequired,
   showHidden: React.PropTypes.func.isRequired,
   editFilter: React.PropTypes.func.isRequired,
+  loadNextPage: React.PropTypes.func,
 }
 
 const stickyNavd = hookUpStickyNav(TaskList, '.task-list-navigation')

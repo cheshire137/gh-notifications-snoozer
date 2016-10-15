@@ -99,6 +99,7 @@ class App extends React.Component {
     const save = key => this.savedFilter(key)
     const manageFilters = () => this.manageFilters()
     const loadFilter = key => this.loadFilter(key)
+    const loadNextPage = this.state.nextUrl ? () => this.loadNextPage() : null
     switch (this.state.view) {
       case 'tasks': return (
         <TaskList
@@ -109,6 +110,7 @@ class App extends React.Component {
           showAuth={() => this.showAuth()}
           showHidden={() => this.showHidden()}
           editFilter={editFilter}
+          loadNextPage={loadNextPage}
         />)
       case 'filters': return (
         <FilterList
@@ -147,6 +149,24 @@ class App extends React.Component {
         />
       )
     }
+  }
+
+  loadNextPage() {
+    if (!this.state.nextUrl) {
+      return
+    }
+    const github = new GitHub()
+    const prevUrl = this.state.nextUrl
+    github.getTasksFromUrl(prevUrl).then(result => {
+      const { tasks, nextUrl } = result
+      this.setState({ nextUrl, prevUrl })
+      this.props.dispatch({ type: 'TASKS_UPDATE', tasks,
+                            notifications: this.state.notifications })
+      window.scrollTo(0, 0)
+    }).catch(err => {
+      console.error('failed to get next page of tasks from GitHub',
+                    this.nextUrl, err)
+    })
   }
 
   showAbout() {
