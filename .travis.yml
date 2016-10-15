@@ -1,8 +1,11 @@
+sudo: false
 notifications:
   email: false
 language: node_js
 node_js:
 - "6"
+before_script:
+  - npm prune
 script:
   - "NODE_ENV=test npm run-script unit-tests"
   - "npm run-script style"
@@ -12,6 +15,7 @@ cache:
   - "$HOME/.npm"
   - "$HOME/.electron"
   - "/Library/Caches/Homebrew"
+  - node_modules
 env:
   - CC=clang CXX=clang++ npm_config_clang=1
 addons:
