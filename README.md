@@ -45,6 +45,18 @@ Run the app with:
 npm start
 ```
 
+### Troubleshooting
+
+> When I run `npm start`, I get "Error: Module version mismatch. Expected 49, got 48" in the JavaScript console.
+
+Exit the app and try running:
+
+```bash
+./node_modules/.bin/electron-rebuild
+```
+
+Then run `npm start` again and see if the app loads.
+
 ## How to Run Tests
 
 How you set the `NODE_ENV` environment variable to run `npm test` may be different depending on your operating system and shell.
