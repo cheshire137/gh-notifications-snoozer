@@ -242,14 +242,14 @@ class TaskList extends React.Component {
                   type="button"
                   className="button"
                   onClick={() => this.loadPrevPage()}
-                >&larr; Previous</button>
+                >&larr; Previous Page</button>
               ) : ''}
               {haveNextPage ? (
                 <button
                   type="button"
                   className="button"
                   onClick={() => this.loadNextPage()}
-                >Next &rarr;</button>
+                >Next Page &rarr;</button>
               ) : ''}
             </nav>
           ) : ''}
