@@ -42,12 +42,8 @@ class App extends React.Component {
   }
 
   onNotificationsFetched(notifications, query) {
-    const github = new GitHub()
-    github.getTasks(query).then(result => {
-      const { tasks } = result
-      this.props.dispatch({ type: 'TASKS_UPDATE', tasks, notifications })
-    }).catch(err => {
-      console.error('failed to get tasks from GitHub', err)
+    this.setState({ notifications }, () => {
+      this.getTasksAfterNotifications(query)
     })
   }
 
@@ -57,6 +53,18 @@ class App extends React.Component {
       filters.addDefaults()
     }
     this.setState({ user, filters: Filters.findAll() })
+  }
+
+  getTasksAfterNotifications(query) {
+    const github = new GitHub()
+    github.getTasks(query).then(result => {
+      const { tasks, nextUrl } = result
+      this.setState({ nextUrl })
+      this.props.dispatch({ type: 'TASKS_UPDATE', tasks,
+                            notifications: this.state.notifications })
+    }).catch(err => {
+      console.error('failed to get tasks from GitHub', query, err)
+    })
   }
 
   setupAppMenu() {
@@ -153,6 +161,10 @@ class App extends React.Component {
 
   loadTasks(query) {
     const github = new GitHub()
+    if (this.state.notifications) {
+      this.getTasksAfterNotifications(query)
+      return
+    }
     github.getNotifications().then(notifications => {
       this.onNotificationsFetched(notifications, query)
     }).catch(err => {
@@ -191,7 +203,7 @@ class App extends React.Component {
     this.props.dispatch({ type: 'TASKS_EMPTY' })
     LastFilter.save(key)
     const filter = new Filter(key)
-    this.setState({ filter: key })
+    this.setState({ filter: key, nextUrl: null })
     const query = filter.retrieve()
     this.loadTasks(query)
   }
