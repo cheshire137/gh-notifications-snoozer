@@ -11,6 +11,7 @@ class GitHubAuth {
   }
 
   static setToken(token) {
+    console.log('setToken', token)
     if (this.isAuthenticated()) {
       this.deleteToken()
     }
@@ -22,6 +23,7 @@ class GitHubAuth {
   }
 
   static getToken() {
+    console.log('getToken', keytar.getPassword(SERVICE, ACCOUNT))
     return keytar.getPassword(SERVICE, ACCOUNT)
   }
 }
