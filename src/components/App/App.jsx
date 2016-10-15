@@ -262,7 +262,7 @@ class App extends React.Component {
     this.props.dispatch({ type: 'TASKS_EMPTY' })
     LastFilter.save(key)
     const filter = new Filter(key)
-    this.setState({ filter: key, nextUrl: null })
+    this.setState({ filter: key, urls: null, currentUrlIndex: null })
     const query = filter.retrieve()
     this.loadTasks(query)
   }
