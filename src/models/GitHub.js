@@ -61,15 +61,16 @@ class GitHub extends Fetcher {
 
   // https://developer.github.com/v3/search/#search-issues
   getTasks(query = Config.searchQuery) {
-    const urlPath = `search/issues?q=${encodeURIComponent(query)}`
-    return this.getTasksFromUrl(urlPath)
+    const params = `?per_page=30&q=${encodeURIComponent(query)}`
+    const url = `${Config.githubApiUrl}/search/issues${params}`
+    return this.getTasksFromUrl(url)
   }
 
-  getTasksFromUrl(urlPath) {
-    return this.get(urlPath).then(result => {
+  getTasksFromUrl(url) {
+    return this.get(url).then(result => {
       const { json, nextUrl } = result
       return { tasks: json.items.map(d => getTask(d)), nextUrl,
-               currentUrl: urlPath }
+               currentUrl: url }
     })
   }
 
