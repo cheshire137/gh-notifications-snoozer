@@ -127,9 +127,11 @@ class TaskListItem extends React.Component {
           </label>
         </div>
         <div className="column has-text-right">
-          <a href={url} onClick={event => this.openExternal(event)}>
-            <span className="octicon octicon-link-external"></span>
-          </a>
+          <a
+            href={url}
+            onClick={event => this.openExternal(event)}
+            className="open-task-list-item-link"
+          ><span className="octicon octicon-link-external"></span></a>
         </div>
       </li>
     )
