@@ -16,8 +16,15 @@ const HiddenTaskList = require('../HiddenTaskList')
 class App extends React.Component {
   constructor() {
     super()
-    const view = GitHubAuth.isAuthenticated() ? 'tasks' : 'auth'
-    this.state = { view }
+    this.state = {}
+  }
+
+  componentWillMount() {
+    if (GitHubAuth.isAuthenticated()) {
+      this.showTaskList()
+    } else {
+      this.showAuth()
+    }
   }
 
   componentDidMount() {
@@ -68,11 +75,11 @@ class App extends React.Component {
       case 'tasks': return (
         <TaskList
           showHidden={() => this.showHidden()}
-          editFilter={key => this.editFilter(key)}
+          editFilter={name => this.editFilter(name)}
         />)
       case 'filters': return (
         <FilterList
-          edit={key => this.editFilter(key)}
+          edit={name => this.editFilter(name)}
           addFilter={() => this.showNewFilterForm()}
           cancel={cancel}
         />)
@@ -86,12 +93,11 @@ class App extends React.Component {
         <NewFilter
           cancel={cancel}
           manageFilters={() => this.manageFilters()}
-          loadFilter={key => this.loadFilter(key)}
+          loadFilter={name => this.loadFilter(name)}
         />)
       case 'hidden': return (
         <HiddenTaskList
           cancel={cancel}
-          activeFilter={this.props.activeFilter}
         />)
       default: return (
         <Auth
@@ -142,7 +148,11 @@ class App extends React.Component {
 
   showTaskList() {
     ipcRenderer.send('title', 'Tasks')
-    this.changeView('tasks')
+    if (this.props.activeFilter) {
+      this.changeView('tasks')
+    } else {
+      this.manageFilters()
+    }
   }
 
   loadFilter(filter) {
@@ -197,9 +207,9 @@ class App extends React.Component {
 }
 
 App.propTypes = {
-  filters: React.PropTypes.array.isRequired,
-  activeFilter: React.PropTypes.object.isRequired,
+  activeFilter: React.PropTypes.object,
   dispatch: React.PropTypes.func.isRequired,
+  filters: React.PropTypes.array.isRequired,
 }
 
 const mapStateToProps = state => ({
