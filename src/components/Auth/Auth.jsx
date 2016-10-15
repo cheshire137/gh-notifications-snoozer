@@ -111,7 +111,6 @@ class Auth extends React.Component {
   }
 
   render() {
-    const authFile = GitHubAuth.path()
     return (
       <div>
         <nav id="auth-top-navigation" className="secondary-nav nav">
@@ -165,11 +164,6 @@ class Auth extends React.Component {
                 <span className="fa octicon octicon-key"></span>
               </p>
             </div>
-            <p className="help">
-              Your token
-              {this.props.isAuthenticated ? ' is stored ' : ' will be stored '}
-              in: <code>{authFile}</code>
-            </p>
             <p className="control">
               <button
                 type="submit"

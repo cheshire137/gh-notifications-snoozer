@@ -1,30 +1,28 @@
 'use strict'
 
-const ElectronConfig = require('electron-config')
-const configName = process.env.NODE_ENV === 'test' ? 'config-test' : 'config'
-const storage = new ElectronConfig({ name: configName })
+import keytar from 'keytar'
 
-const KEY = 'token'
+const SERVICE = 'gh-notifications-snoozer'
+const ACCOUNT = 'github'
 
 class GitHubAuth {
   static isAuthenticated() {
-    return storage.has(KEY)
+    return this.getToken() !== null
   }
 
   static setToken(token) {
-    storage.set(KEY, token)
+    if (this.isAuthenticated()) {
+      this.deleteToken()
+    }
+    keytar.addPassword(SERVICE, ACCOUNT, token)
   }
 
   static deleteToken() {
-    storage.delete(KEY)
+    keytar.deletePassword(SERVICE, ACCOUNT)
   }
 
   static getToken() {
-    return storage.get(KEY)
-  }
-
-  static path() {
-    return storage.path
+    return keytar.getPassword(SERVICE, ACCOUNT)
   }
 }
 
