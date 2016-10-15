@@ -12,6 +12,7 @@ class AppMenu extends EventEmitter {
     super()
     this.options = options
     this.template = []
+    this.altOrOption = process.platform === 'darwin' ? 'Option' : 'Alt'
     const self = this
     this.aboutOption = {
       label: `About ${app.getName()}`,
@@ -97,7 +98,7 @@ class AppMenu extends EventEmitter {
       submenu: [
         {
           label: 'Developer Tools',
-          accelerator: 'CmdOrCtrl+Shift+I',
+          accelerator: `CmdOrCtrl+${this.altOrOption}+I`,
           click(item, win) {
             if (win) {
               win.webContents.toggleDevTools()
