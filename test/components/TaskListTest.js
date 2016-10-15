@@ -60,6 +60,12 @@ describe('TaskList', () => {
     fetchMock.restore()
   })
 
+  it('shows current page', () => {
+    const pageEl = renderedDOM().querySelector('.current-page')
+    assert(pageEl, 'should have a page number section')
+    assert.equal('Page 1', pageEl.textContent)
+  })
+
   it('shows task that is not snoozed, archived, or ignored', () => {
     const taskListItems = renderedDOM().querySelectorAll('#pull-163031382')
     assert.equal(1, taskListItems.length)

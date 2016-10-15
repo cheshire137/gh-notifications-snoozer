@@ -224,7 +224,7 @@ class TaskList extends React.Component {
           {typeof this.props.currentPage === 'number' ? (
             <div className="nav-right">
               <span className="nav-item compact-vertically">
-                <span className="is-small button is-link">
+                <span className="current-page is-small button is-link">
                   Page {this.props.currentPage}
                 </span>
               </span>
