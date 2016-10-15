@@ -42,9 +42,10 @@ function getTask(data) {
 }
 
 class GitHub extends Fetcher {
-  constructor(token) {
+  constructor(token, perPage = 30) {
     super()
     this.token = token
+    this.perPage = perPage
   }
 
   // https://developer.github.com/v3/activity/notifications/#list-your-notifications
@@ -61,7 +62,7 @@ class GitHub extends Fetcher {
 
   // https://developer.github.com/v3/search/#search-issues
   getTasks(query = Config.searchQuery) {
-    const params = `?per_page=30&q=${encodeURIComponent(query)}`
+    const params = `?per_page=${this.perPage}&q=${encodeURIComponent(query)}`
     const url = `${Config.githubApiUrl}/search/issues${params}`
     return this.getTasksFromUrl(url)
   }
