@@ -99,23 +99,19 @@ class TaskListItem extends React.Component {
               alt={repositoryOwner}
               className="task-list-item-repository-owner-avatar"
             />
+            <img
+              src={userAvatar}
+              alt={user}
+              className="task-list-item-user-avatar"
+            />
           </label>
         </div>
         <div className="is-8 column">
           <label className="checkbox main-label" htmlFor={storageKey}>
             <span className="task-list-item-title">{title}</span>
             <span className="task-list-meta">
-              <span>Created </span>
-              <span>by </span>
-              <img
-                src={userAvatar}
-                alt={user}
-                className="task-list-item-user-avatar"
-              />
-              <span> </span>
-              <span className="task-list-item-user">
-                {user}
-              </span>
+              <span>Created by </span>
+              <span className="task-list-item-user">{user}</span>
               <span> in </span>
               <span className="task-list-item-repository">
                 {repository}
