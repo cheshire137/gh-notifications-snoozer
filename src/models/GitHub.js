@@ -88,6 +88,7 @@ class GitHub extends Fetcher {
     if (!this.token) {
       this.token = GitHubAuth.getToken()
     }
+    console.log('token', this.token)
     return {
       Accept: 'application/vnd.github.v3+json',
       Authorization: `token ${this.token}`,
