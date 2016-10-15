@@ -12,10 +12,14 @@ cache:
   - "$HOME/.npm"
   - "$HOME/.electron"
   - "/Library/Caches/Homebrew"
+env:
+  - CC=clang CXX=clang++ npm_config_clang=1
 addons:
   apt:
     packages:
       - xvfb
+      - gnome-keyring
+      - libgnome-keyring-dev
 before_install:
   - "npm config set spin false"
 install:
