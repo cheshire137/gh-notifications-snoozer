@@ -10,7 +10,8 @@ of interest to you.
 
 You must provide a GitHub personal access token once you start the app the first
 time. [Create a token](https://github.com/settings/tokens/new) with the `repo`
-scope.
+scope. When running the app, your token will be stored in Keychain in macOS,
+Gnome Keyring in Linux, and Credential Vault in Windows.
 
 ## How to Develop
 
