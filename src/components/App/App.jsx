@@ -25,6 +25,7 @@ class App extends React.Component {
       view,
       filters: Filters.findAll(),
       filter: LastFilter.retrieve(),
+      loadingTasks: true,
     }
   }
 
@@ -45,6 +46,7 @@ class App extends React.Component {
     const github = new GitHub()
     github.getTasks(query).then(tasks => {
       this.props.dispatch({ type: 'TASKS_UPDATE', tasks, notifications })
+      this.setState({ loadingTasks: false })
     }).catch(err => {
       console.error('failed to get tasks from GitHub', err)
     })
@@ -100,6 +102,7 @@ class App extends React.Component {
           showAuth={() => this.showAuth()}
           showHidden={() => this.showHidden()}
           editFilter={editFilter}
+          loading={this.state.loadingTasks}
         />)
       case 'filters': return (
         <FilterList
@@ -190,7 +193,7 @@ class App extends React.Component {
     this.props.dispatch({ type: 'TASKS_EMPTY' })
     LastFilter.save(key)
     const filter = new Filter(key)
-    this.setState({ filter: key })
+    this.setState({ filter: key, loadingTasks: true })
     const query = filter.retrieve()
     this.loadTasks(query)
   }
