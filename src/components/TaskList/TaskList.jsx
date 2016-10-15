@@ -219,13 +219,17 @@ class TaskList extends React.Component {
                 className="is-link is-small button"
                 title="Edit selected filter"
               >Edit</button>
-              {typeof this.props.currentPage === 'number' ? (
+            </span>
+          </div>
+          {typeof this.props.currentPage === 'number' ? (
+            <div className="nav-right">
+              <span className="nav-item compact-vertically">
                 <span className="is-small button is-link">
                   Page {this.props.currentPage}
                 </span>
-              ) : ''}
-            </span>
-          </div>
+              </span>
+            </div>
+          ) : ''}
         </nav>
         <div className="task-list-container">
           <ol className="task-list">
