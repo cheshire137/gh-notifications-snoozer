@@ -49,6 +49,7 @@ class App extends React.Component {
       this.setState({ loadingTasks: false })
     }).catch(err => {
       console.error('failed to get tasks from GitHub', err)
+      this.setState({ loadingTasks: false })
     })
   }
 
@@ -159,6 +160,7 @@ class App extends React.Component {
       this.onNotificationsFetched(notifications, query)
     }).catch(err => {
       console.error('failed to get notifications from GitHub', err)
+      this.setState({ loadingTasks: false })
     })
   }
 
