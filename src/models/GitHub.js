@@ -94,24 +94,13 @@ class GitHub extends Fetcher {
     }
   }
 
-  getFullUrl(relativeOrAbsoluteUrl) {
-    if (relativeOrAbsoluteUrl.indexOf('http') !== 0) {
-      return `${Config.githubApiUrl}/${relativeOrAbsoluteUrl}`
-    }
-    return relativeOrAbsoluteUrl
-  }
-
   get(relativeOrAbsoluteUrl, previousJson) {
     const url = this.getFullUrl(relativeOrAbsoluteUrl)
     const opts = { headers: this.getHeaders() }
     return new Promise((resolve, reject) => super.get(url, opts).then(res => {
       const { json, headers } = res
       const combinedJson = this.combineJson(json, previousJson)
-      const link = headers.get('Link')
-      if (!link) {
-        return resolve(combinedJson)
-      }
-      const nextUrl = this.getNextUrl(link)
+      const nextUrl = this.getNextUrl(headers)
       if (nextUrl) {
         return this.get(nextUrl, combinedJson).then(resolve).catch(reject)
       }
@@ -131,6 +120,21 @@ class GitHub extends Fetcher {
     return Object.assign({}, json1, json2)
   }
 
+  getFullUrl(relativeOrAbsoluteUrl) {
+    if (relativeOrAbsoluteUrl.indexOf('http') !== 0) {
+      return `${Config.githubApiUrl}/${relativeOrAbsoluteUrl}`
+    }
+    return relativeOrAbsoluteUrl
+  }
+
+  getNextUrl(headers) {
+    const link = headers.get('Link')
+    if (!link) {
+      return null
+    }
+    return this.getNextUrlFromLink(link)
+  }
+
   // Sample input:
   // Link: <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=15>; rel="next",
   // <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=34>; rel="last",
@@ -139,7 +143,7 @@ class GitHub extends Fetcher {
   //
   // Sample output:
   // https://api.github.com/search/code?q=addClass+user%3Amozilla&page=15
-  getNextUrl(link) {
+  getNextUrlFromLink(link) {
     const urlsAndRels = link.split(',')
     let nextUrl
     urlsAndRels.forEach(str => {
