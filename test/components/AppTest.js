@@ -95,7 +95,6 @@ describe('App', () => {
 
       setTimeout(() => {
         const fetchedCalls = fetchMock.calls().matched
-        console.log('fetchedCalls', fetchedCalls)
         assert(fetchedCalls[0][0].match(/\/user/),
                'Fetch call should be to the user API')
         assert(fetchedCalls[1][0].match(/\/search\/issues/),
