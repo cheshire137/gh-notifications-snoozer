@@ -174,7 +174,10 @@ class App extends React.Component {
     const url = this.state.urls[this.state.urls.length - 1]
     github.getTasksFromUrl(url).then(result => {
       const { tasks, nextUrl } = result
-      const urls = this.state.urls.concat([nextUrl])
+      let urls = this.state.urls
+      if (nextUrl) {
+        urls = urls.concat([nextUrl])
+      }
       this.setState({ urls, currentUrlIndex: urls.indexOf(url) })
       this.props.dispatch({ type: 'TASKS_UPDATE', tasks,
                             notifications: this.state.notifications })
