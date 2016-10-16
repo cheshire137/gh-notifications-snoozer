@@ -2,7 +2,7 @@
   "name": "gh-notifications-snoozer",
   "productName": "GitHub Notifications Snoozer",
   "version": "0.0.1",
-  "description": "An easier way to deal with github notifications",
+  "description": "An easier way to deal with your notifications on GitHub.",
   "main": "src/es6-init.js",
   "dependencies": {
     "babel-preset-es2015": "^6.16.0",
@@ -47,7 +47,7 @@
     "type": "git",
     "url": "git+https://github.com/cheshire137/gh-notifications-snoozer.git"
   },
-  "author": "probablycorey and cheshire137",
+  "author": "probablycorey, cheshire137, summasmiff",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/cheshire137/gh-notifications-snoozer/issues"
