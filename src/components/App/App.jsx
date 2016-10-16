@@ -170,6 +170,7 @@ class App extends React.Component {
     if (!this.state.urls || this.state.urls.length < 1) {
       return
     }
+    this.setState({ loadingTasks: true })
     this.props.dispatch({ type: 'TASKS_EMPTY' })
     const github = new GitHub()
     const url = this.state.urls[this.state.urls.length - 1]
@@ -179,13 +180,15 @@ class App extends React.Component {
       if (nextUrl) {
         urls = urls.concat([nextUrl])
       }
-      this.setState({ urls, currentUrlIndex: urls.indexOf(url) })
+      this.setState({ urls, currentUrlIndex: urls.indexOf(url),
+                      loadingTasks: false })
       this.props.dispatch({ type: 'TASKS_UPDATE', tasks,
                             notifications: this.state.notifications })
       window.scrollTo(0, 0)
     }).catch(err => {
       console.error('failed to get next page of tasks from GitHub',
                     this.state.urls, err)
+      this.setState({ loadingTasks: false })
     })
   }
 
@@ -193,19 +196,22 @@ class App extends React.Component {
     if (!this.state.urls || this.state.urls.length < 1) {
       return
     }
+    this.setState({ loadingTasks: true })
     this.props.dispatch({ type: 'TASKS_EMPTY' })
     const github = new GitHub()
     const url = this.state.urls[this.state.urls.length - 2]
     github.getTasksFromUrl(url).then(result => {
       const { tasks } = result
       const urls = this.state.urls.slice(0, this.state.urls.length - 1)
-      this.setState({ urls, currentUrlIndex: this.state.currentUrlIndex - 1 })
+      this.setState({ urls, currentUrlIndex: this.state.currentUrlIndex - 1,
+                      loadingTasks: false })
       this.props.dispatch({ type: 'TASKS_UPDATE', tasks,
                             notifications: this.state.notifications })
       window.scrollTo(0, 0)
     }).catch(err => {
       console.error('failed to get previous page of tasks from GitHub',
                     this.state.urls, err)
+      this.setState({ loadingTasks: false })
     })
   }
 
