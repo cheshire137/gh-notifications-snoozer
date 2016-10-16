@@ -60,8 +60,11 @@ class App extends React.Component {
     const github = new GitHub()
     github.getTasks(query).then(result => {
       const { tasks, nextUrl, currentUrl } = result
-      this.setState({ urls: [currentUrl, nextUrl], currentUrlIndex: 0,
-                      loadingTasks: false })
+      const urls = [currentUrl]
+      if (nextUrl) {
+        urls.push(nextUrl)
+      }
+      this.setState({ urls, currentUrlIndex: 0, loadingTasks: false })
       this.props.dispatch({ type: 'TASKS_UPDATE', tasks,
                             notifications: this.state.notifications })
     }).catch(err => {
