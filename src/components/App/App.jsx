@@ -42,12 +42,6 @@ class App extends React.Component {
     }
   }
 
-  onNotificationsFetched(notifications, query) {
-    this.setState({ notifications }, () => {
-      this.getTasksAfterNotifications(query)
-    })
-  }
-
   onUserLoad(user) {
     if (user) {
       const filters = new DefaultFilters(user.login)
@@ -232,7 +226,9 @@ class App extends React.Component {
       return
     }
     github.getNotifications().then(notifications => {
-      this.onNotificationsFetched(notifications, query)
+      this.setState({ notifications }, () => {
+        this.getTasksAfterNotifications(query)
+      })
     }).catch(err => {
       console.error('failed to get notifications from GitHub', err)
       this.setState({ loadingTasks: false })
