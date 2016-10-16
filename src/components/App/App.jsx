@@ -1,6 +1,7 @@
 const { connect } = require('react-redux')
 const React = require('react')
 const { ipcRenderer } = require('electron')
+const DefaultFilters = require('../../models/DefaultFilters')
 const GitHub = require('../../models/GitHub')
 const AppMenu = require('../../models/AppMenu')
 const GitHubAuth = require('../../models/GitHubAuth')
@@ -37,6 +38,12 @@ class App extends React.Component {
   }
 
   onUserLoad(user) {
+    if (this.props.filters.length === 0) {
+      DefaultFilters.forLogin(user.login).forEach(filter => {
+        this.props.dispatch({ type: 'FILTERS_UPDATE', filter })
+      })
+      this.loadTasks()
+    }
     this.setState({ user })
   }
 

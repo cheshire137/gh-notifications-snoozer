@@ -1,6 +1,5 @@
 const React = require('react')
 const shell = require('electron').shell
-
 const GitHubAuth = require('../../models/GitHubAuth')
 const GitHub = require('../../models/GitHub')
 const hookUpStickyNav = require('../hookUpStickyNav')
@@ -34,6 +33,7 @@ class Auth extends React.Component {
         disabledButton: false,
       })
       GitHubAuth.setToken(this.state.token)
+
       this.props.done(user)
     }).catch(error => {
       this.setState({
