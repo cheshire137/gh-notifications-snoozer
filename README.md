@@ -10,13 +10,23 @@ of interest to you.
 
 You must provide a GitHub personal access token once you start the app the first
 time. [Create a token](https://github.com/settings/tokens/new) with the `repo`
-scope.
+scope. When running the app, your token will be stored in Keychain in macOS,
+Gnome Keyring in Linux, and Credential Vault in Windows.
 
 ## How to Develop
 
-This was developed with npm version 3.10.3 and node version 6.3.1
+This was developed with npm version 3.10.3 and node version 6.3.1.
 
 ### First-time Setup
+
+In Linux, you may need to run
+
+```bash
+sudo apt-get install libgnome-keyring-dev
+```
+
+first because this app uses gnome-keyring. Afterward, including for macOS and
+Windows:
 
 ```bash
 # Clone this repository
@@ -34,6 +44,18 @@ Run the app with:
 ```bash
 npm start
 ```
+
+### Troubleshooting
+
+> When I run `npm start`, I get "Error: Module version mismatch. Expected 49, got 48" in the JavaScript console.
+
+Exit the app and try running:
+
+```bash
+./node_modules/.bin/electron-rebuild
+```
+
+Then run `npm start` again and see if the app loads.
 
 ## How to Run Tests
 
