@@ -1,7 +1,6 @@
 const React = require('react')
 const { connect } = require('react-redux')
 const { shell } = require('electron')
-const GitHub = require('../../models/GitHub')
 const TaskListItem = require('../TaskListItem')
 const hookUpStickyNav = require('../hookUpStickyNav')
 const TaskVisibility = require('../../models/TaskVisibility')
