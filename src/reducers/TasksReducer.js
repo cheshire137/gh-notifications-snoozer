@@ -1,4 +1,3 @@
-import { combineReducers } from 'redux'
 import ElectronConfig from 'electron-config'
 import GitHub from '../models/GitHub'
 
