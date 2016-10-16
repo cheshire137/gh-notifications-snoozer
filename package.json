@@ -40,7 +40,7 @@
   },
   "scripts": {
     "postinstall": "./node_modules/.bin/lessc src/components/App/App.less > src/App.css && node postinstall.js",
-    "start": "./node_modules/.bin/concurrently \"npm run build-css\" \"./node_modules/.bin/electron src/main.js\"",
+    "start": "./node_modules/.bin/concurrently \"npm run build-css\" \"./node_modules/.bin/electron .\"",
     "style": "eslint -c .eslintrc *.js scripts/* src/*.js src/**/*.jsx test/**/*.js",
     "unit-tests": "xvfb-maybe electron-mocha --renderer --recursive --compilers js:babel-register test",
     "test": "npm run-script style && NODE_ENV=test npm run-script unit-tests",
