@@ -88,21 +88,21 @@ class TaskListItem extends React.Component {
           />
         </div>
         <div className="column has-text-centered">
-          <label className="checkbox task-list-item-state-label" htmlFor={storageKey}>
+          <label className="checkbox state-label" htmlFor={storageKey}>
             <span title={state} className={this.iconClass()}></span>
           </label>
         </div>
-        <div className="column task-list-item-repository-owner-column has-text-right">
+        <div className="column repository-owner-column has-text-right">
           <label className="checkbox" htmlFor={storageKey}>
             <img
               src={repositoryOwnerAvatar}
               alt={repositoryOwner}
-              className="task-list-item-repository-owner-avatar"
+              className="repository-owner-avatar"
             />
             <img
               src={userAvatar}
               alt={user}
-              className="task-list-item-user-avatar"
+              className="user-avatar"
             />
           </label>
         </div>
