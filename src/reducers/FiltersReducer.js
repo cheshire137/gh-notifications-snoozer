@@ -36,7 +36,7 @@ const filtersRemove = (filters, action) => {
 const filtersSelect = (filters, action) => {
   const filterToSelect = action.filter || {}
   const updatedFilters = filters.map(filter => {
-    const shouldSelect = filter.name === filterToSelect.name
+    const shouldSelect = (filter.name === filterToSelect.name)
     return Object.assign({}, filter, { selected: shouldSelect })
   })
 
