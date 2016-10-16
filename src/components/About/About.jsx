@@ -29,12 +29,15 @@ class About extends React.Component {
           <a
             href="https://github.com/probablycorey"
             onClick={e => this.handleLinkClick(e)}
-          >@probablycorey</a>
-          <span> and </span>
+          >@probablycorey</a><span>, </span>
           <a
             href="https://github.com/cheshire137"
             onClick={e => this.handleLinkClick(e)}
-          >@cheshire137</a>.
+          >@cheshire137</a><span>, and </span>
+          <a
+            href="https://github.com/summasmiff"
+            onClick={e => this.handleLinkClick(e)}
+          >@summasmiff</a>.
         </p>
         <p>
           <strong>Version: </strong> {app.getVersion()}
