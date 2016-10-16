@@ -162,6 +162,32 @@ class TaskList extends React.Component {
     return <p>You&rsquo;ve reached the end!</p>
   }
 
+  paginationSection() {
+    const haveNextPage = typeof this.props.loadNextPage === 'function'
+    const havePrevPage = typeof this.props.loadPrevPage === 'function'
+    const havePagination = haveNextPage || havePrevPage
+    if (!havePagination) {
+      return null
+    }
+    return (
+      <nav className="pagination">
+        <button
+          type="button"
+          className="button"
+          onClick={e => this.loadPrevPage(e)}
+          disabled={!havePrevPage}
+        >&larr; Previous Page</button>
+        <button
+          type="button"
+          className="button"
+          onClick={e => this.loadNextPage(e)}
+          disabled={!haveNextPage}
+        >Next Page &rarr;</button>
+        <ul></ul>
+      </nav>
+    )
+  }
+
   render() {
     const filters = Filters.findAll()
     const lastFilterKey = LastFilter.retrieve()
@@ -169,9 +195,6 @@ class TaskList extends React.Component {
         filter(task => task.isSelected).length < 1
     const isArchiveDisabled = isSnoozeDisabled
     const isIgnoreDisabled = isSnoozeDisabled
-    const haveNextPage = typeof this.props.loadNextPage === 'function'
-    const havePrevPage = typeof this.props.loadPrevPage === 'function'
-    const havePagination = haveNextPage || havePrevPage
     return (
       <div>
         <nav className="task-list-navigation secondary-nav nav has-tertiary-nav">
@@ -257,23 +280,7 @@ class TaskList extends React.Component {
         </nav>
         <div className="task-list-container">
           {this.taskListOrMessage()}
-          {havePagination ? (
-            <nav className="pagination">
-              <button
-                type="button"
-                className="button"
-                onClick={e => this.loadPrevPage(e)}
-                disabled={!havePrevPage}
-              >&larr; Previous Page</button>
-              <button
-                type="button"
-                className="button"
-                onClick={e => this.loadNextPage(e)}
-                disabled={!haveNextPage}
-              >Next Page &rarr;</button>
-              <ul></ul>
-            </nav>
-          ) : ''}
+          {this.paginationSection()}
         </div>
       </div>
     )
