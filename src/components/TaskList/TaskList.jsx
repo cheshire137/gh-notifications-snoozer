@@ -210,13 +210,29 @@ class TaskList extends React.Component {
           </div>
         </nav>
         <div className="task-list-container">
-          <ol className="task-list">
-            {this.props.tasks.map((task, index) => {
-              const isFocused = index === this.state.selectedIndex
-              const key = `${task.storageKey}-${task.isSelected}-${isFocused}`
-              return <TaskListItem {...task} key={key} isFocused={isFocused} />
-            })}
-          </ol>
+          {this.props.tasks.length > 0 ? (
+            <ol className="task-list">
+              {this.props.tasks.map((task, index) => {
+                const isFocused = index === this.state.selectedIndex
+                const key = `${task.storageKey}-${task.isSelected}-${isFocused}`
+                return (
+                  <TaskListItem
+                    {...task}
+                    key={key}
+                    isFocused={isFocused}
+                  />
+                )
+              })}
+            </ol>
+          ) : (
+            <p>
+              {this.props.loading ? (
+                <span>Loading...</span>
+              ) : (
+                <span>You&rsquo;ve reached the end!</span>
+              )}
+            </p>
+          )}
         </div>
       </div>
     )
@@ -233,6 +249,7 @@ TaskList.propTypes = {
   showAuth: React.PropTypes.func.isRequired,
   showHidden: React.PropTypes.func.isRequired,
   editFilter: React.PropTypes.func.isRequired,
+  loading: React.PropTypes.bool.isRequired,
 }
 
 const stickyNavd = hookUpStickyNav(TaskList, '.task-list-navigation')
