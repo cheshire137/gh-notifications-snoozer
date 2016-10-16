@@ -22,10 +22,6 @@ class AppMenu extends EventEmitter {
       label: 'Report a bug',
       click() { shell.openExternal(packageInfo.bugs.url) },
     }
-    this.authOption = {
-      label: 'Authenticate',
-      click() { self.emit('authenticate') },
-    }
     this.buildMenu()
     this.menu = Menu.buildFromTemplate(this.template)
     Menu.setApplicationMenu(this.menu)
@@ -115,7 +111,6 @@ class AppMenu extends EventEmitter {
       submenu: [
         this.aboutOption,
         // { label: 'About', selector: 'orderFrontStandardAboutPanel:' },
-        this.authOption,
         { type: 'separator' },
         {
           label: 'Quit',
@@ -144,7 +139,6 @@ class AppMenu extends EventEmitter {
     return {
       label: 'File',
       submenu: [
-        this.authOption,
         {
           label: 'Exit',
           accelerator: 'Ctrl+Q',
