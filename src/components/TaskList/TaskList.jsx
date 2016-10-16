@@ -138,6 +138,30 @@ class TaskList extends React.Component {
     this.setState({ selectedIndex: index })
   }
 
+  taskListOrMessage() {
+    if (this.props.tasks.length > 0) {
+      return (
+        <ol className="task-list">
+          {this.props.tasks.map((task, index) => {
+            const isFocused = index === this.state.selectedIndex
+            const key = `${task.storageKey}-${task.isSelected}-${isFocused}`
+            return (
+              <TaskListItem
+                {...task}
+                key={key}
+                isFocused={isFocused}
+              />
+            )
+          })}
+        </ol>
+      )
+    }
+    if (this.props.loading) {
+      return <p>Loading...</p>
+    }
+    return <p>You&rsquo;ve reached the end!</p>
+  }
+
   render() {
     const filters = Filters.findAll()
     const lastFilterKey = LastFilter.retrieve()
@@ -232,29 +256,7 @@ class TaskList extends React.Component {
           ) : ''}
         </nav>
         <div className="task-list-container">
-          {this.props.tasks.length > 0 ? (
-            <ol className="task-list">
-              {this.props.tasks.map((task, index) => {
-                const isFocused = index === this.state.selectedIndex
-                const key = `${task.storageKey}-${task.isSelected}-${isFocused}`
-                return (
-                  <TaskListItem
-                    {...task}
-                    key={key}
-                    isFocused={isFocused}
-                  />
-                )
-              })}
-            </ol>
-          ) : (
-            <p>
-              {this.props.loading ? (
-                <span>Loading...</span>
-              ) : (
-                <span>You&rsquo;ve reached the end!</span>
-              )}
-            </p>
-          )}
+          {this.taskListOrMessage()}
           {havePagination ? (
             <nav className="pagination">
               <button
