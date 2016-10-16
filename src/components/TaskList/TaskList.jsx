@@ -70,6 +70,16 @@ class TaskList extends React.Component {
     }
   }
 
+  loadNextPage(event) {
+    event.currentTarget.blur() // defocus button
+    this.props.loadNextPage()
+  }
+
+  loadPrevPage(event) {
+    event.currentTarget.blur() // defocus button
+    this.props.loadPrevPage()
+  }
+
   isFiltersMenuFocused() {
     return document.activeElement &&
         document.activeElement.id === 'filters-menu'
@@ -126,6 +136,56 @@ class TaskList extends React.Component {
   focusTaskAtIndex(index) {
     console.info('focus task', this.props.tasks[index].storageKey)
     this.setState({ selectedIndex: index })
+  }
+
+  taskListOrMessage() {
+    if (this.props.tasks.length > 0) {
+      return (
+        <ol className="task-list">
+          {this.props.tasks.map((task, index) => {
+            const isFocused = index === this.state.selectedIndex
+            const key = `${task.storageKey}-${task.isSelected}-${isFocused}`
+            return (
+              <TaskListItem
+                {...task}
+                key={key}
+                isFocused={isFocused}
+              />
+            )
+          })}
+        </ol>
+      )
+    }
+    if (this.props.loading) {
+      return <p>Loading...</p>
+    }
+    return <p>You&rsquo;ve reached the end!</p>
+  }
+
+  paginationSection() {
+    const haveNextPage = typeof this.props.loadNextPage === 'function'
+    const havePrevPage = typeof this.props.loadPrevPage === 'function'
+    const havePagination = haveNextPage || havePrevPage
+    if (!havePagination) {
+      return null
+    }
+    return (
+      <nav className="pagination">
+        <button
+          type="button"
+          className="button"
+          onClick={e => this.loadPrevPage(e)}
+          disabled={!havePrevPage}
+        >&larr; Previous Page</button>
+        <button
+          type="button"
+          className="button"
+          onClick={e => this.loadNextPage(e)}
+          disabled={!haveNextPage}
+        >Next Page &rarr;</button>
+        <ul></ul>
+      </nav>
+    )
   }
 
   render() {
@@ -208,31 +268,19 @@ class TaskList extends React.Component {
               >Edit</button>
             </span>
           </div>
+          {typeof this.props.currentPage === 'number' ? (
+            <div className="nav-right">
+              <span className="nav-item compact-vertically">
+                <span className="current-page is-small button is-link">
+                  Page {this.props.currentPage}
+                </span>
+              </span>
+            </div>
+          ) : ''}
         </nav>
         <div className="task-list-container">
-          {this.props.tasks.length > 0 ? (
-            <ol className="task-list">
-              {this.props.tasks.map((task, index) => {
-                const isFocused = index === this.state.selectedIndex
-                const key = `${task.storageKey}-${task.isSelected}-${isFocused}`
-                return (
-                  <TaskListItem
-                    {...task}
-                    key={key}
-                    isFocused={isFocused}
-                  />
-                )
-              })}
-            </ol>
-          ) : (
-            <p>
-              {this.props.loading ? (
-                <span>Loading...</span>
-              ) : (
-                <span>You&rsquo;ve reached the end!</span>
-              )}
-            </p>
-          )}
+          {this.taskListOrMessage()}
+          {this.paginationSection()}
         </div>
       </div>
     )
@@ -249,6 +297,9 @@ TaskList.propTypes = {
   showAuth: React.PropTypes.func.isRequired,
   showHidden: React.PropTypes.func.isRequired,
   editFilter: React.PropTypes.func.isRequired,
+  loadPrevPage: React.PropTypes.func,
+  loadNextPage: React.PropTypes.func,
+  currentPage: React.PropTypes.number,
   loading: React.PropTypes.bool.isRequired,
 }
 

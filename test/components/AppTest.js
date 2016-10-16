@@ -78,7 +78,8 @@ describe('App', () => {
         return Promise.resolve([])
       }
       fetchMock.get(`${Config.githubApiUrl}/user`, { login: 'testuser123' })
-      fetchMock.get(`${Config.githubApiUrl}/search/issues?q=cats`, [])
+      fetchMock.get(`${Config.githubApiUrl}/search/issues?per_page=30&q=cats`,
+                    [])
     })
 
     after(() => {

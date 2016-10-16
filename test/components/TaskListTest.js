@@ -31,7 +31,7 @@ describe('TaskList', () => {
 
     // Fake responses from GitHub API
     fetchMock.get(`${Config.githubApiUrl}/user`, { login: 'testuser123' })
-    fetchMock.get(`${Config.githubApiUrl}/search/issues?q=cats`,
+    fetchMock.get(`${Config.githubApiUrl}/search/issues?per_page=30&q=cats`,
                   { items: [fixtures.pullRequest, fixtures.issue] })
     fetchMock.mock(fixtures.notification.url, {}, { method: 'PATCH' })
 
@@ -58,6 +58,12 @@ describe('TaskList', () => {
   after(() => {
     GitHub.prototype.getNotifications = getNotifications
     fetchMock.restore()
+  })
+
+  it('shows current page', () => {
+    const pageEl = renderedDOM().querySelector('.current-page')
+    assert(pageEl, 'should have a page number section')
+    assert.equal('Page 1', pageEl.textContent)
   })
 
   it('shows task that is not snoozed, archived, or ignored', () => {

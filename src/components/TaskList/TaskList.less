@@ -1,5 +1,13 @@
 .task-list-container {
-  padding: 0 20px 20px 20px;
+  & > .pagination {
+    justify-content: flex-start;
+    padding: 15px;
+    border-top: 1px solid #dbdbdb;
+  }
+
+  & > p {
+    padding: 0 15px 15px 15px;
+  }
 }
 
 #top-list-navigation {
@@ -36,5 +44,7 @@
 }
 
 .task-list {
+  padding: 0 0 20px 0;
   list-style: none;
+  margin-bottom: -10px;
 }
