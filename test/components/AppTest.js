@@ -83,12 +83,13 @@ describe('App', () => {
     })
 
     it('fetches user and issues when filter exists', done => {
-      const filter = { name: 'name', query: 'query', selected: true }
+      const filter = { name: 'name', query: 'cats', selected: true }
       store = Redux.createStore(reducer, { filters: [filter] })
       renderPage(store)
 
       setTimeout(() => {
         const fetchedCalls = fetchMock.calls().matched
+        assert.equal(2, fetchedCalls.length)
         assert(fetchedCalls[0][0].match(/\/user/),
                'Fetch call should be to the user API')
         assert(fetchedCalls[1][0].match(/\/search\/issues/),
