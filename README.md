@@ -67,3 +67,28 @@ NODE_ENV=test npm test
 ```
 
 You can run just the style checker by itself with `npm run style`. You can run just the tests by themselves with `NODE_ENV=test npm run unit-tests`.
+
+## How to Build the App
+
+### macOS
+
+```bash
+npm install
+npm run build-macos
+```
+
+The directory dist/GHSnooze-darwin-x64/ will be created with a GHSnooze.app file inside that you can double-click to run.
+
+### Windows
+
+```bash
+npm install
+npm run build-windows
+```
+
+### Linux
+
+```bash
+npm install
+npm run build-linux
+```
