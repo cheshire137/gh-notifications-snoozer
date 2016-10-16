@@ -39,7 +39,7 @@
     "xvfb-maybe": "^0.1.3"
   },
   "scripts": {
-    "postinstall": "node postinstall.js",
+    "postinstall": "./node_modules/.bin/lessc src/components/App/App.less > src/App.css && node postinstall.js",
     "start": "./node_modules/.bin/concurrently \"npm run build-css\" \"./node_modules/.bin/electron src/main.js\"",
     "style": "eslint -c .eslintrc *.js scripts/* src/*.js src/**/*.jsx test/**/*.js",
     "unit-tests": "xvfb-maybe electron-mocha --renderer --recursive --compilers js:babel-register test",
