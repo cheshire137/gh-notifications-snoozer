@@ -33,10 +33,10 @@ function getTask(data) {
     repository,
     repositoryOwner,
     repositoryOwnerUrl: `https://github.com/${repositoryOwner}`,
-    repositoryOwnerAvatar: `https://github.com/${repositoryOwner}.png?size=30`,
+    repositoryOwnerAvatar: `https://github.com/${repositoryOwner}.png?size=25`,
     user: data.user.login,
     userUrl: data.user.html_url,
-    userAvatar: `https://github.com/${data.user.login}.png?size=16`,
+    userAvatar: `https://github.com/${data.user.login}.png?size=20`,
     userType: data.user.type,
   }
 }

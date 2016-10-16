@@ -47,6 +47,8 @@ describe('App', () => {
     })
 
     it('does not make request without a token', () => {
+      GitHubAuth.deleteToken()
+
       renderPage(store)
 
       const fetchedCalls = fetchMock.calls().matched

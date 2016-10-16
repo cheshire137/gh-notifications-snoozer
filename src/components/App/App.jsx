@@ -25,6 +25,7 @@ class App extends React.Component {
       view,
       filters: Filters.findAll(),
       filter: LastFilter.retrieve(),
+      loadingTasks: true,
     }
   }
 
@@ -59,11 +60,13 @@ class App extends React.Component {
     const github = new GitHub()
     github.getTasks(query).then(result => {
       const { tasks, nextUrl, currentUrl } = result
-      this.setState({ urls: [currentUrl, nextUrl], currentUrlIndex: 0 })
+      this.setState({ urls: [currentUrl, nextUrl], currentUrlIndex: 0,
+                      loadingTasks: false })
       this.props.dispatch({ type: 'TASKS_UPDATE', tasks,
                             notifications: this.state.notifications })
     }).catch(err => {
       console.error('failed to get tasks from GitHub', query, err)
+      this.setState({ loadingTasks: false })
     })
   }
 
@@ -125,6 +128,7 @@ class App extends React.Component {
           loadNextPage={loadNextPage}
           loadPrevPage={loadPrevPage}
           currentPage={currentPage}
+          loading={this.state.loadingTasks}
         />)
       case 'filters': return (
         <FilterList
@@ -228,6 +232,7 @@ class App extends React.Component {
       this.onNotificationsFetched(notifications, query)
     }).catch(err => {
       console.error('failed to get notifications from GitHub', err)
+      this.setState({ loadingTasks: false })
     })
   }
 
@@ -262,7 +267,8 @@ class App extends React.Component {
     this.props.dispatch({ type: 'TASKS_EMPTY' })
     LastFilter.save(key)
     const filter = new Filter(key)
-    this.setState({ filter: key, urls: null, currentUrlIndex: null })
+    this.setState({ filter: key, urls: null, currentUrlIndex: null,
+                    loadingTasks: true })
     const query = filter.retrieve()
     this.loadTasks(query)
   }
