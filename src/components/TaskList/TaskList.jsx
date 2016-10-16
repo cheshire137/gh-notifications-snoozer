@@ -1,7 +1,7 @@
 const React = require('react')
 const { connect } = require('react-redux')
 const { shell } = require('electron')
-
+const GitHub = require('../../models/GitHub')
 const TaskListItem = require('../TaskListItem')
 const hookUpStickyNav = require('../hookUpStickyNav')
 const TaskVisibility = require('../../models/TaskVisibility')
@@ -75,7 +75,8 @@ class TaskList extends React.Component {
 
   changeFilter(filterName) {
     const selectedFilter = this.props.filters.find(filter => filter.name === filterName)
-    this.props.dispatch({ type: 'FILTERS_SELECT', selectedFilter })
+    this.props.dispatch({ type: 'FILTERS_SELECT', filter: selectedFilter })
+    this.props.loadTasks()
   }
 
   editSelectedFilter() {
@@ -84,9 +85,7 @@ class TaskList extends React.Component {
 
   refresh(event) {
     event.currentTarget.blur() // defocus button
-    console.log("COREY BROKE THIS AND FORGOT TO FIX IT!")
-    // const filter = document.getElementById('filters-menu').value
-    // this.props.changeFilter(filter)
+    this.props.loadTasks()
   }
 
   selectFocusedTask() {
@@ -222,16 +221,15 @@ TaskList.propTypes = {
   dispatch: React.PropTypes.func.isRequired,
   editFilter: React.PropTypes.func.isRequired,
   filters: React.PropTypes.array.isRequired,
+  loadTasks: React.PropTypes.func.isRequired,
   showHidden: React.PropTypes.func.isRequired,
   tasks: React.PropTypes.array.isRequired,
 }
 
 const stickyNavd = hookUpStickyNav(TaskList, '.task-list-navigation')
-const mapStateToProps = state => {
-  return ({
-    tasks: state.tasks.filter(task => TaskVisibility.isVisibleTask(task)),
-    activeFilter: state.filters.find(filter => filter.selected),
-    filters: state.filters,
-  })
-}
+const mapStateToProps = state => ({
+  tasks: state.tasks.filter(task => TaskVisibility.isVisibleTask(task)),
+  activeFilter: state.filters.find(filter => filter.selected),
+  filters: state.filters,
+})
 module.exports = connect(mapStateToProps)(stickyNavd)

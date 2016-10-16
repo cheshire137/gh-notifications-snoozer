@@ -72,6 +72,7 @@ class App extends React.Component {
         <TaskList
           showHidden={() => this.showHidden()}
           editFilter={name => this.editFilter(name)}
+          loadTasks={() => this.loadTasks()}
         />)
       case 'filters': return (
         <FilterList
@@ -116,9 +117,12 @@ class App extends React.Component {
   }
 
   loadTasks() {
+    if (!this.props.activeFilter) return
+
     const github = new GitHub()
     github.getNotifications().then(notifications => {
       github.getTasks(this.props.activeFilter.query).then(tasks => {
+        this.props.dispatch({ type: 'TASKS_EMPTY', tasks, notifications })
         this.props.dispatch({ type: 'TASKS_UPDATE', tasks, notifications })
       }).catch(err => {
         console.error('failed to get tasks from GitHub', err)
