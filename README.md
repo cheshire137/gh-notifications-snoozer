@@ -99,6 +99,8 @@ npm install
 npm run build-windows
 ```
 
+Directories dist\GHSnooze-win32-ia32\ and dist\GHSnooze-win32-x64\ will be created with GHSnooze.exe that you can run.
+
 ### Linux
 
 ```bash
