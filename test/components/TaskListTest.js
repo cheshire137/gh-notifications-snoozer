@@ -6,16 +6,11 @@ const Redux = require('redux')
 const TestUtils = require('react-addons-test-utils')
 const fetchMock = require('fetch-mock')
 
-const ElectronConfig = require('electron-config')
-const storage = new ElectronConfig({ name: 'config-test' })
-
 const Config = require('../../src/config.json')
 const App = require('../../src/components/App')
 const reducer = require('../../src/reducers/reducer')
 const GitHub = require('../../src/models/GitHub')
 const GitHubAuth = require('../../src/models/GitHubAuth')
-const Filter = require('../../src/models/Filter')
-const LastFilter = require('../../src/models/LastFilter')
 const fixtures = require('../fixtures')
 
 describe('TaskList', () => {
@@ -24,8 +19,6 @@ describe('TaskList', () => {
   let getNotifications
 
   before(() => {
-    storage.clear()
-
     // Persist access token
     GitHubAuth.setToken('test-whee')
 
@@ -40,13 +33,9 @@ describe('TaskList', () => {
       return Promise.resolve([fixtures.notification])
     }
 
-    // Persist a filter
-    const filter = new Filter('Cool name')
-    filter.store('cats')
-    LastFilter.save('Cool name')
-
     // Setup Redux store and render app
-    store = Redux.createStore(reducer, { tasks: [] })
+    const filter = { name: 'Cool name', query: 'cats', selected: true }
+    store = Redux.createStore(reducer, { tasks: [], filters: [filter] })
     const component = TestUtils.renderIntoDocument(
       <ReactRedux.Provider store={store}>
         <App />

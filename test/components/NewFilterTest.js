@@ -6,8 +6,6 @@ const Redux = require('redux')
 const fetchMock = require('fetch-mock')
 const TestUtils = require('react-addons-test-utils')
 const NewFilter = require('../../src/components/NewFilter')
-const ElectronConfig = require('electron-config')
-const storage = new ElectronConfig({ name: 'config-test' })
 const reducer = require('../../src/reducers/reducer')
 
 function renderPage(store) {
@@ -56,13 +54,13 @@ describe('NewFilter', () => {
     it('sets a created filter as LastFilter', () => {
       const filterForm = renderedDOM().querySelector('form.new-filter-form')
       const valueInput = renderedDOM().querySelector("input[name='filterValue']")
-      const filter = 'author:LuluPopplewell'
+      const value = 'author:LuluPopplewell'
 
-      valueInput.value = filter
+      valueInput.value = value
       TestUtils.Simulate.change(valueInput)
       TestUtils.Simulate.submit(filterForm)
-      assert.equal('author:LuluPopplewell', storage.get(filter))
-      assert.equal('author:LuluPopplewell', storage.get('last-filter'))
+      const activeFilter = store.filters.find(filter => filter.selected)
+      assert.equal('author:LuluPopplewell', activeFilter.query)
     })
   })
 })

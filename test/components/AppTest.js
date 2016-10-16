@@ -10,8 +10,6 @@ const App = require('../../src/components/App')
 const reducer = require('../../src/reducers/reducer')
 const GitHub = require('../../src/models/GitHub')
 const GitHubAuth = require('../../src/models/GitHubAuth')
-const Filter = require('../../src/models/Filter')
-const LastFilter = require('../../src/models/LastFilter')
 const Config = require('../../src/config.json')
 
 function renderPage(store) {
@@ -85,10 +83,8 @@ describe('App', () => {
     })
 
     it('fetches user and issues when filter exists', done => {
-      const filter = new Filter('Cool name')
-      filter.store('cats')
-      LastFilter.save('Cool name')
-
+      const filter = { name: 'name', query: 'query', selected: true }
+      store = Redux.createStore(reducer, { filters: [filter] })
       renderPage(store)
 
       setTimeout(() => {
