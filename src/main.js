@@ -1,6 +1,4 @@
-const electron = require('electron')
-const app = electron.app
-const BrowserWindow = electron.BrowserWindow
+const { app, BrowserWindow, ipcMain } = require('electron')
 
 let mainWindow
 
@@ -22,9 +20,8 @@ function createWindow() {
   })
   mainWindow.loadURL(`file://${__dirname}/index.html`)
 
-
   mainWindow.webContents.on('did-finish-load', () => {
-    electron.ipcMain.on('title', onTitleChange)
+    ipcMain.on('title', onTitleChange)
   })
 
   mainWindow.on('closed', () => {
