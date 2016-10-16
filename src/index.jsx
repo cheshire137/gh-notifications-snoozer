@@ -10,7 +10,7 @@ const App = require('./components/App')
 const reducer = require('./reducers/reducer')
 const store = Redux.createStore(reducer, undefined, autoRehydrate())
 
-const persistDir = remote.app.getPath('desktop')
+const persistDir = remote.app.getPath('userData')
 const persistOptions = { storage: new AsyncNodeStorage(persistDir) }
 persistStore(store, persistOptions)
 
