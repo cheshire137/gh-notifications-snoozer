@@ -8,6 +8,7 @@
     "babel-preset-es2015": "^6.16.0",
     "babel-preset-react": "^6.16.0",
     "babel-register": "^6.16.3",
+    "concurrently": "^3.1.0",
     "electron-compile": "^3.3.6",
     "electron-config": "^0.2.1",
     "isomorphic-fetch": "^2.2.1",
@@ -31,6 +32,7 @@
     "eslint-plugin-jsx-a11y": "^2.0.1",
     "eslint-plugin-react": "^5.2.2",
     "fetch-mock": "^5.0.2",
+    "less-watch-compiler": "^1.2.3",
     "mocha": "^2.5.3",
     "react-addons-test-utils": "^15.2.1",
     "redux-devtools": "^3.3.1",
@@ -38,10 +40,11 @@
   },
   "scripts": {
     "postinstall": "node postinstall.js",
-    "start": "electron src/main.js",
+    "start": "./node_modules/.bin/concurrently \"npm run build-css\" \"./node_modules/.bin/electron src/main.js\"",
     "style": "eslint -c .eslintrc *.js scripts/* src/*.js src/**/*.jsx test/**/*.js",
     "unit-tests": "xvfb-maybe electron-mocha --renderer --recursive --compilers js:babel-register test",
-    "test": "npm run-script style && NODE_ENV=test npm run-script unit-tests"
+    "test": "npm run-script style && NODE_ENV=test npm run-script unit-tests",
+    "build-css": "./node_modules/.bin/less-watch-compiler src src components/App/App.less"
   },
   "repository": {
     "type": "git",
