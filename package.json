@@ -12,7 +12,6 @@
     "electron-mocha": "^2.3.1",
     "electron-rebuild": "^1.2.1",
     "electron-packager": "7.0.2",
-    "electron-prebuilt-compile": "^1.2.5",
     "electron-compile": "^3.3.6",
     "electron-config": "^0.2.1",
     "isomorphic-fetch": "^2.2.1",
