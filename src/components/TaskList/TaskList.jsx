@@ -137,7 +137,7 @@ class TaskList extends React.Component {
                 <select
                   id="filters-menu"
                   onChange={event => this.changeFilter(event.target.value)}
-                  value={this.props.activeFilter ? this.props.activeFilter.name : ""}
+                  value={this.props.activeFilter ? this.props.activeFilter.name : ''}
                 >
                   {this.props.filters.map(filter => (
                     <option key={filter.name} value={filter.name}>{filter.name}</option>
