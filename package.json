@@ -1,5 +1,5 @@
 {
-  "name": "gh-notifications-snoozer",
+  "name": "GHSnooze",
   "productName": "GitHub Notifications Snoozer",
   "version": "0.0.1",
   "description": "An easier way to deal with github notifications",
@@ -18,6 +18,7 @@
   },
   "devDependencies": {
     "electron-mocha": "^2.3.1",
+    "electron-packager": "7.0.2",
     "electron-prebuilt-compile": "^1.2.5",
     "electron-rebuild": "^1.2.1",
     "eslint": "^3.0.1",
@@ -36,7 +37,11 @@
     "start": "electron src/main.js",
     "style": "eslint -c .eslintrc *.js scripts/* src/*.js src/**/*.jsx test/**/*.js",
     "unit-tests": "xvfb-maybe electron-mocha --renderer --recursive --compilers js:babel-register test",
-    "test": "npm run-script style && NODE_ENV=test npm run-script unit-tests"
+    "test": "npm run-script style && NODE_ENV=test npm run-script unit-tests",
+    "build-osx": "if [ -d dist/GHSnooze-darwin-x64 ]; then rm -r dist/GHSnooze-darwin-x64; fi && electron-packager src --out=dist --app-version=$npm_package_version --prune --asar --overwrite --appname=GHSnooze --platform=darwin --arch=all --ignore=test",
+    "build-windows": "node node_modules\\electron-packager\\cli.js src --out=dist --prune --asar --overwrite --appname=GHSnooze --platform=win32 --arch=all --ignore=test",
+    "build-linux": "if [ -d dist/GHSnooze-linux-ia32 ]; then rm -r dist/GHSnooze-linux-ia32; fi && if [ -d dist/GHSnooze-linux-x64 ]; then rm -r dist/GHSnooze-linux-x64; fi && electron-packager src --out=dist --app-version=$npm_package_version --prune --asar --overwrite --appname=GHSnooze --platform=linux --arch=all --ignore=test",
+    "build-windows-wine": "if [ -d dist/GHSnooze-win32-ia32 ]; then rm -r dist/GHSnooze-win32-ia32; fi && if [ -d dist/GHSnooze-win32-x64 ]; then rm -r dist/GHSnooze-win32-x64; fi && electron-packager src --out=dist --app-version=$npm_package_version --prune --asar --overwrite --appname=GHSnooze --platform=win32 --arch=all --ignore=test"
   },
   "repository": {
     "type": "git",
