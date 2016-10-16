@@ -88,16 +88,21 @@ class TaskListItem extends React.Component {
           />
         </div>
         <div className="column has-text-centered">
-          <label className="checkbox task-list-item-state-label" htmlFor={storageKey}>
+          <label className="checkbox state-label" htmlFor={storageKey}>
             <span title={state} className={this.iconClass()}></span>
           </label>
         </div>
-        <div className="column task-list-item-repository-owner-column has-text-right">
+        <div className="column repository-owner-column has-text-right">
           <label className="checkbox" htmlFor={storageKey}>
             <img
               src={repositoryOwnerAvatar}
               alt={repositoryOwner}
-              className="task-list-item-repository-owner-avatar"
+              className="repository-owner-avatar"
+            />
+            <img
+              src={userAvatar}
+              alt={user}
+              className="user-avatar"
             />
           </label>
         </div>
@@ -105,17 +110,8 @@ class TaskListItem extends React.Component {
           <label className="checkbox main-label" htmlFor={storageKey}>
             <span className="task-list-item-title">{title}</span>
             <span className="task-list-meta">
-              <span>Created </span>
-              <span>by </span>
-              <img
-                src={userAvatar}
-                alt={user}
-                className="task-list-item-user-avatar"
-              />
-              <span> </span>
-              <span className="task-list-item-user">
-                {user}
-              </span>
+              <span>Opened by </span>
+              <span className="task-list-item-user">{user}</span>
               <span> in </span>
               <span className="task-list-item-repository">
                 {repository}
@@ -131,9 +127,11 @@ class TaskListItem extends React.Component {
           </label>
         </div>
         <div className="column has-text-right">
-          <a href={url} onClick={event => this.openExternal(event)}>
-            <span className="octicon octicon-link-external"></span>
-          </a>
+          <a
+            href={url}
+            onClick={event => this.openExternal(event)}
+            className="open-task-list-item-link"
+          ><span className="octicon octicon-link-external"></span></a>
         </div>
       </li>
     )
