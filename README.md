@@ -57,6 +57,19 @@ Exit the app and try running:
 
 Then run `npm start` again and see if the app loads.
 
+> In Windows when I `npm install`, I get an error with node-gyp.
+
+These instructions come from https://github.com/nodejs/node-gyp#installation.
+
+1. Install Python from https://www.python.org/downloads/windows/. As of this time, node-gyp requires Python version >= v2.5.0 and < 3.0.0.
+1. Install Microsoft Visual C++ Build Tools from http://landinghub.visualstudio.com/visual-cpp-build-tools using the Default Install option.
+1. If you're in Windows 7 or Vista, install .NET Framework 4.5.1 from http://www.microsoft.com/en-us/download/details.aspx?id=40773.
+1. Install Microsoft Build Tools from https://www.microsoft.com/en-us/download/details.aspx?id=48159.
+1. Install the latest NodeJS from https://nodejs.org/en/download/current/. As of this time, it's npm 3.10.8 and node 6.8.1.
+1. `npm config set msvs_version 2015 --global`
+1. `rm -r node_modules`
+1. `npm install`
+
 ## How to Run Tests
 
 How you set the `NODE_ENV` environment variable to run `npm test` may be different depending on your operating system and shell.
