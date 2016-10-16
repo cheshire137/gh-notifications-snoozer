@@ -40,16 +40,16 @@
   },
   "scripts": {
     "postinstall": "npm run build-css && node postinstall.js",
-    "start": "./node_modules/.bin/concurrently \"npm run watch-css\" \"./node_modules/.bin/electron .\"",
+    "start": "concurrently \"npm run watch-css\" \"electron .\"",
     "style": "eslint -c .eslintrc *.js scripts/* src/*.js src/**/*.jsx test/**/*.js",
     "unit-tests": "xvfb-maybe electron-mocha --renderer --recursive --compilers js:babel-register test",
     "test": "npm run-script style && NODE_ENV=test npm run-script unit-tests",
-    "build-css": "./node_modules/.bin/lessc src/components/App/App.less > src/App.css",
-    "watch-css": "./node_modules/.bin/less-watch-compiler src src components/App/App.less",
-    "build-macos": "npm run build-css && if [ -d dist/GHSnooze-darwin-x64 ]; then rm -r dist/GHSnooze-darwin-x64; fi && ./node_modules/.bin/electron-packager . --version=1.4.3 --out=dist --app-version=$npm_package_version --prune --asar --overwrite --platform=darwin --arch=all --ignore=test",
+    "build-css": "lessc src/components/App/App.less > src/App.css",
+    "watch-css": "less-watch-compiler src src components/App/App.less",
+    "build-macos": "npm run build-css && if [ -d dist/GHSnooze-darwin-x64 ]; then rm -r dist/GHSnooze-darwin-x64; fi && electron-packager . --version=1.4.3 --out=dist --app-version=$npm_package_version --prune --asar --overwrite --platform=darwin --arch=all --ignore=test",
     "build-windows": "npm run build-css && node node_modules\\.bin\\electron-packager . --version=1.4.3 --out=dist --prune --asar --overwrite --platform=win32 --arch=all --ignore=test",
-    "build-linux": "npm run build-css && if [ -d dist/GHSnooze-linux-ia32 ]; then rm -r dist/GHSnooze-linux-ia32; fi && if [ -d dist/GHSnooze-linux-x64 ]; then rm -r dist/GHSnooze-linux-x64; fi && ./node_modules/.bin/electron-packager . --version=1.4.3 --out=dist --app-version=$npm_package_version --prune --asar --overwrite --platform=linux --arch=all --ignore=test",
-    "build-windows-wine": "npm run build-css && if [ -d dist/GHSnooze-win32-ia32 ]; then rm -r dist/GHSnooze-win32-ia32; fi && if [ -d dist/GHSnooze-win32-x64 ]; then rm -r dist/GHSnooze-win32-x64; fi && ./node_modules/.bin/electron-packager . --version=1.4.3 --out=dist --app-version=$npm_package_version --prune --asar --overwrite --platform=win32 --arch=all --ignore=test"
+    "build-linux": "npm run build-css && if [ -d dist/GHSnooze-linux-ia32 ]; then rm -r dist/GHSnooze-linux-ia32; fi && if [ -d dist/GHSnooze-linux-x64 ]; then rm -r dist/GHSnooze-linux-x64; fi && electron-packager . --version=1.4.3 --out=dist --app-version=$npm_package_version --prune --asar --overwrite --platform=linux --arch=all --ignore=test",
+    "build-windows-wine": "npm run build-css && if [ -d dist/GHSnooze-win32-ia32 ]; then rm -r dist/GHSnooze-win32-ia32; fi && if [ -d dist/GHSnooze-win32-x64 ]; then rm -r dist/GHSnooze-win32-x64; fi && electron-packager . --version=1.4.3 --out=dist --app-version=$npm_package_version --prune --asar --overwrite --platform=win32 --arch=all --ignore=test"
   },
   "repository": {
     "type": "git",
