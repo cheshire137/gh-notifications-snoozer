@@ -1,11 +1,11 @@
 const { connect } = require('react-redux')
 const React = require('react')
 const { ipcRenderer } = require('electron')
-const DefaultFilters = require('../../models/DefaultFilters')
 const GitHub = require('../../models/GitHub')
 const AppMenu = require('../../models/AppMenu')
 const GitHubAuth = require('../../models/GitHubAuth')
 const TabbedNav = require('../TabbedNav')
+const DefaultFilters = require('../../models/DefaultFilters')
 const TaskList = require('../TaskList')
 const FilterList = require('../FilterList')
 const NewFilter = require('../NewFilter')
@@ -126,10 +126,11 @@ class App extends React.Component {
   loadTasks() {
     if (!this.props.activeFilter) return
 
+    this.props.dispatch({ type: 'TASKS_EMPTY' })
+
     const github = new GitHub()
     github.getNotifications().then(notifications => {
       github.getTasks(this.props.activeFilter.query).then(tasks => {
-        this.props.dispatch({ type: 'TASKS_EMPTY', tasks, notifications })
         this.props.dispatch({ type: 'TASKS_UPDATE', tasks, notifications })
       }).catch(err => {
         console.error('failed to get tasks from GitHub', err)
