@@ -143,7 +143,7 @@ class App extends React.Component {
           cancel={cancel}
           delete={key => this.deleteFilter(key)}
         />)
-      case 'about': return <About cancel={cancel} />
+      case 'about': return <About />
       case 'new-filter': return (
         <NewFilter
           save={save}
