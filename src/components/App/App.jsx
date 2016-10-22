@@ -47,9 +47,9 @@ class App extends React.Component {
     this.setState({ user })
   }
 
-  getTasksAfterNotifications(query) {
+  getTasksAfterNotifications() {
     const github = new GitHub()
-    github.getTasks(query).then(result => {
+    github.getTasks(this.props.activeFilter).then(result => {
       const { tasks, nextUrl, currentUrl } = result
       const urls = [currentUrl]
       if (nextUrl) {
@@ -59,7 +59,8 @@ class App extends React.Component {
       this.props.dispatch({ type: 'TASKS_UPDATE', tasks,
                             notifications: this.state.notifications })
     }).catch(err => {
-      console.error('failed to get tasks from GitHub', query, err)
+      console.error('failed to get tasks from GitHub', this.props.activeFilter,
+                    err)
       this.setState({ loadingTasks: false })
     })
   }
@@ -213,12 +214,12 @@ class App extends React.Component {
 
     const github = new GitHub()
     if (this.state.notifications) {
-      this.getTasksAfterNotifications(query)
+      this.getTasksAfterNotifications()
       return
     }
     github.getNotifications().then(notifications => {
       this.setState({ notifications }, () => {
-        this.getTasksAfterNotifications(query)
+        this.getTasksAfterNotifications()
       })
     }).catch(err => {
       console.error('failed to get notifications from GitHub', err)
