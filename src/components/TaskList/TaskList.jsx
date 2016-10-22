@@ -11,7 +11,6 @@ const TaskVisibility = require('../../models/TaskVisibility')
 class TaskList extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { selectedIndex: null }
     this.onKeyUp = this.onKeyUp.bind(this)
     this.onKeyDown = this.onKeyDown.bind(this)
   }
@@ -50,10 +49,10 @@ class TaskList extends React.Component {
     } else if (event.key === 'ArrowDown') {
       this.focusNextTask()
     } else if (event.key === 'Escape') {
-      this.setState({ selectedIndex: null })
       this.props.toggleTaskOptions(false)
+      this.props.dispatch({ type: 'TASKS_DEFOCUS' })
     } else if (event.key === 'Enter') {
-      if (typeof this.state.selectedIndex === 'number') {
+      if (typeof this.props.focusedTask === 'object') {
         this.openLinkToFocusedTask()
       }
     }
@@ -63,7 +62,7 @@ class TaskList extends React.Component {
     if (this.isFiltersMenuFocused()) {
       return
     }
-    if (event.key === ' ' && typeof this.state.selectedIndex === 'number') {
+    if (event.key === ' ' && typeof this.props.focusedTask === 'object') {
       event.preventDefault()
       this.selectFocusedTask()
     } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
@@ -105,18 +104,26 @@ class TaskList extends React.Component {
   }
 
   selectFocusedTask() {
-    const task = this.props.tasks[this.state.selectedIndex]
+    const task = this.props.focusedTask
     const type = task.isSelected ? 'TASKS_DESELECT' : 'TASKS_SELECT'
     this.props.dispatch({ type, task: { storageKey: task.storageKey } })
   }
 
   openLinkToFocusedTask() {
-    const task = this.props.tasks[this.state.selectedIndex]
-    shell.openExternal(task.url)
+    shell.openExternal(this.props.focusedTask.url)
+  }
+
+  getFocusIndex() {
+    if (typeof this.props.focusedTask !== 'object') {
+      return null
+    }
+    const needle = this.props.focusedTask.storageKey
+    const haystack = this.props.tasks.map(task => task.storageKey)
+    return haystack.indexOf(needle)
   }
 
   focusNextTask() {
-    const oldIndex = this.state.selectedIndex
+    const oldIndex = this.getFocusIndex()
     let newIndex = typeof oldIndex === 'number' ? oldIndex + 1 : 0
     if (newIndex > this.props.tasks.length - 1) {
       newIndex = 0
@@ -125,7 +132,7 @@ class TaskList extends React.Component {
   }
 
   focusPreviousTask() {
-    const oldIndex = this.state.selectedIndex
+    const oldIndex = this.getFocusIndex()
     const lastIndex = this.props.tasks.length - 1
     let newIndex = typeof oldIndex === 'number' ? oldIndex - 1 : lastIndex
     if (newIndex < 0) {
@@ -135,8 +142,8 @@ class TaskList extends React.Component {
   }
 
   focusTaskAtIndex(index) {
-    console.info('focus task', this.props.tasks[index].storageKey)
-    this.setState({ selectedIndex: index })
+    const storageKey = this.props.tasks[index].storageKey
+    this.props.dispatch({ type: 'TASKS_FOCUS', task: { storageKey } })
     this.props.toggleTaskOptions(true)
   }
 
@@ -144,16 +151,9 @@ class TaskList extends React.Component {
     if (this.props.tasks.length > 0) {
       return (
         <ol className="task-list">
-          {this.props.tasks.map((task, index) => {
-            const isFocused = index === this.state.selectedIndex
-            const key = `${task.storageKey}-${task.isSelected}-${isFocused}`
-            return (
-              <TaskListItem
-                {...task}
-                key={key}
-                isFocused={isFocused}
-              />
-            )
+          {this.props.tasks.map(task => {
+            const key = `${task.storageKey}-${task.isSelected}-${task.isFocused}`
+            return <TaskListItem {...task} key={key} />
           })}
         </ol>
       )
@@ -304,10 +304,12 @@ TaskList.propTypes = {
   currentPage: React.PropTypes.number,
   loading: React.PropTypes.bool.isRequired,
   toggleTaskOptions: React.PropTypes.func.isRequired,
+  focusedTask: React.PropTypes.object,
 }
 
 const stickyNavd = hookUpStickyNav(TaskList, '.task-list-navigation')
 const mapStateToProps = state => ({
   tasks: state.tasks.filter(task => TaskVisibility.isVisibleTask(task)),
+  focusedTask: state.tasks.find(task => task.isFocused),
 })
 module.exports = connect(mapStateToProps)(stickyNavd)
