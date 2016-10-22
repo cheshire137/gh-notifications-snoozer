@@ -208,7 +208,9 @@ class App extends React.Component {
   }
 
   loadTasks() {
-    if (!this.props.activeFilter) return
+    if (!this.props.activeFilter) {
+      return
+    }
 
     this.props.dispatch({ type: 'TASKS_EMPTY' })
 
