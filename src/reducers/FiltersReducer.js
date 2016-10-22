@@ -1,7 +1,8 @@
 const ensureFilterSelected = (filters) => {
   if (filters.length === 0) {
     return filters
-  } else if (filters.find(filter => filter.selected)) {
+  }
+  if (filters.find(filter => filter.selected)) {
     return filters
   }
 
