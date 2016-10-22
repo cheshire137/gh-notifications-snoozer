@@ -69,6 +69,15 @@ class TaskList extends React.Component {
     }
   }
 
+  getFocusIndex() {
+    if (typeof this.props.focusedTask !== 'object') {
+      return null
+    }
+    const needle = this.props.focusedTask.storageKey
+    const haystack = this.props.tasks.map(task => task.storageKey)
+    return haystack.indexOf(needle)
+  }
+
   loadNextPage(event) {
     event.currentTarget.blur() // defocus button
     this.props.loadNextPage()
@@ -110,15 +119,6 @@ class TaskList extends React.Component {
 
   openLinkToFocusedTask() {
     shell.openExternal(this.props.focusedTask.url)
-  }
-
-  getFocusIndex() {
-    if (typeof this.props.focusedTask !== 'object') {
-      return null
-    }
-    const needle = this.props.focusedTask.storageKey
-    const haystack = this.props.tasks.map(task => task.storageKey)
-    return haystack.indexOf(needle)
   }
 
   focusNextTask() {
