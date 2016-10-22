@@ -96,6 +96,9 @@ class App extends React.Component {
     this.appMenu.on('snooze', () => {
       this.props.dispatch({ type: 'TASKS_SNOOZE' })
     })
+    this.appMenu.on('restore', () => {
+      this.props.dispatch({ type: 'TASKS_RESTORE' })
+    })
   }
 
   getViewContents() {
@@ -165,6 +168,7 @@ class App extends React.Component {
         <HiddenTaskList
           cancel={cancel}
           activeFilter={this.state.filter}
+          appMenu={this.appMenu}
         />)
       default: return (
         <Auth
