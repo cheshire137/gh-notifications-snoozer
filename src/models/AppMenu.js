@@ -125,6 +125,7 @@ class AppMenu extends EventEmitter {
     this.template.push(this.getAppMenu())
     this.template.push(this.getEditMenu())
     this.template.push(this.getViewMenu())
+    this.template.push(this.getTaskMenu())
     this.template.push(this.getToolsMenu())
     this.template.push({
       label: 'Help',
@@ -148,10 +149,38 @@ class AppMenu extends EventEmitter {
     }
   }
 
+  getTaskMenu() {
+    const self = this
+    return {
+      label: 'Task',
+      submenu: [
+        {
+          label: 'Archive',
+          accelerator: `Ctrl+${this.altOrOption}+A`,
+          click() { self.emit('archive') },
+          enabled: false,
+        },
+        {
+          label: 'Snooze',
+          accelerator: `Ctrl+${this.altOrOption}+S`,
+          click() { self.emit('snooze') },
+          enabled: false,
+        },
+        {
+          label: 'Ignore',
+          accelerator: `Ctrl+${this.altOrOption}+I`,
+          click() { self.emit('ignore') },
+          enabled: false,
+        },
+      ],
+    }
+  }
+
   buildNonOSXMenu() {
     this.template.push(this.getFileMenu())
     this.template.push(this.getEditMenu())
     this.template.push(this.getViewMenu())
+    this.template.push(this.getTaskMenu())
     this.template.push(this.getToolsMenu())
     this.template.push({
       label: 'Help',
