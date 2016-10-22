@@ -135,7 +135,7 @@ class App extends React.Component {
           loadPrevPage={loadPrevPage}
           currentPage={currentPage}
           loading={this.state.loadingTasks}
-          toggleTaskOptions={enabled => this.toggleTaskOptions(enabled)}
+          appMenu={this.appMenu}
         />)
       case 'filters': return (
         <FilterList
@@ -174,10 +174,6 @@ class App extends React.Component {
         />
       )
     }
-  }
-
-  toggleTaskOptions(enabled) {
-    this.appMenu.toggleTaskOptions(enabled)
   }
 
   loadNextPage() {

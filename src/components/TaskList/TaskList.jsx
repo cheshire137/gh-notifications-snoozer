@@ -49,7 +49,6 @@ class TaskList extends React.Component {
     } else if (event.key === 'ArrowDown') {
       this.focusNextTask()
     } else if (event.key === 'Escape') {
-      this.props.toggleTaskOptions(false)
       this.props.dispatch({ type: 'TASKS_DEFOCUS' })
     } else if (event.key === 'Enter') {
       if (typeof this.props.focusedTask === 'object') {
@@ -144,7 +143,6 @@ class TaskList extends React.Component {
   focusTaskAtIndex(index) {
     const storageKey = this.props.tasks[index].storageKey
     this.props.dispatch({ type: 'TASKS_FOCUS', task: { storageKey } })
-    this.props.toggleTaskOptions(true)
   }
 
   taskListOrMessage() {
@@ -193,12 +191,13 @@ class TaskList extends React.Component {
   render() {
     const filters = Filters.findAll()
     const lastFilterKey = LastFilter.retrieve()
-    const isSnoozeDisabled = this.props.tasks.
-        filter(task => task.isSelected).length < 1
+    const anyTaskSelected = this.props.tasks.
+        filter(task => task.isSelected).length > 0
+    const isSnoozeDisabled = !anyTaskSelected
     const isArchiveDisabled = isSnoozeDisabled
     const isIgnoreDisabled = isSnoozeDisabled
-    if (this.props.tasks.filter(task => task.isSelected).length > 0) {
-      this.props.toggleTaskOptions(true)
+    if (this.props.appMenu) {
+      this.props.appMenu.toggleTaskOptions(anyTaskSelected)
     }
     return (
       <div>
@@ -306,8 +305,8 @@ TaskList.propTypes = {
   loadNextPage: React.PropTypes.func,
   currentPage: React.PropTypes.number,
   loading: React.PropTypes.bool.isRequired,
-  toggleTaskOptions: React.PropTypes.func.isRequired,
   focusedTask: React.PropTypes.object,
+  appMenu: React.PropTypes.object,
 }
 
 const stickyNavd = hookUpStickyNav(TaskList, '.task-list-navigation')
