@@ -62,6 +62,13 @@ class AppMenu extends EventEmitter {
     viewMenu.items[1].enabled = isAuthenticated // Filters
   }
 
+  toggleTaskOptions(enabled) {
+    const taskMenu = this.menu.items[3].submenu
+    taskMenu.items[0].enabled = enabled // Archive
+    taskMenu.items[1].enabled = enabled // Snooze
+    taskMenu.items[2].enabled = enabled // Ignore
+  }
+
   getViewMenu() {
     const self = this
     return {

@@ -51,6 +51,7 @@ class TaskList extends React.Component {
       this.focusNextTask()
     } else if (event.key === 'Escape') {
       this.setState({ selectedIndex: null })
+      this.props.toggleTaskOptions(false)
     } else if (event.key === 'Enter') {
       if (typeof this.state.selectedIndex === 'number') {
         this.openLinkToFocusedTask()
@@ -136,6 +137,7 @@ class TaskList extends React.Component {
   focusTaskAtIndex(index) {
     console.info('focus task', this.props.tasks[index].storageKey)
     this.setState({ selectedIndex: index })
+    this.props.toggleTaskOptions(true)
   }
 
   taskListOrMessage() {
@@ -301,6 +303,7 @@ TaskList.propTypes = {
   loadNextPage: React.PropTypes.func,
   currentPage: React.PropTypes.number,
   loading: React.PropTypes.bool.isRequired,
+  toggleTaskOptions: React.PropTypes.func.isRequired,
 }
 
 const stickyNavd = hookUpStickyNav(TaskList, '.task-list-navigation')
