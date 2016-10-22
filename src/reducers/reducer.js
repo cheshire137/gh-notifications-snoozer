@@ -93,10 +93,10 @@ function focusTasks(tasks, action) {
   const updatedTasks = tasks.map(task => {
     if (task.storageKey === action.task.storageKey) {
       focusedTasks.push(task)
-      return Object.assign({}, task, { isFocused: true })
+      return Object.assign({}, task, { isFocused: true, isSelected: true })
     }
     if (task.isFocused) {
-      return Object.assign({}, task, { isFocused: null })
+      return Object.assign({}, task, { isFocused: null, isSelected: null })
     }
     return task
   })
@@ -122,7 +122,7 @@ function defocusTasks(tasks) {
   const updatedTasks = tasks.map(task => {
     if (task.isFocused) {
       defocusedTasks.push(task)
-      return Object.assign({}, task, { isFocused: null })
+      return Object.assign({}, task, { isFocused: null, isSelected: null })
     }
     return task
   })
