@@ -87,6 +87,15 @@ class App extends React.Component {
         this.manageFilters()
       }
     })
+    this.appMenu.on('archive', () => {
+      this.props.dispatch({ type: 'TASKS_ARCHIVE' })
+    })
+    this.appMenu.on('ignore', () => {
+      this.props.dispatch({ type: 'TASKS_IGNORE' })
+    })
+    this.appMenu.on('snooze', () => {
+      this.props.dispatch({ type: 'TASKS_SNOOZE' })
+    })
   }
 
   getViewContents() {
