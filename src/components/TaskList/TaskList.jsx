@@ -197,6 +197,9 @@ class TaskList extends React.Component {
         filter(task => task.isSelected).length < 1
     const isArchiveDisabled = isSnoozeDisabled
     const isIgnoreDisabled = isSnoozeDisabled
+    if (this.props.tasks.filter(task => task.isSelected).length > 0) {
+      this.props.toggleTaskOptions(true)
+    }
     return (
       <div>
         <nav className="task-list-navigation secondary-nav nav has-tertiary-nav">
