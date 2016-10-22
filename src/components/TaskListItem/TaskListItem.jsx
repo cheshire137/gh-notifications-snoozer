@@ -157,7 +157,7 @@ TaskListItem.propTypes = {
   repository: React.PropTypes.string.isRequired,
   isPullRequest: React.PropTypes.bool.isRequired,
   isSelected: React.PropTypes.bool,
-  isFocused: React.PropTypes.bool.isRequired,
+  isFocused: React.PropTypes.bool,
 }
 
 module.exports = connect()(TaskListItem)

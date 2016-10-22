@@ -88,6 +88,22 @@ function updateTasks(tasks, action) {
   return updatedTasks
 }
 
+function focusTasks(tasks, action) {
+  const focusedTasks = []
+  const updatedTasks = tasks.map(task => {
+    if (task.storageKey === action.task.storageKey) {
+      focusedTasks.push(task)
+      return Object.assign({}, task, { isFocused: true, isSelected: true })
+    }
+    if (task.isFocused) {
+      return Object.assign({}, task, { isFocused: null, isSelected: null })
+    }
+    return task
+  })
+  console.info('focus', focusedTasks.map(task => task.storageKey))
+  return updatedTasks
+}
+
 function selectTasks(tasks, action) {
   const selectedTasks = []
   const updatedTasks = tasks.map(task => {
@@ -98,6 +114,19 @@ function selectTasks(tasks, action) {
     return task
   })
   console.info('select', selectedTasks.map(task => task.storageKey))
+  return updatedTasks
+}
+
+function defocusTasks(tasks) {
+  const defocusedTasks = []
+  const updatedTasks = tasks.map(task => {
+    if (task.isFocused) {
+      defocusedTasks.push(task)
+      return Object.assign({}, task, { isFocused: null, isSelected: null })
+    }
+    return task
+  })
+  console.info('defocus', defocusedTasks.map(task => task.storageKey))
   return updatedTasks
 }
 
@@ -235,6 +264,10 @@ function tasksReducer(tasks = [], action) {
       return ignoreTasks(tasks)
     case 'TASKS_RESTORE':
       return restoreTasks(tasks)
+    case 'TASKS_FOCUS':
+      return focusTasks(tasks, action)
+    case 'TASKS_DEFOCUS':
+      return defocusTasks(tasks)
     default:
       return tasks
   }

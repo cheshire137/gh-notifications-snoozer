@@ -30,8 +30,12 @@ class HiddenTaskList extends React.Component {
 
   render() {
     const { activeFilter } = this.props
-    const isRestoreDisabled = this.props.tasks.
-        filter(task => task.isSelected).length < 1
+    const anyTaskSelected = this.props.tasks.
+        filter(task => task.isSelected).length > 0
+    const isRestoreDisabled = !anyTaskSelected
+    if (this.props.appMenu) {
+      this.props.appMenu.toggleTaskOptions(anyTaskSelected, 'restore')
+    }
     return (
       <div>
         <nav id="hidden-task-list-navigation" className="secondary-nav nav">
@@ -73,6 +77,7 @@ HiddenTaskList.propTypes = {
   dispatch: React.PropTypes.func.isRequired,
   cancel: React.PropTypes.func.isRequired,
   activeFilter: React.PropTypes.string.isRequired,
+  appMenu: React.PropTypes.object,
 }
 
 const stickyNavd = hookUpStickyNav(HiddenTaskList,

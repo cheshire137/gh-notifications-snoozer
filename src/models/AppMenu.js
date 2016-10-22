@@ -62,6 +62,21 @@ class AppMenu extends EventEmitter {
     viewMenu.items[1].enabled = isAuthenticated // Filters
   }
 
+  toggleTaskOptions(enabled, type) {
+    const taskMenu = this.menu.items[3].submenu
+    if (type === 'restore') {
+      taskMenu.items[0].enabled = false // Archive
+      taskMenu.items[1].enabled = false // Snooze
+      taskMenu.items[2].enabled = false // Ignore
+      taskMenu.items[3].enabled = enabled // Restore
+    } else {
+      taskMenu.items[0].enabled = enabled // Archive
+      taskMenu.items[1].enabled = enabled // Snooze
+      taskMenu.items[2].enabled = enabled // Ignore
+      taskMenu.items[3].enabled = false // Restore
+    }
+  }
+
   getViewMenu() {
     const self = this
     return {
@@ -125,6 +140,7 @@ class AppMenu extends EventEmitter {
     this.template.push(this.getAppMenu())
     this.template.push(this.getEditMenu())
     this.template.push(this.getViewMenu())
+    this.template.push(this.getTaskMenu())
     this.template.push(this.getToolsMenu())
     this.template.push({
       label: 'Help',
@@ -148,10 +164,44 @@ class AppMenu extends EventEmitter {
     }
   }
 
+  getTaskMenu() {
+    const self = this
+    return {
+      label: 'Task',
+      submenu: [
+        {
+          label: 'Archive',
+          accelerator: `Ctrl+${this.altOrOption}+A`,
+          click() { self.emit('archive') },
+          enabled: false,
+        },
+        {
+          label: 'Snooze',
+          accelerator: `Ctrl+${this.altOrOption}+S`,
+          click() { self.emit('snooze') },
+          enabled: false,
+        },
+        {
+          label: 'Ignore',
+          accelerator: `Ctrl+${this.altOrOption}+I`,
+          click() { self.emit('ignore') },
+          enabled: false,
+        },
+        {
+          label: 'Restore',
+          accelerator: `Ctrl+${this.altOrOption}+R`,
+          click() { self.emit('restore') },
+          enabled: false,
+        },
+      ],
+    }
+  }
+
   buildNonOSXMenu() {
     this.template.push(this.getFileMenu())
     this.template.push(this.getEditMenu())
     this.template.push(this.getViewMenu())
+    this.template.push(this.getTaskMenu())
     this.template.push(this.getToolsMenu())
     this.template.push({
       label: 'Help',
