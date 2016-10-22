@@ -152,11 +152,12 @@ const task = {
   repository: 'ansible/ansible',
   repositoryOwner: 'ansible',
   repositoryOwnerUrl: 'https://github.com/ansible',
-  repositoryOwnerAvatar: 'https://github.com/ansible.png?size=30',
+  repositoryOwnerAvatar: 'https://github.com/ansible.png?size=25',
   user: 'jgrowl',
   userUrl: 'https://github.com/jgrowl',
-  userAvatar: 'https://github.com/jgrowl.png?size=16',
+  userAvatar: 'https://github.com/jgrowl.png?size=20',
   userType: 'User',
+  apiUrl: 'https://api.github.com/repos/ansible/ansible/pulls/16510',
 }
 
 const notification = {

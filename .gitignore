@@ -3,3 +3,5 @@ node_modules
 .DS_Store
 .env
 config.json
+src/App.css
+dist/

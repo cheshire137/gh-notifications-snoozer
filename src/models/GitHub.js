@@ -33,18 +33,19 @@ function getTask(data) {
     repository,
     repositoryOwner,
     repositoryOwnerUrl: `https://github.com/${repositoryOwner}`,
-    repositoryOwnerAvatar: `https://github.com/${repositoryOwner}.png?size=30`,
+    repositoryOwnerAvatar: `https://github.com/${repositoryOwner}.png?size=25`,
     user: data.user.login,
     userUrl: data.user.html_url,
-    userAvatar: `https://github.com/${data.user.login}.png?size=16`,
+    userAvatar: `https://github.com/${data.user.login}.png?size=20`,
     userType: data.user.type,
   }
 }
 
 class GitHub extends Fetcher {
-  constructor(token) {
+  constructor(token, perPage = 30) {
     super()
     this.token = token
+    this.perPage = perPage
   }
 
   // https://developer.github.com/v3/activity/notifications/#list-your-notifications
@@ -55,18 +56,28 @@ class GitHub extends Fetcher {
       date.setDate(date.getDate() - 31)
     }
     const dateStr = date.toISOString()
-    return this.get(`notifications?since=${encodeURIComponent(dateStr)}`)
+    return this.get(`notifications?since=${encodeURIComponent(dateStr)}`,
+                    { fetchAll: true }).then(result => result.json)
   }
 
   // https://developer.github.com/v3/search/#search-issues
   getTasks(query = Config.searchQuery) {
-    const urlPath = `search/issues?q=${encodeURIComponent(query)}`
-    return this.get(urlPath).then(({ items }) => items.map(d => getTask(d)))
+    const params = `?per_page=${this.perPage}&q=${encodeURIComponent(query)}`
+    const url = `${Config.githubApiUrl}/search/issues${params}`
+    return this.getTasksFromUrl(url)
+  }
+
+  getTasksFromUrl(url) {
+    return this.get(url).then(result => {
+      const { json, nextUrl } = result
+      return { tasks: json.items.map(d => getTask(d)), nextUrl,
+               currentUrl: url }
+    })
   }
 
   // https://developer.github.com/v3/users/#get-the-authenticated-user
   getCurrentUser() {
-    return this.get('user')
+    return this.get('user').then(result => result.json)
   }
 
   // https://developer.github.com/v3/activity/notifications/#mark-a-thread-as-read
@@ -94,24 +105,17 @@ class GitHub extends Fetcher {
     }
   }
 
-  get(relativeOrAbsoluteUrl, previousJson) {
-    let url = relativeOrAbsoluteUrl
-    if (url.indexOf('http') !== 0) {
-      url = `${Config.githubApiUrl}/${relativeOrAbsoluteUrl}`
-    }
+  get(path, args = {}) {
+    const url = this.getFullUrl(path)
     const opts = { headers: this.getHeaders() }
     return new Promise((resolve, reject) => super.get(url, opts).then(res => {
-      const { json, headers } = res
-      const combinedJson = this.combineJson(json, previousJson)
-      const link = headers.get('Link')
-      if (!link) {
-        return resolve(combinedJson)
+      const combinedJson = this.combineJson(res.json, args.previousJson)
+      const nextUrl = this.getNextUrl(res.headers)
+      if (nextUrl && args.fetchAll) {
+        return this.get(nextUrl, { previousJson: combinedJson }).
+            then(resolve).catch(reject)
       }
-      const nextUrl = this.getNextUrl(link)
-      if (nextUrl) {
-        return this.get(nextUrl, combinedJson).then(resolve).catch(reject)
-      }
-      return resolve(combinedJson)
+      return resolve({ json: combinedJson, nextUrl })
     }).catch(reject))
   }
 
@@ -127,6 +131,21 @@ class GitHub extends Fetcher {
     return Object.assign({}, json1, json2)
   }
 
+  getFullUrl(relativeOrAbsoluteUrl) {
+    if (relativeOrAbsoluteUrl.indexOf('http') !== 0) {
+      return `${Config.githubApiUrl}/${relativeOrAbsoluteUrl}`
+    }
+    return relativeOrAbsoluteUrl
+  }
+
+  getNextUrl(headers) {
+    const link = headers.get('Link')
+    if (!link) {
+      return null
+    }
+    return this.getNextUrlFromLink(link)
+  }
+
   // Sample input:
   // Link: <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=15>; rel="next",
   // <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=34>; rel="last",
@@ -135,7 +154,7 @@ class GitHub extends Fetcher {
   //
   // Sample output:
   // https://api.github.com/search/code?q=addClass+user%3Amozilla&page=15
-  getNextUrl(link) {
+  getNextUrlFromLink(link) {
     const urlsAndRels = link.split(',')
     let nextUrl
     urlsAndRels.forEach(str => {

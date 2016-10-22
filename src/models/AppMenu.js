@@ -12,6 +12,7 @@ class AppMenu extends EventEmitter {
     super()
     this.options = options
     this.template = []
+    this.altOrOption = process.platform === 'darwin' ? 'Option' : 'Alt'
     const self = this
     this.aboutOption = {
       label: `About ${app.getName()}`,
@@ -20,10 +21,6 @@ class AppMenu extends EventEmitter {
     this.bugReportOption = {
       label: 'Report a bug',
       click() { shell.openExternal(packageInfo.bugs.url) },
-    }
-    this.authOption = {
-      label: 'Authenticate',
-      click() { self.emit('authenticate') },
     }
     this.buildMenu()
     this.menu = Menu.buildFromTemplate(this.template)
@@ -97,7 +94,7 @@ class AppMenu extends EventEmitter {
       submenu: [
         {
           label: 'Developer Tools',
-          accelerator: 'CmdOrCtrl+Shift+I',
+          accelerator: `CmdOrCtrl+${this.altOrOption}+I`,
           click(item, win) {
             if (win) {
               win.webContents.toggleDevTools()
@@ -114,7 +111,6 @@ class AppMenu extends EventEmitter {
       submenu: [
         this.aboutOption,
         // { label: 'About', selector: 'orderFrontStandardAboutPanel:' },
-        this.authOption,
         { type: 'separator' },
         {
           label: 'Quit',
@@ -143,7 +139,6 @@ class AppMenu extends EventEmitter {
     return {
       label: 'File',
       submenu: [
-        this.authOption,
         {
           label: 'Exit',
           accelerator: 'Ctrl+Q',

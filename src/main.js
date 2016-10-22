@@ -1,6 +1,4 @@
-const electron = require('electron')
-const app = electron.app
-const BrowserWindow = electron.BrowserWindow
+const { app, BrowserWindow, ipcMain } = require('electron')
 
 let mainWindow
 
@@ -14,25 +12,24 @@ function onTitleChange(event, prefix) {
 }
 
 function createWindow() {
-  app.setName('')
-  mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    title: app.getName(),
-  })
+  const title = app.getName()
+  mainWindow = new BrowserWindow({ width: 800, height: 600, title })
   mainWindow.loadURL(`file://${__dirname}/index.html`)
+}
 
+app.on('ready', () => {
+  app.setAppUserModelId('com.gh-notifications-snoozer.app')
+
+  createWindow()
 
   mainWindow.webContents.on('did-finish-load', () => {
-    electron.ipcMain.on('title', onTitleChange)
+    ipcMain.on('title', onTitleChange)
   })
 
   mainWindow.on('closed', () => {
     mainWindow = null
   })
-}
-
-app.on('ready', createWindow)
+})
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

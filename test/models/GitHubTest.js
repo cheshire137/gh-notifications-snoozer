@@ -2,6 +2,7 @@ const assert = require('assert')
 const GitHub = require('../../src/models/GitHub')
 const fetchMock = require('fetch-mock')
 const Config = require('../../src/config.json')
+const fixtures = require('../fixtures')
 
 describe('GitHub', () => {
   describe('getNotifications', () => {
@@ -28,7 +29,30 @@ describe('GitHub', () => {
     })
   })
 
-  describe('getNextUrl', () => {
+  describe('getTasks', () => {
+    const url = `${Config.githubApiUrl}/search/issues?per_page=2&q=cats`
+
+    before(() => {
+      fetchMock.get(url, { items: [fixtures.pullRequest] })
+    })
+
+    it('returns a list of tasks', done => {
+      const github = new GitHub('123abc', 2)
+      github.getTasks('cats').then(actual => {
+        assert.equal('object', typeof actual.tasks,
+                     'should have list of tasks property')
+        assert.equal(null, actual.nextUrl, 'should not have a second page')
+        assert.equal(url, actual.currentUrl, 'should have URL that was fetched')
+        assert.equal(1, actual.tasks.length,
+                     'should have one task')
+        assert.deepEqual(fixtures.task, actual.tasks[0],
+                         'should have the expected task')
+        done()
+      })
+    })
+  })
+
+  describe('getNextUrlFromLink', () => {
     it('returns next link', () => {
       const header = '<https://api.github.com/search/code?q=addClass' +
           '+user%3Amozilla&page=15>; rel="next", <https://api.github.com' +
@@ -40,7 +64,7 @@ describe('GitHub', () => {
       const expected = 'https://api.github.com/search/code?q=addClass+user%3Amozilla&page=15'
 
       const github = new GitHub()
-      const actual = github.getNextUrl(header)
+      const actual = github.getNextUrlFromLink(header)
 
       assert.equal(expected, actual)
     })
