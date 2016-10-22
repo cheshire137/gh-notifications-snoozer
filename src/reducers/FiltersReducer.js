@@ -30,7 +30,7 @@ const filtersUpdate = (filters, action) => {
 }
 
 const filtersRemove = (filters, action) => {
-  const updatedFilters = filters.filter(filter => filter.name !== action.filter.name)
+  const updatedFilters = filters.filter(f => f.name !== action.filter.name)
   return ensureFilterSelected(updatedFilters)
 }
 
