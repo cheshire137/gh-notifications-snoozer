@@ -17,7 +17,7 @@ const HiddenTaskList = require('../HiddenTaskList')
 class App extends React.Component {
   constructor() {
     super()
-    this.state = {}
+    this.state = { loadingTasks: true }
   }
 
   componentWillMount() {
