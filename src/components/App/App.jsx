@@ -49,7 +49,7 @@ class App extends React.Component {
 
   getTasksAfterNotifications() {
     const github = new GitHub()
-    github.getTasks(this.props.activeFilter).then(result => {
+    github.getTasks(this.props.activeFilter.query).then(result => {
       const { tasks, nextUrl, currentUrl } = result
       const urls = [currentUrl]
       if (nextUrl) {
