@@ -244,9 +244,11 @@ TaskList.propTypes = {
 }
 
 const stickyNavd = hookUpStickyNav(TaskList, '.task-list-navigation')
-const mapStateToProps = state => ({
-  tasks: state.tasks.filter(task => TaskVisibility.isVisibleTask(task)),
-  activeFilter: state.filters.find(filter => filter.selected),
-  filters: state.filters,
-})
+const mapStateToProps = state => {
+  const activeFilter = state.filters.find(filter => filter.selected)
+  const tasks = state.tasks.filter(task => TaskVisibility.isVisibleTask(task, activeFilter))
+  const filters = state.filters
+  return { tasks, activeFilter, filters }
+}
+
 module.exports = connect(mapStateToProps)(stickyNavd)
