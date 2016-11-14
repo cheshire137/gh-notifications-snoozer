@@ -85,7 +85,7 @@ class TaskList extends React.Component {
   changeFilter(filterName) {
     const selectedFilter = this.props.filters.find(filter => filter.name === filterName)
     this.props.dispatch({ type: 'FILTERS_SELECT', filter: selectedFilter })
-    this.props.loadTasks()
+    process.nextTick(() => this.props.loadTasks()) // This is a hack http://stackoverflow.com/questions/40559016/why-dont-my-mapped-prop-values-update-after-dispatch
   }
 
   editSelectedFilter() {
