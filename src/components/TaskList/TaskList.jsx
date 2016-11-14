@@ -1,6 +1,7 @@
 const React = require('react')
 const { connect } = require('react-redux')
 const { shell } = require('electron')
+const GitHub = require('../../models/GitHub')
 const TaskListItem = require('../TaskListItem')
 const hookUpStickyNav = require('../hookUpStickyNav')
 const TaskVisibility = require('../../models/TaskVisibility')
@@ -83,7 +84,13 @@ class TaskList extends React.Component {
 
   refresh(event) {
     event.currentTarget.blur() // defocus button
-    alert("Corey broke this")
+    const github = new GitHub()
+    github.getTasks(this.props.activeFilter.query)
+      .then(result => {
+        const tasks = result.tasks
+        const filter = this.props.activeFilter
+        this.props.dispatch({ type: 'TASKS_UPDATE', filter, tasks })
+      })
   }
 
   selectFocusedTask() {
@@ -142,8 +149,7 @@ class TaskList extends React.Component {
   }
 
   render() {
-    const isSnoozeDisabled = this.props.tasks.
-        filter(task => task.isSelected).length < 1
+    const isSnoozeDisabled = this.props.tasks.filter(task => task.isSelected).length < 1
     const isArchiveDisabled = isSnoozeDisabled
     const isIgnoreDisabled = isSnoozeDisabled
     return (
