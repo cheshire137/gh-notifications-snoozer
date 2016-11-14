@@ -1,13 +1,5 @@
-const ElectronConfig = require('electron-config')
-
 module.exports = class DefaultFilters {
   static forLogin(login) {
-    // If filters exist in the old ElectronConfig storage files use those
-    const oldFilters = this.oldFilters()
-    if (oldFilters) {
-      return oldFilters
-    }
-
     return [
       {
         // Open issues and PRs the user is mentioned on
@@ -46,18 +38,5 @@ module.exports = class DefaultFilters {
         query: `author:${login} is:open interactions:>5 sort:updated-desc`,
       },
     ]
-  }
-
-  static oldFilters() {
-    const storage = new ElectronConfig({ name: 'config' })
-    const filters = storage.get('filters')
-    if (!filters) {
-      return null
-    }
-
-    return filters.map(name => {
-      const selected = (storage.get('last-filter') === name)
-      return { name, query: storage.get('name'), selected }
-    })
   }
 }
