@@ -15,9 +15,9 @@ const Auth = require('../Auth')
 const HiddenTaskList = require('../HiddenTaskList')
 
 class App extends React.Component {
-  constructor() {
-    super()
-    this.state = { loadingTasks: true }
+  constructor(props) {
+    super(props)
+    this.state = { }
   }
 
   componentWillMount() {
@@ -33,7 +33,6 @@ class App extends React.Component {
     this.setupAppMenu()
     if (GitHubAuth.isAuthenticated()) {
       this.loadUser()
-      this.loadTasks()
     }
   }
 
@@ -42,27 +41,8 @@ class App extends React.Component {
       DefaultFilters.forLogin(user.login).forEach(filter => {
         this.props.dispatch({ type: 'FILTERS_UPDATE', filter })
       })
-      this.loadTasks()
     }
     this.setState({ user })
-  }
-
-  getTasksAfterNotifications() {
-    const github = new GitHub()
-    github.getTasks(this.props.activeFilter.query).then(result => {
-      const { tasks, nextUrl, currentUrl } = result
-      const urls = [currentUrl]
-      if (nextUrl) {
-        urls.push(nextUrl)
-      }
-      this.setState({ urls, currentUrlIndex: 0, loadingTasks: false })
-      this.props.dispatch({ type: 'TASKS_UPDATE', tasks,
-                            notifications: this.state.notifications })
-    }).catch(err => {
-      console.error('failed to get tasks from GitHub', this.props.activeFilter,
-                    err)
-      this.setState({ loadingTasks: false })
-    })
   }
 
   setupAppMenu() {
@@ -97,7 +77,6 @@ class App extends React.Component {
         <TaskList
           showHidden={() => this.showHidden()}
           editFilter={name => this.editFilter(name)}
-          loadTasks={() => this.loadTasks()}
           loading={this.state.loadingTasks}
         />)
       case 'filters': return (
@@ -142,28 +121,6 @@ class App extends React.Component {
     this.changeView('auth')
   }
 
-  loadTasks() {
-    if (!this.props.activeFilter) {
-      return
-    }
-
-    this.props.dispatch({ type: 'TASKS_EMPTY' })
-
-    const github = new GitHub()
-    if (this.state.notifications) {
-      this.getTasksAfterNotifications()
-      return
-    }
-    github.getNotifications().then(notifications => {
-      this.setState({ notifications }, () => {
-        this.getTasksAfterNotifications()
-      })
-    }).catch(err => {
-      console.error('failed to get notifications from GitHub', err)
-      this.setState({ loadingTasks: false })
-    })
-  }
-
   loadUser() {
     const github = new GitHub()
     github.getCurrentUser().then(user => this.onUserLoad(user))
@@ -185,7 +142,6 @@ class App extends React.Component {
 
   loadFilter(filter) {
     this.props.dispatch({ type: 'FILTERS_SELECT', filter })
-    this.loadTasks()
     this.setState({ urls: null, currentUrlIndex: null, loadingTasks: true })
   }
 

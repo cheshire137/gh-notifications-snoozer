@@ -75,7 +75,6 @@ class TaskList extends React.Component {
   changeFilter(filterName) {
     const selectedFilter = this.props.filters.find(filter => filter.name === filterName)
     this.props.dispatch({ type: 'FILTERS_SELECT', filter: selectedFilter })
-    process.nextTick(() => this.props.loadTasks()) // This is a hack http://stackoverflow.com/questions/40559016/why-dont-my-mapped-prop-values-update-after-dispatch
   }
 
   editSelectedFilter() {
@@ -84,7 +83,7 @@ class TaskList extends React.Component {
 
   refresh(event) {
     event.currentTarget.blur() // defocus button
-    this.props.loadTasks()
+    alert("Corey broke this")
   }
 
   selectFocusedTask() {
@@ -140,10 +139,6 @@ class TaskList extends React.Component {
         </ol>
       )
     }
-    if (this.props.loading) {
-      return <p>Loading...</p>
-    }
-    return <p>You&rsquo;ve reached the end!</p>
   }
 
   render() {
@@ -238,10 +233,8 @@ TaskList.propTypes = {
   dispatch: React.PropTypes.func.isRequired,
   editFilter: React.PropTypes.func.isRequired,
   filters: React.PropTypes.array.isRequired,
-  loadTasks: React.PropTypes.func.isRequired,
   showHidden: React.PropTypes.func.isRequired,
   tasks: React.PropTypes.array.isRequired,
-  loading: React.PropTypes.bool.isRequired,
 }
 
 const stickyNavd = hookUpStickyNav(TaskList, '.task-list-navigation')
