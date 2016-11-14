@@ -1,58 +1,58 @@
-const ensureFilterSelected = (filters) => {
-  if (filters.length === 0) {
-    return filters
+const ensureFilterSelected = (existingFilters) => {
+  if (existingFilters.length === 0) {
+    return existingFilters
   }
-  if (filters.find(filter => filter.selected)) {
-    return filters
+  if (existingFilters.find(f => f.selected)) {
+    return existingFilters
   }
 
-  const first = Object.assign({}, filters[0], { selected: true })
-  const rest = filters.slice(1)
+  const first = Object.assign({}, existingFilters[0], { selected: true })
+  const rest = existingFilters.slice(1)
   return [first, ...rest]
 }
 
-const filtersUpdate = (filters, action) => {
+const filtersUpdate = (existingFilters, { filter }) => {
   let updatedFilters = null
 
-  if (!filters.find(filter => filter.name === action.filter.name)) {
-    const newFilter = { name: action.filter.name, query: action.filter.query }
-    updatedFilters = filters.concat([newFilter])
+  if (!existingFilters.find(f => f.name === filter.name)) {
+    const newFilter = { name: filter.name, query: filter.query }
+    updatedFilters = existingFilters.concat([newFilter])
   } else {
-    updatedFilters = filters.map(filter => {
-      if (filter.name === action.filter.name) {
-        return Object.assign({}, filter, action.filter)
+    updatedFilters = existingFilters.map(f => {
+      if (f.name === filter.name) {
+        return Object.assign({}, f, filter)
       }
-      return filter
+      return f
     })
   }
 
   return ensureFilterSelected(updatedFilters)
 }
 
-const filtersRemove = (filters, action) => {
-  const updatedFilters = filters.filter(f => f.name !== action.filter.name)
+const filtersRemove = (existingFilters, { filter }) => {
+  const updatedFilters = existingFilters.filter(f => f.name !== filter.name)
   return ensureFilterSelected(updatedFilters)
 }
 
-const filtersSelect = (filters, action) => {
-  const filterToSelect = action.filter || {}
-  const updatedFilters = filters.map(filter => {
-    const shouldSelect = (filter.name === filterToSelect.name)
-    return Object.assign({}, filter, { selected: shouldSelect })
+const filtersSelect = (existingFilters, { filter }) => {
+  const filterToSelect = filter || {}
+  const updatedFilters = existingFilters.map(f => {
+    const shouldSelect = (f.name === filterToSelect.name)
+    return Object.assign({}, f, { selected: shouldSelect })
   })
 
   return updatedFilters
 }
 
-module.exports = (filters = [], action) => {
+module.exports = (existingFilters = [], action) => {
   switch (action.type) {
     case 'FILTERS_UPDATE':
-      return filtersUpdate(filters, action)
+      return filtersUpdate(existingFilters, action)
     case 'FILTERS_REMOVE':
-      return filtersRemove(filters, action)
+      return filtersRemove(existingFilters, action)
     case 'FILTERS_SELECT':
-      return filtersSelect(filters, action)
+      return filtersSelect(existingFilters, action)
     default:
-      return filters
+      return existingFilters
   }
 }

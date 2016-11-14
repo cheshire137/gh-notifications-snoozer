@@ -1,17 +1,15 @@
-import GitHub from '../models/GitHub'
-
-function updateTasks(tasks, action) {
+function updateTasks(existingTasks, { tasks, filter }) {
   const tasksByKey = {}
 
-  // Add the existing tasks
-  tasks.forEach(task => (tasksByKey[task.storageKey] = task))
+  // Add the existing existingTasks
+  existingTasks.forEach(task => (tasksByKey[task.storageKey] = task))
 
-  // Update tasks with new values and add new tasks
-  action.tasks.forEach((newTask) => {
+  // Update existingTasks with new values and add new existingTasks
+  tasks.forEach((newTask) => {
     const oldTask = tasksByKey[newTask.storageKey] || {}
     const filters = oldTask.filters || []
-    if (!filters.includes(action.filter.query)) {
-      filters.push(action.filter.query)
+    if (!filters.includes(filter.query)) {
+      filters.push(filter.query)
     }
     const updatedTask = Object.assign({}, oldTask, newTask, { filters })
     tasksByKey[newTask.storageKey] = updatedTask
@@ -20,29 +18,29 @@ function updateTasks(tasks, action) {
   return Object.keys(tasksByKey).map(key => tasksByKey[key])
 }
 
-function selectTasks(tasks, action) {
+function selectTasks(existingTasks, { task }) {
   const selectedTasks = []
-  const updatedTasks = tasks.map(task => {
-    if (task.storageKey === action.task.storageKey) {
-      selectedTasks.push(task)
-      return Object.assign({}, task, { isSelected: true })
+  const updatedTasks = existingTasks.map(t => {
+    if (t.storageKey === task.storageKey) {
+      selectedTasks.push(t)
+      return Object.assign({}, t, { isSelected: true })
     }
-    return task
+    return t
   })
-  console.info('select', selectedTasks.map(task => task.storageKey))
+  console.info('select', selectedTasks.map(t => t.storageKey))
   return updatedTasks
 }
 
-function deselectTasks(tasks, action) {
+function deselectTasks(existingTasks, { task }) {
   const deselectedTasks = []
-  const updatedTasks = tasks.map(task => {
-    if (task.storageKey === action.task.storageKey) {
-      deselectedTasks.push(task)
-      return Object.assign({}, task, { isSelected: false })
+  const updatedTasks = existingTasks.map(t => {
+    if (t.storageKey === task.storageKey) {
+      deselectedTasks.push(t)
+      return Object.assign({}, t, { isSelected: false })
     }
-    return task
+    return t
   })
-  console.info('deselect', deselectedTasks.map(task => task.storageKey))
+  console.info('deselect', deselectedTasks.map(t => t.storageKey))
   return updatedTasks
 }
 
@@ -51,9 +49,9 @@ function currentTimeString() {
   return date.toISOString()
 }
 
-function snoozeTasks(tasks) {
+function snoozeTasks(existingTasks) {
   const snoozedTasks = []
-  const updatedTasks = tasks.map(task => {
+  const updatedTasks = existingTasks.map(task => {
     if (task.isSelected) {
       const snoozedAt = currentTimeString()
       snoozedTasks.push(task)
@@ -69,9 +67,9 @@ function snoozeTasks(tasks) {
   return updatedTasks
 }
 
-function ignoreTasks(tasks) {
+function ignoreTasks(existingTasks) {
   const ignoredTasks = []
-  const updatedTasks = tasks.map(task => {
+  const updatedTasks = existingTasks.map(task => {
     if (task.isSelected) {
       ignoredTasks.push(task)
       return Object.assign({}, task, {
@@ -86,9 +84,9 @@ function ignoreTasks(tasks) {
   return updatedTasks
 }
 
-function archiveTasks(tasks) {
+function archiveTasks(existingTasks) {
   const archivedTasks = []
-  const updatedTasks = tasks.map(task => {
+  const updatedTasks = existingTasks.map(task => {
     if (task.isSelected) {
       const archivedAt = currentTimeString()
       archivedTasks.push(task)
@@ -104,9 +102,9 @@ function archiveTasks(tasks) {
   return updatedTasks
 }
 
-function restoreTasks(tasks) {
+function restoreTasks(existingTasks) {
   const restoredTasks = []
-  const updatedTasks = tasks.map(task => {
+  const updatedTasks = existingTasks.map(task => {
     if (task.isSelected) {
       restoredTasks.push(task)
       return Object.assign({}, task, {
@@ -121,25 +119,25 @@ function restoreTasks(tasks) {
   return updatedTasks
 }
 
-module.exports = (tasks = [], action) => {
+module.exports = (existingTasks = [], action) => {
   switch (action.type) {
     case 'TASKS_EMPTY':
       return []
     case 'TASKS_UPDATE':
-      return updateTasks(tasks, action)
+      return updateTasks(existingTasks, action)
     case 'TASKS_SELECT':
-      return selectTasks(tasks, action)
+      return selectTasks(existingTasks, action)
     case 'TASKS_DESELECT':
-      return deselectTasks(tasks, action)
+      return deselectTasks(existingTasks, action)
     case 'TASKS_SNOOZE':
-      return snoozeTasks(tasks)
+      return snoozeTasks(existingTasks)
     case 'TASKS_ARCHIVE':
-      return archiveTasks(tasks)
+      return archiveTasks(existingTasks)
     case 'TASKS_IGNORE':
-      return ignoreTasks(tasks)
+      return ignoreTasks(existingTasks)
     case 'TASKS_RESTORE':
-      return restoreTasks(tasks)
+      return restoreTasks(existingTasks)
     default:
-      return tasks
+      return existingTasks
   }
 }
