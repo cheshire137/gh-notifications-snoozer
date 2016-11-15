@@ -1,4 +1,5 @@
 const assert = require('assert')
+const fixtures = require('../fixtures')
 const Redux = require('redux')
 
 const reducer = require('../../src/reducers/reducer')
@@ -218,48 +219,41 @@ describe('Tasks reducer', () => {
   describe('TASKS_UPDATE', () => {
     it('updates existing tasks', () => {
       const now = new Date().toISOString()
-      const initialTasks = [
-        { id: 1, storageKey: 'issue-1', title: 'task', updatedAt: now },
-        { id: 2, storageKey: 'pull-2', title: 'more task', updatedAt: now },
-      ]
-
-      const updatedTasks = [
-        { id: 1, storageKey: 'issue-1', title: 'task', updatedAt: now },
-        { id: 2, storageKey: 'pull-2', title: 'updated', updatedAt: now },
-      ]
+      const initialTasks = [fixtures.task]
+      const updatedTasks = [Object.assign({}, fixtures.task, { updatedAt: now })]
 
       const store = Redux.createStore(reducer, { tasks: initialTasks })
       const query = 'some-filter'
       store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
+      const { tasks } = store.getState()
 
-      const expectedTasks = [
-        { id: 1, storageKey: 'issue-1', title: 'task', updatedAt: now, filterQueries: [query] },
-        { id: 2, storageKey: 'pull-2', title: 'updated', updatedAt: now, filterQueries: [query] },
-      ]
-
-      assert.deepEqual(expectedTasks, store.getState().tasks)
+      assert.equal(tasks[0].storageKey, fixtures.task.storageKey)
+      assert.equal(tasks[0].updatedAt, now)
     })
 
     it('adds new tasks', () => {
-      const now = new Date().toISOString()
-      const initialTasks = [
-        { id: 1, storageKey: 'pull-1', title: 'task', updatedAt: now },
-      ]
-
-      const updatedTasks = [
-        { id: 2, storageKey: 'pull-2', title: 'new task', updatedAt: now },
-      ]
+      const initialTasks = [fixtures.task]
+      const updatedTasks = [fixtures.anotherTask, fixtures.task]
 
       const store = Redux.createStore(reducer, { tasks: initialTasks })
       const query = 'some-filter'
       store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
+      const { tasks } = store.getState()
 
-      const expectedTasks = [
-        { id: 1, storageKey: 'pull-1', title: 'task', updatedAt: now },
-        { id: 2, storageKey: 'pull-2', title: 'new task', updatedAt: now, filterQueries: [query] },
-      ]
+      assert(tasks.find(task => task.storageKey === fixtures.task.storageKey))
+      assert(tasks.find(task => task.storageKey === fixtures.anotherTask.storageKey))
+    })
 
-      assert.deepEqual(expectedTasks, store.getState().tasks)
+    it('udpates the changelog field when the comment field changes', () => {
+      const initialTasks = [fixtures.task]
+      const updatedTasks = [Object.assign({}, fixtures.task, { comments: 3 })]
+
+      const store = Redux.createStore(reducer, { tasks: initialTasks })
+      const query = 'some-filter'
+      store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
+      const { tasks } = store.getState()
+
+      assert.deepEqual(tasks[0].changelog, ['comments'])
     })
   })
 })

@@ -36,6 +36,10 @@ function getTask(data) {
     userUrl: data.user.html_url,
     userAvatar: `https://github.com/${data.user.login}.png?size=20`,
     userType: data.user.type,
+    comments: data.comments,
+    labels: data.labels,
+    milestone: data.milestone,
+    assignees: data.assignees,
   }
 }
 

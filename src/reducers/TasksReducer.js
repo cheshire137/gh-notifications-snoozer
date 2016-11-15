@@ -11,7 +11,13 @@ function updateTasks(existingTasks, { tasks, filter }) {
     if (!filterQueries.includes(filter.query)) {
       filterQueries.push(filter.query)
     }
-    const updatedTask = Object.assign({}, oldTask, newTask, { filterQueries })
+
+    const commentsChanged = oldTask.comments !== newTask.comments
+    const changelog = []
+    if (commentsChanged) {
+      changelog.push('comments')
+    }
+    const updatedTask = Object.assign({}, oldTask, newTask, { filterQueries, changelog })
     tasksByKey[newTask.storageKey] = updatedTask
   })
 
