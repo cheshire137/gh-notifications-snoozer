@@ -233,8 +233,8 @@ describe('Tasks reducer', () => {
       store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
 
       const expectedTasks = [
-        { id: 1, storageKey: 'issue-1', title: 'task', updatedAt: now, filters: [query] },
-        { id: 2, storageKey: 'pull-2', title: 'updated', updatedAt: now, filters: [query] },
+        { id: 1, storageKey: 'issue-1', title: 'task', updatedAt: now, filterQueries: [query] },
+        { id: 2, storageKey: 'pull-2', title: 'updated', updatedAt: now, filterQueries: [query] },
       ]
 
       assert.deepEqual(expectedTasks, store.getState().tasks)
@@ -256,7 +256,7 @@ describe('Tasks reducer', () => {
 
       const expectedTasks = [
         { id: 1, storageKey: 'pull-1', title: 'task', updatedAt: now },
-        { id: 2, storageKey: 'pull-2', title: 'new task', updatedAt: now, filters: [query] },
+        { id: 2, storageKey: 'pull-2', title: 'new task', updatedAt: now, filterQueries: [query] },
       ]
 
       assert.deepEqual(expectedTasks, store.getState().tasks)
