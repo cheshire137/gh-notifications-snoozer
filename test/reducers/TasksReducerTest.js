@@ -198,24 +198,6 @@ describe('Tasks reducer', () => {
     })
   })
 
-  describe('TASKS_EMPTY', () => {
-    it('empties the tasks list', () => {
-      const initialTasks = [
-        {
-          id: 1,
-          storageKey: 'issue-1',
-          title: 'task',
-          updatedAt: '2016-06-15T20:14:46Z',
-        },
-      ]
-
-      const store = Redux.createStore(reducer, { tasks: initialTasks })
-      store.dispatch({ type: 'TASKS_EMPTY' })
-
-      assert.deepEqual([], store.getState().tasks)
-    })
-  })
-
   describe('TASKS_UPDATE', () => {
     it('updates existing tasks', () => {
       const now = new Date().toISOString()
@@ -244,16 +226,17 @@ describe('Tasks reducer', () => {
       assert(tasks.find(task => task.storageKey === fixtures.anotherTask.storageKey))
     })
 
-    it('udpates the changelog field when the comment field changes', () => {
+    it('updates the changelog field when the task changes', () => {
       const initialTasks = [fixtures.task]
-      const updatedTasks = [Object.assign({}, fixtures.task, { comments: 3 })]
+      const updates = { comments: 3, body: 'new', labels: ['new'], assignees: ['bob'] }
+      const updatedTasks = [Object.assign({}, fixtures.task, updates)]
 
       const store = Redux.createStore(reducer, { tasks: initialTasks })
       const query = 'some-filter'
       store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
       const { tasks } = store.getState()
 
-      assert.deepEqual(tasks[0].changelog, ['comments'])
+      assert.deepEqual(tasks[0].changelog, ['comments', 'body', 'labels', 'assignees'])
     })
   })
 })

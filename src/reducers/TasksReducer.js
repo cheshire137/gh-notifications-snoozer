@@ -1,3 +1,5 @@
+const _ = require('lodash')
+
 function updateTasks(existingTasks, { tasks, filter }) {
   const tasksByKey = {}
 
@@ -12,11 +14,12 @@ function updateTasks(existingTasks, { tasks, filter }) {
       filterQueries.push(filter.query)
     }
 
-    const commentsChanged = oldTask.comments !== newTask.comments
     const changelog = []
-    if (commentsChanged) {
-      changelog.push('comments')
-    }
+    if (oldTask.comments !== newTask.comments) changelog.push('comments')
+    if (oldTask.body !== newTask.body) changelog.push('body')
+    if (!_.isEqual(oldTask.labels, newTask.labels)) changelog.push('labels')
+    if (!_.isEqual(oldTask.assignees, newTask.assignees)) changelog.push('assignees')
+
     const updatedTask = Object.assign({}, oldTask, newTask, { filterQueries, changelog })
     tasksByKey[newTask.storageKey] = updatedTask
   })
