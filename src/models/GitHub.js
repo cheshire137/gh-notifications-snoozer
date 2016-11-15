@@ -59,9 +59,10 @@ class GitHub extends Fetcher {
   }
 
   // https://developer.github.com/v3/search/#search-issues
-  getTasks(query) {
-    const params = `?q=${encodeURIComponent(query)}`
-    const url = `${Config.githubApiUrl}/search/issues${params}`
+  getTasks(filter) {
+    const params = `?q=${encodeURIComponent(filter.query)}`
+    const extraParams = filter.updatedAt ? `&updated:>${filter.updatedAt}` : '&is:open'
+    const url = `${Config.githubApiUrl}/search/issues${params}${extraParams}`
     return this.getTasksFromUrl(url)
   }
 
@@ -106,15 +107,14 @@ class GitHub extends Fetcher {
   get(path, args = {}) {
     const url = this.getFullUrl(path)
     const opts = { headers: this.getHeaders() }
-    return new Promise((resolve, reject) => super.get(url, opts).then(res => {
+    return super.get(url, opts).then(res => {
       const combinedJson = this.combineJson(res.json, args.previousJson)
       const nextUrl = this.getNextUrl(res.headers)
       if (nextUrl && args.fetchAll) {
-        return this.get(nextUrl, { previousJson: combinedJson }).
-            then(resolve).catch(reject)
+        return this.get(nextUrl, { previousJson: combinedJson })
       }
-      return resolve({ json: combinedJson, nextUrl })
-    }).catch(reject))
+      return { json: combinedJson, nextUrl }
+    })
   }
 
   combineJson(json1, json2) {

@@ -85,12 +85,13 @@ class TaskList extends React.Component {
   refresh(event) {
     event.currentTarget.blur() // defocus button
     const github = new GitHub()
-    github.getTasks(this.props.activeFilter.query)
-      .then(result => {
-        const tasks = result.tasks
-        const filter = this.props.activeFilter
-        this.props.dispatch({ type: 'TASKS_UPDATE', filter, tasks })
-      })
+    github.getTasks(this.props.activeFilter).then(result => {
+      const tasks = result.tasks
+      const updatedAt = (new Date()).toISOString()
+      const filter = Object.assign({}, this.props.activeFilter, { updatedAt })
+      this.props.dispatch({ type: 'TASKS_UPDATE', filter, tasks })
+      this.props.dispatch({ type: 'FILTERS_UPDATE', filter })
+    })
   }
 
   selectFocusedTask() {

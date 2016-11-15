@@ -3,7 +3,7 @@ const Redux = require('redux')
 
 const FiltersReducer = require('../../src/reducers/FiltersReducer')
 
-describe('Filters reducer', () => {
+describe.only('Filters reducer', () => {
   it('has the correct default initial state', () => {
     const store = Redux.createStore(FiltersReducer)
     assert.deepEqual([], store.getState())
@@ -54,13 +54,16 @@ describe('Filters reducer', () => {
       store.dispatch({
         type: 'FILTERS_UPDATE',
         filter: {
-          name: 'first filter', query: 'label:updated',
+          name: 'first filter', query: 'label:updated', updatedAt: '2014-06-11T16:48:20Z',
         },
       })
 
-      const expectedFilters = [
-        { name: 'first filter', query: 'label:updated', selected: true },
-      ]
+      const expectedFilters = [{
+        name: 'first filter',
+        query: 'label:updated',
+        updatedAt: '2014-06-11T16:48:20Z',
+        selected: true,
+      }]
 
       assert.deepEqual(expectedFilters, store.getState())
     })
