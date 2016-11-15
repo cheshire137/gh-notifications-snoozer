@@ -132,10 +132,14 @@ class TaskList extends React.Component {
   }
 
   taskListOrMessage() {
+    const sortedTasks = this.props.tasks.sort((a, b) => {
+      return Date.parse(b.updatedAt) - Date.parse(a.updatedAt)
+    })
+
     if (this.props.tasks.length > 0) {
       return (
         <ol className="task-list">
-          {this.props.tasks.map((task, index) => {
+          {sortedTasks.map((task, index) => {
             const isFocused = index === this.state.selectedIndex
             const key = `${task.storageKey}-${task.isSelected}-${isFocused}`
             return <TaskListItem task={task} key={key} isFocused={isFocused} />
