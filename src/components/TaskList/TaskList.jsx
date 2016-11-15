@@ -135,13 +135,7 @@ class TaskList extends React.Component {
           {this.props.tasks.map((task, index) => {
             const isFocused = index === this.state.selectedIndex
             const key = `${task.storageKey}-${task.isSelected}-${isFocused}`
-            return (
-              <TaskListItem
-                {...task}
-                key={key}
-                isFocused={isFocused}
-              />
-            )
+            return <TaskListItem task={task} key={key} isFocused={isFocused} />
           })}
         </ol>
       )

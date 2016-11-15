@@ -1,12 +1,9 @@
-'use strict'
-
 import keytar from 'keytar'
 
 const SERVICE = 'gh-notifications-snoozer'
 const ACCOUNT = 'github'
-const KEY = 'token'
 
-class GitHubAuth {
+module.exports = class GitHubAuth {
   static isAuthenticated() {
     return this.getToken() !== null
   }
@@ -26,5 +23,3 @@ class GitHubAuth {
     return keytar.getPassword(SERVICE, ACCOUNT)
   }
 }
-
-module.exports = GitHubAuth

@@ -1,9 +1,6 @@
 const assert = require('assert')
 const Redux = require('redux')
 
-const ElectronConfig = require('electron-config')
-const storage = new ElectronConfig({ name: 'config-test' })
-
 const reducer = require('../../src/reducers/reducer')
 
 describe('Tasks reducer', () => {
@@ -101,8 +98,6 @@ describe('Tasks reducer', () => {
 
   describe('TASKS_SNOOZE', () => {
     it('snoozes selected task', () => {
-      storage.clear()
-
       const initialTasks = [
         { id: 15, storageKey: 'issue-15' },
         { id: 12, storageKey: 'pull-12', isSelected: true },
@@ -116,19 +111,11 @@ describe('Tasks reducer', () => {
       assert(!actual[1].isSelected, 'task should not be selected')
       assert.equal('string', typeof actual[1].snoozedAt,
                    'snoozedAt should be a time string')
-      assert(storage.has('pull-12'),
-             'should have a new storage key for the snoozed task')
-      assert.equal(storage.get('pull-12'), actual[1].snoozedAt,
-                   'snoozedAt should be the same as what we stored')
-      assert(storage.get('snoozed').indexOf('pull-12') > -1,
-             'task key should be in the snoozed list')
     })
   })
 
   describe('TASKS_ARCHIVE', () => {
     it('archives the selected task', () => {
-      storage.clear()
-
       const initialTasks = [
         { id: 35, storageKey: 'issue-35' },
         { id: 22, storageKey: 'pull-22', isSelected: true },
@@ -142,20 +129,11 @@ describe('Tasks reducer', () => {
       assert(!actual[1].isSelected, 'task should not be selected')
       assert.equal('string', typeof actual[1].archivedAt,
                    'archivedAt should be a time string')
-      assert(storage.has('pull-22'),
-             'should have a new storage key for the archived task')
-      assert.equal(storage.get('pull-22'), actual[1].archivedAt,
-                   'archivedAt should be the same as what we stored')
-      assert(storage.get('archived').indexOf('pull-22') > -1,
-             'task key should be in the archived list')
     })
   })
 
   describe('TASKS_RESTORE', () => {
     it('restores ignored, selected task', () => {
-      storage.clear()
-      storage.set('ignored', ['issue-18', 'pull-42'])
-
       const initialTasks = [
         { id: 18, storageKey: 'issue-18', ignore: true, isSelected: true },
         { id: 42, storageKey: 'pull-42', ignore: true },
@@ -168,21 +146,10 @@ describe('Tasks reducer', () => {
       assert.equal(2, actual.length, 'should still have 2 tasks')
       assert(!actual[0].ignore, 'selected task should not be ignored')
       assert(actual[1].ignore, 'deselected task should be ignored')
-
-      const ignoredTaskKeys = storage.get('ignored')
-      assert(ignoredTaskKeys.indexOf('issue-18') < 0,
-             'task key should not be in the ignored list')
-      assert(ignoredTaskKeys.indexOf('pull-42') > -1,
-             'deselected task key should be in the ignored list')
     })
 
     it('restores archived, selected task', () => {
-      storage.clear()
-      storage.set('archived', ['issue-99', 'pull-88'])
-
       const dateStr = new Date().toISOString()
-      storage.set('issue-99', dateStr)
-      storage.set('pull-88', dateStr)
 
       const initialTasks = [
         {
@@ -203,26 +170,10 @@ describe('Tasks reducer', () => {
                    'selected task should not have archivedAt')
       assert.equal(dateStr, actual[1].archivedAt,
                    'deselected task should have archivedAt')
-
-      const archivedTaskKeys = storage.get('archived')
-      assert(archivedTaskKeys.indexOf('issue-99') < 0,
-             'task key should not be in the archived list')
-      assert(archivedTaskKeys.indexOf('pull-88') > -1,
-             'deselected task key should be in the archived list')
-
-      assert(storage.has('pull-88'),
-             'deselected task should still be in storage')
-      assert(!storage.has('issue-99'),
-             'selected task should not still be in storage')
     })
 
     it('restores snoozed, selected task', () => {
-      storage.clear()
-      storage.set('snoozed', ['issue-97', 'pull-183'])
-
       const dateStr = new Date().toISOString()
-      storage.set('issue-97', dateStr)
-      storage.set('pull-183', dateStr)
 
       const initialTasks = [
         {
@@ -243,17 +194,6 @@ describe('Tasks reducer', () => {
                    'selected task should not have snoozedAt')
       assert.equal(dateStr, actual[1].snoozedAt,
                    'deselected task should have snoozedAt')
-
-      const snoozedTaskKeys = storage.get('snoozed')
-      assert(snoozedTaskKeys.indexOf('issue-97') < 0,
-             'task key should not be in the snoozed list')
-      assert(snoozedTaskKeys.indexOf('pull-183') > -1,
-             'deselected task key should be in the snoozed list')
-
-      assert(storage.has('pull-183'),
-             'deselected task should still be in storage')
-      assert(!storage.has('issue-97'),
-             'selected task should not still be in storage')
     })
   })
 
@@ -285,15 +225,16 @@ describe('Tasks reducer', () => {
 
       const updatedTasks = [
         { id: 1, storageKey: 'issue-1', title: 'task', updatedAt: now },
-        { id: 2, storageKey: 'pull-2', title: 'updated title', updatedAt: now },
+        { id: 2, storageKey: 'pull-2', title: 'updated', updatedAt: now },
       ]
 
       const store = Redux.createStore(reducer, { tasks: initialTasks })
-      store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks })
+      const query = 'some-filter'
+      store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
 
       const expectedTasks = [
-        { id: 1, storageKey: 'issue-1', title: 'task', updatedAt: now },
-        { id: 2, storageKey: 'pull-2', title: 'updated title', updatedAt: now },
+        { id: 1, storageKey: 'issue-1', title: 'task', updatedAt: now, filters: [query] },
+        { id: 2, storageKey: 'pull-2', title: 'updated', updatedAt: now, filters: [query] },
       ]
 
       assert.deepEqual(expectedTasks, store.getState().tasks)
@@ -310,11 +251,12 @@ describe('Tasks reducer', () => {
       ]
 
       const store = Redux.createStore(reducer, { tasks: initialTasks })
-      store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks })
+      const query = 'some-filter'
+      store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
 
       const expectedTasks = [
         { id: 1, storageKey: 'pull-1', title: 'task', updatedAt: now },
-        { id: 2, storageKey: 'pull-2', title: 'new task', updatedAt: now },
+        { id: 2, storageKey: 'pull-2', title: 'new task', updatedAt: now, filters: [query] },
       ]
 
       assert.deepEqual(expectedTasks, store.getState().tasks)

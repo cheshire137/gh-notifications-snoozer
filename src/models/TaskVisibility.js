@@ -1,5 +1,3 @@
-'use strict'
-
 const MS_PER_DAY = 1000 * 60 * 60 * 24
 
 class TaskVisibility {
@@ -39,7 +37,7 @@ class TaskVisibility {
   }
 
   static isVisibleTask(task, filter) {
-    return task.filters.includes(filter.query) && !this.isHiddenTask(task)
+    return task.filters && task.filters.includes(filter.query) && !this.isHiddenTask(task)
   }
 }
 

@@ -1,5 +1,3 @@
-'use strict'
-
 const Config = require('../config.json')
 const Fetcher = require('./Fetcher')
 const GitHubAuth = require('./GitHubAuth')
@@ -62,8 +60,9 @@ class GitHub extends Fetcher {
 
   // https://developer.github.com/v3/search/#search-issues
   getTasks(query) {
-    const params = `?per_page=${this.perPage}&q=${encodeURIComponent(query)}`
+    const params = `?q=${encodeURIComponent(query)}`
     const url = `${Config.githubApiUrl}/search/issues${params}`
+    console.log(url);
     return this.getTasksFromUrl(url)
   }
 

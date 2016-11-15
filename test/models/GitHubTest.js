@@ -29,15 +29,16 @@ describe('GitHub', () => {
     })
   })
 
-  describe('getTasks', () => {
-    const url = `${Config.githubApiUrl}/search/issues?per_page=2&q=cats`
+  describe.only('getTasks', () => {
+    const url = `${Config.githubApiUrl}/search/issues?q=cats`
 
     before(() => {
       fetchMock.get(url, { items: [fixtures.pullRequest] })
     })
 
     it('returns a list of tasks', done => {
-      const github = new GitHub('123abc', 2)
+      console.log(url)
+      const github = new GitHub('123abc')
       github.getTasks('cats').then(actual => {
         assert.equal('object', typeof actual.tasks,
                      'should have list of tasks property')
