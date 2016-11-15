@@ -7,11 +7,11 @@ function updateTasks(existingTasks, { tasks, filter }) {
   // Update existingTasks with new values and add new existingTasks
   tasks.forEach((newTask) => {
     const oldTask = tasksByKey[newTask.storageKey] || {}
-    const filters = oldTask.filters || []
-    if (!filters.includes(filter.query)) {
-      filters.push(filter.query)
+    const filterQueries = oldTask.filterQueries || []
+    if (!filterQueries.includes(filter.query)) {
+      filterQueries.push(filter.query)
     }
-    const updatedTask = Object.assign({}, oldTask, newTask, { filters })
+    const updatedTask = Object.assign({}, oldTask, newTask, { filterQueries })
     tasksByKey[newTask.storageKey] = updatedTask
   })
 

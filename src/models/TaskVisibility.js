@@ -37,7 +37,7 @@ class TaskVisibility {
   }
 
   static isVisibleTask(task, filter) {
-    return task.filters && task.filters.includes(filter.query) && !this.isHiddenTask(task)
+    return task.filterQueries && task.filterQueries.includes(filter.query) && !this.isHiddenTask(task)
   }
 }
 
