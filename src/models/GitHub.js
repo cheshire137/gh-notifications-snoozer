@@ -65,10 +65,15 @@ class GitHub extends Fetcher {
     return this.getTasksFromUrl(url)
   }
 
-  getTasksFromUrl(url) {
-    return this.get(url).then(result => {
-      const { json, nextUrl } = result
-      return { tasks: json.items.map(d => getTask(d)), nextUrl, currentUrl: url }
+  getTasksFromUrl(url, items = []) {
+    return this.get(url).then(({ json, headers }) => {
+      const allItems = items.concat(json.items)
+      const nextUrl = this.getNextUrl(headers)
+      if (nextUrl) {
+        return this.getTasksFromUrl(nextUrl, allItems)
+      }
+
+      return { tasks: allItems.map(d => getTask(d)), nextUrl, currentUrl: url }
     })
   }
 
@@ -102,29 +107,10 @@ class GitHub extends Fetcher {
     }
   }
 
-  get(path, args = {}) {
+  get(path) {
     const url = this.getFullUrl(path)
     const opts = { headers: this.getHeaders() }
-    return super.get(url, opts).then(res => {
-      const combinedJson = this.combineJson(res.json, args.previousJson)
-      const nextUrl = this.getNextUrl(res.headers)
-      if (nextUrl) {
-        return this.get(nextUrl, { previousJson: combinedJson })
-      }
-      return { json: combinedJson, nextUrl }
-    })
-  }
-
-  combineJson(json1, json2) {
-    if (typeof json2 === 'undefined') {
-      return json1
-    }
-    const is1Array = json1.constructor.name === 'Array'
-    const is2Array = json2.constructor.name === 'Array'
-    if (is1Array && is2Array) {
-      return json1.concat(json2)
-    }
-    return Object.assign({}, json1, json2)
+    return super.get(url, opts)
   }
 
   getFullUrl(relativeOrAbsoluteUrl) {

@@ -87,7 +87,9 @@ class TaskList extends React.Component {
     const github = new GitHub()
     github.getTasks(this.props.activeFilter).then(result => {
       const tasks = result.tasks
-      const updatedAt = (new Date()).toISOString()
+
+      // GitHub's api doesn't like when the output includes milliseconds
+      const updatedAt = (new Date()).toISOString().replace(/\.\d{3}Z/, 'Z')
       const filter = Object.assign({}, this.props.activeFilter, { updatedAt })
       this.props.dispatch({ type: 'TASKS_UPDATE', filter, tasks })
       this.props.dispatch({ type: 'FILTERS_UPDATE', filter })
