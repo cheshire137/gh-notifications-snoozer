@@ -40,10 +40,9 @@ function getTask(data) {
 }
 
 class GitHub extends Fetcher {
-  constructor(token, perPage = 30) {
+  constructor(token) {
     super()
     this.token = token
-    this.perPage = perPage
   }
 
   // https://developer.github.com/v3/activity/notifications/#list-your-notifications
@@ -54,23 +53,22 @@ class GitHub extends Fetcher {
       date.setDate(date.getDate() - 31)
     }
     const dateStr = date.toISOString()
-    return this.get(`notifications?since=${encodeURIComponent(dateStr)}`,
-                    { fetchAll: true }).then(result => result.json)
+    const url = `notifications?since=${encodeURIComponent(dateStr)}`
+    return this.get(url).then(result => result.json)
   }
 
   // https://developer.github.com/v3/search/#search-issues
   getTasks(filter) {
-    const params = `?q=${encodeURIComponent(filter.query)}`
-    const extraParams = filter.updatedAt ? `&updated:>${filter.updatedAt}` : '&is:open'
-    const url = `${Config.githubApiUrl}/search/issues${params}${extraParams}`
+    const extraParams = filter.updatedAt ? ` updated:>${filter.updatedAt}` : ' is:open'
+    const params = `?q=${encodeURIComponent(filter.query + extraParams)}`
+    const url = `${Config.githubApiUrl}/search/issues${params}&per_page=100`
     return this.getTasksFromUrl(url)
   }
 
   getTasksFromUrl(url) {
     return this.get(url).then(result => {
       const { json, nextUrl } = result
-      return { tasks: json.items.map(d => getTask(d)), nextUrl,
-               currentUrl: url }
+      return { tasks: json.items.map(d => getTask(d)), nextUrl, currentUrl: url }
     })
   }
 
@@ -110,7 +108,7 @@ class GitHub extends Fetcher {
     return super.get(url, opts).then(res => {
       const combinedJson = this.combineJson(res.json, args.previousJson)
       const nextUrl = this.getNextUrl(res.headers)
-      if (nextUrl && args.fetchAll) {
+      if (nextUrl) {
         return this.get(nextUrl, { previousJson: combinedJson })
       }
       return { json: combinedJson, nextUrl }
