@@ -26,6 +26,7 @@ class EditFilter extends React.Component {
   }
 
   render() {
+    const { filter } = this.props
     let valueClass = 'input'
     if (this.state.valueHasError) {
       valueClass += ' is-danger'
@@ -47,8 +48,8 @@ class EditFilter extends React.Component {
                 type="text"
                 name="filterKey"
                 className="input"
-                value={this.props.filter.name}
-                onChange={event => (this.props.filter.key = event.target.value)}
+                value={filter.name}
+                onChange={event => (filter.key = event.target.value)}
                 placeholder="e.g., Team mentions"
                 autoFocus="autofocus"
               />
@@ -57,8 +58,8 @@ class EditFilter extends React.Component {
             <div className="control">
               <FilterSuggester
                 className={valueClass}
-                value={this.props.filter.query}
-                onChange={val => (this.props.filter.query = val)}
+                value={filter.query}
+                onChange={val => (filter.query = val)}
                 inputID="edit-filter-query"
               />
             </div>
