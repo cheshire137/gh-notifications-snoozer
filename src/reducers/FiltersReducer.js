@@ -14,16 +14,16 @@ const ensureFilterSelected = (existingFilters) => {
 const filtersUpdate = (existingFilters, { filter }) => {
   let updatedFilters = null
 
-  if (!existingFilters.find(f => f.name === filter.name)) {
-    const newFilter = { name: filter.name, query: filter.query }
-    updatedFilters = existingFilters.concat([newFilter])
-  } else {
+  if (existingFilters.find(f => f.name === filter.name)) {
     updatedFilters = existingFilters.map(f => {
       if (f.name === filter.name) {
         return Object.assign({}, f, filter)
       }
       return f
     })
+  } else {
+    const newFilter = { name: filter.name, query: filter.query }
+    updatedFilters = existingFilters.concat([newFilter])
   }
 
   return ensureFilterSelected(updatedFilters)

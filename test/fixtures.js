@@ -158,7 +158,7 @@ const task = {
   userAvatar: 'https://github.com/jgrowl.png?size=20',
   userType: 'User',
   apiUrl: 'https://api.github.com/repos/ansible/ansible/pulls/16510',
-  filters: ['cats']
+  filterQueries: ['cats']
 }
 
 const notification = {
