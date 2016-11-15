@@ -135,9 +135,9 @@ class TaskListItem extends React.Component {
 }
 
 TaskListItem.propTypes = {
-  dispatch: React.PropTypes.function,
+  dispatch: React.PropTypes.func,
   task: React.PropTypes.object,
-  isFocused: React.PropTypes.boolean,
+  isFocused: React.PropTypes.bool,
 }
 
 module.exports = connect()(TaskListItem)
