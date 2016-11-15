@@ -16,7 +16,8 @@
     "consistent-return": 0,
     "no-console": 0,
     "react/prefer-stateless-function": 0,
-    "import/no-unresolved": 0
+    "import/no-unresolved": 0,
+    "max-len": ["error", 100, { "ignoreTemplateLiterals": true }]
   },
   "ecmaFeatures": {
     "jsx": true
