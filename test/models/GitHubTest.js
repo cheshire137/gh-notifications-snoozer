@@ -29,7 +29,7 @@ describe('GitHub', () => {
     })
   })
 
-  describe.only('getTasks', () => {
+  describe('getTasks', () => {
     const url = `${Config.githubApiUrl}/search/issues?q=cats`
 
     before(() => {
@@ -37,17 +37,14 @@ describe('GitHub', () => {
     })
 
     it('returns a list of tasks', done => {
-      console.log(url)
-      const github = new GitHub('123abc')
+      const github = new GitHub('fake-token')
       github.getTasks('cats').then(actual => {
         assert.equal('object', typeof actual.tasks,
                      'should have list of tasks property')
         assert.equal(null, actual.nextUrl, 'should not have a second page')
         assert.equal(url, actual.currentUrl, 'should have URL that was fetched')
-        assert.equal(1, actual.tasks.length,
-                     'should have one task')
-        assert.deepEqual(fixtures.task, actual.tasks[0],
-                         'should have the expected task')
+        assert.equal(1, actual.tasks.length, 'should have one task')
+        assert.equal(fixtures.task.specialKey, actual.tasks[0].specialKey, 'not the same task')
         done()
       })
     })

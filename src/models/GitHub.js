@@ -62,7 +62,6 @@ class GitHub extends Fetcher {
   getTasks(query) {
     const params = `?q=${encodeURIComponent(query)}`
     const url = `${Config.githubApiUrl}/search/issues${params}`
-    console.log(url);
     return this.getTasksFromUrl(url)
   }
 
