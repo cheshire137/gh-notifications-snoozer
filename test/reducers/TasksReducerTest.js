@@ -4,7 +4,7 @@ const Redux = require('redux')
 
 const reducer = require('../../src/reducers/reducer')
 
-describe.only('Tasks reducer', () => {
+describe('Tasks reducer', () => {
   it('has the correct default initial state', () => {
     const store = Redux.createStore(reducer)
     assert.deepEqual({ filters: [], tasks: [] }, store.getState())
@@ -148,20 +148,6 @@ describe.only('Tasks reducer', () => {
   })
 
   describe('TASKS_UPDATE', () => {
-    it('updates existing tasks', () => {
-      const now = new Date().toISOString()
-      const initialTasks = [fixtures.task]
-      const updatedTasks = [Object.assign({}, fixtures.task, { updatedAt: now })]
-
-      const store = Redux.createStore(reducer, { tasks: initialTasks })
-      const query = 'some-filter'
-      store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
-
-      const { tasks } = store.getState()
-      assert.equal(tasks[0].storageKey, fixtures.task.storageKey)
-      assert.equal(tasks[0].updatedAt, now)
-    })
-
     it('adds new tasks', () => {
       const initialTasks = [fixtures.task]
       const updatedTasks = [fixtures.anotherTask, fixtures.task]
@@ -188,6 +174,20 @@ describe.only('Tasks reducer', () => {
       assert.deepEqual(tasks[0].previousValues, { comments: 1 })
     })
 
+    it('changes the updatedAt field when the comment count changes', () => {
+      const now = new Date().toISOString()
+      const initialTasks = [fixtures.task]
+      const updates = { comments: 3, updatedAt: now }
+      const updatedTasks = [Object.assign({}, fixtures.task, updates)]
+
+      const store = Redux.createStore(reducer, { tasks: initialTasks })
+      const query = 'some-filter'
+      store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
+
+      const { tasks } = store.getState()
+      assert.equal(tasks[0].updatedAt, now)
+    })
+
     it('updates the previousValues field when the state field changes', () => {
       const initialTasks = [fixtures.task]
       const updates = { state: 'closed' }
@@ -199,6 +199,20 @@ describe.only('Tasks reducer', () => {
 
       const { tasks } = store.getState()
       assert.deepEqual(tasks[0].previousValues, { state: 'open' })
+    })
+
+    it('changes the updatedAt field when the state field changes', () => {
+      const now = new Date().toISOString()
+      const initialTasks = [fixtures.task]
+      const updates = { state: 'closed', updatedAt: now }
+      const updatedTasks = [Object.assign({}, fixtures.task, updates)]
+
+      const store = Redux.createStore(reducer, { tasks: initialTasks })
+      const query = 'some-filter'
+      store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
+
+      const { tasks } = store.getState()
+      assert.equal(tasks[0].updatedAt, now)
     })
 
     it('maintains existing previousValues values when the task changes', () => {
@@ -225,6 +239,20 @@ describe.only('Tasks reducer', () => {
 
       const { tasks } = store.getState()
       assert.deepEqual(tasks[0].previousValues, {})
+    })
+
+    it('does not change the updatedAt field if the body is updated', () => {
+      const originalUpdatedAt = fixtures.task.updatedAt
+      const now = new Date().toISOString()
+      const initialTasks = [fixtures.task]
+      const updatedTasks = [Object.assign({}, fixtures.task, { body: 'new body', updatedAt: now })]
+
+      const store = Redux.createStore(reducer, { tasks: initialTasks })
+      const query = 'some-filter'
+      store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
+
+      const { tasks } = store.getState()
+      assert.equal(tasks[0].updatedAt, originalUpdatedAt)
     })
   })
 })
