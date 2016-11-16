@@ -1,4 +1,4 @@
-const assert = require('assert')
+const { assert } = require('chai')
 const fixtures = require('../fixtures')
 const Redux = require('redux')
 
@@ -237,6 +237,19 @@ describe('Tasks reducer', () => {
 
       const { tasks } = store.getState()
       assert.deepEqual(tasks[0].changelog, ['comments', 'body', 'labels', 'assignees'])
+    })
+
+    it('maintains existing changelog values when the task changes', () => {
+      const initialTasks = [Object.assign({}, fixtures.task, { changelog: ['body'] })]
+      const updates = { comments: 3 }
+      const updatedTasks = [Object.assign({}, fixtures.task, updates)]
+
+      const store = Redux.createStore(reducer, { tasks: initialTasks })
+      const query = 'some-filter'
+      store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
+
+      const { tasks } = store.getState()
+      assert.sameMembers(tasks[0].changelog, ['comments', 'body'])
     })
 
     it('does not update the changelog for new tasks', () => {

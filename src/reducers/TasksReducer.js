@@ -9,12 +9,12 @@ function updateTasks(existingTasks, { tasks, filter }) {
   // Update existingTasks with new values and add new existingTasks
   tasks.forEach((newTask) => {
     const oldTask = tasksByKey[newTask.storageKey]
-    const changelog = []
+    let changelog = []
     let filterQueries = [filter.query]
 
     if (oldTask) {
       filterQueries = _.union(oldTask.filterQueries, filterQueries)
-
+      changelog = oldTask.changelog
       if (oldTask.comments !== newTask.comments) changelog.push('comments')
       if (oldTask.body !== newTask.body) changelog.push('body')
       if (!_.isEqual(oldTask.labels, newTask.labels)) changelog.push('labels')
