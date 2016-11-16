@@ -47,7 +47,8 @@ describe('GitHub', () => {
     })
 
     it('returns a list of updated tasks', done => {
-      const url = `${Config.githubApiUrl}/search/issues?q=cats%20updated%3A%3E2014-06-11T16%3A48%3A20Z&per_page=100`
+      const query = 'cats%20updated%3A%3E2014-06-11T16%3A48%3A20Z'
+      const url = `${Config.githubApiUrl}/search/issues?q=${query}&per_page=100`
       fetchMock.get(url, { items: [fixtures.pullRequest] })
 
       const github = new GitHub('fake-token')
