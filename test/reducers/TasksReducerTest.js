@@ -4,7 +4,7 @@ const Redux = require('redux')
 
 const reducer = require('../../src/reducers/reducer')
 
-describe('Tasks reducer', () => {
+describe.only('Tasks reducer', () => {
   it('has the correct default initial state', () => {
     const store = Redux.createStore(reducer)
     assert.deepEqual({ filters: [], tasks: [] }, store.getState())
@@ -12,88 +12,43 @@ describe('Tasks reducer', () => {
 
   describe('TASKS_SELECT', () => {
     it('selects specified task', () => {
-      const now = new Date().toISOString()
-      const initialTasks = [
-        { id: 1, storageKey: 'issue-1', title: 'task', updatedAt: now },
-        { id: 2, storageKey: 'pull-2', title: 'more task', updatedAt: now },
-      ]
+      const initialTasks = [fixtures.task, fixtures.anotherTask]
 
       const store = Redux.createStore(reducer, { tasks: initialTasks })
-      store.dispatch({ type: 'TASKS_SELECT', task: { storageKey: 'pull-2' } })
+      store.dispatch({ type: 'TASKS_SELECT', task: fixtures.task })
 
-      const expectedTasks = [
-        { id: 1, storageKey: 'issue-1', title: 'task', updatedAt: now },
-        {
-          id: 2,
-          storageKey: 'pull-2',
-          title: 'more task',
-          updatedAt: now,
-          isSelected: true,
-        },
-      ]
-
-      assert.deepEqual(expectedTasks, store.getState().tasks)
+      const selectedTask = store.getState().tasks.find(task => task.isSelected)
+      const unselectedTask = store.getState().tasks.find(task => !task.isSelected)
+      assert.equal(selectedTask.storageKey, fixtures.task.storageKey)
+      assert.equal(unselectedTask.storageKey, fixtures.anotherTask.storageKey)
     })
   })
 
   describe('TASKS_DESELECT', () => {
     it('deselects the specified task', () => {
-      const now = new Date().toISOString()
-      const initialTasks = [
-        {
-          id: 1,
-          storageKey: 'issue-1',
-          title: 'task',
-          updatedAt: now,
-          isSelected: true,
-        },
-        { id: 2, storageKey: 'pull-2', title: 'more task', updatedAt: now },
-      ]
+      const selectedTask = Object.assign({}, fixtures.anotherTask, { isSelected: true })
+      const initialTasks = [fixtures.task, selectedTask]
 
       const store = Redux.createStore(reducer, { tasks: initialTasks })
-      store.dispatch({
-        type: 'TASKS_DESELECT',
-        task: { storageKey: 'issue-1' },
-      })
+      store.dispatch({ type: 'TASKS_DESELECT', task: selectedTask })
 
-      const expectedTasks = [
-        {
-          id: 1,
-          storageKey: 'issue-1',
-          title: 'task',
-          updatedAt: now,
-          isSelected: false,
-        },
-        { id: 2, storageKey: 'pull-2', title: 'more task', updatedAt: now },
-      ]
-
-      assert.deepEqual(expectedTasks, store.getState().tasks)
+      const updatedSelectedTask = store.getState().tasks.find(task => task.isSelected)
+      assert.equal(updatedSelectedTask, null)
     })
   })
 
   describe('TASKS_IGNORE', () => {
     it('ignores selected task', () => {
-      const initialTasks = [
-        { id: 5, storageKey: 'issue-5', isSelected: true },
-        { id: 2, storageKey: 'pull-2' },
-      ]
+      const initialTasks = [fixtures.task, fixtures.anotherTask]
 
       const store = Redux.createStore(reducer, { tasks: initialTasks })
+      store.dispatch({ type: 'TASKS_SELECT', task: fixtures.task })
       store.dispatch({ type: 'TASKS_IGNORE' })
 
-      const expectedTasks = [
-        {
-          id: 5,
-          storageKey: 'issue-5',
-          isSelected: false,
-          ignore: true,
-          archivedAt: null,
-          snoozedAt: null,
-        },
-        { id: 2, storageKey: 'pull-2' },
-      ]
-
-      assert.deepEqual(expectedTasks, store.getState().tasks)
+      const ignoredTask = store.getState().tasks.find(t => t.ignore)
+      const task = store.getState().tasks.find(t => !t.ignore)
+      assert.equal(ignoredTask.storageKey, fixtures.task.storageKey)
+      assert.equal(task.storageKey, fixtures.anotherTask.storageKey)
     })
   })
 
