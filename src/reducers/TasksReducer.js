@@ -9,24 +9,24 @@ function updateTasks(existingTasks, { tasks, filter }) {
   // Update existingTasks with new values and add new existingTasks
   tasks.forEach((updatedTask) => {
     const oldTask = tasksByKey[updatedTask.storageKey]
-    let previousValues = {}
+    let changelog = {}
     let filterQueries = [filter.query]
     let updatedAt = updatedTask.updatedAt
 
     if (oldTask) {
       filterQueries = _.union(oldTask.filterQueries, filterQueries)
-      previousValues = Object.assign({}, oldTask.previousValues)
+      changelog = Object.assign({}, oldTask.changelog)
       if (oldTask.comments !== updatedTask.comments) {
-        previousValues.comments = oldTask.comments
+        changelog.comments = oldTask.comments
         updatedAt = updatedTask.updatedAt
       }
       if (oldTask.state !== updatedTask.state) {
-        previousValues.state = oldTask.state
+        changelog.state = oldTask.state
         updatedAt = updatedTask.updatedAt
       }
     }
 
-    const customUpdates = { filterQueries, previousValues, updatedAt }
+    const customUpdates = { filterQueries, changelog, updatedAt }
     tasksByKey[updatedTask.storageKey] = Object.assign({}, oldTask, updatedTask, customUpdates)
   })
 
@@ -109,7 +109,7 @@ function archiveTasks(existingTasks) {
         snoozedAt: null,
         isSelected: false,
         ignore: false,
-        previousValues: {},
+        changelog: {},
       })
     }
     return task

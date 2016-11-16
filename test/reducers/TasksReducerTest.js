@@ -83,8 +83,8 @@ describe('Tasks reducer', () => {
       assert.isNotNaN(Date.parse(archivedTask.archivedAt), 'archivedAt should be a string date')
     })
 
-    it('clear previousValues when task is archived', () => {
-      const task = Object.assign({}, fixtures.task, { previousValues: { comments: 100 } })
+    it('clear changelog when task is archived', () => {
+      const task = Object.assign({}, fixtures.task, { changelog: { comments: 100 } })
       const initialTasks = [task]
 
       const store = Redux.createStore(reducer, { tasks: initialTasks })
@@ -93,7 +93,7 @@ describe('Tasks reducer', () => {
 
       const archivedTask = store.getState().tasks[0]
 
-      assert.deepEqual(archivedTask.previousValues, {})
+      assert.deepEqual(archivedTask.changelog, {})
     })
   })
 
@@ -172,7 +172,7 @@ describe('Tasks reducer', () => {
       assert(tasks.find(task => task.storageKey === fixtures.anotherTask.storageKey))
     })
 
-    it('updates the previousValues field when the comment count changes', () => {
+    it('updates the changelog field when the comment count changes', () => {
       const initialTasks = [fixtures.task]
       const updates = { comments: 3 }
       const updatedTasks = [Object.assign({}, fixtures.task, updates)]
@@ -182,7 +182,7 @@ describe('Tasks reducer', () => {
       store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
 
       const { tasks } = store.getState()
-      assert.deepEqual(tasks[0].previousValues, { comments: 1 })
+      assert.deepEqual(tasks[0].changelog, { comments: 1 })
     })
 
     it('changes the updatedAt field when the comment count changes', () => {
@@ -199,7 +199,7 @@ describe('Tasks reducer', () => {
       assert.equal(tasks[0].updatedAt, now)
     })
 
-    it('updates the previousValues field when the state field changes', () => {
+    it('updates the changelog field when the state field changes', () => {
       const initialTasks = [fixtures.task]
       const updates = { state: 'closed' }
       const updatedTasks = [Object.assign({}, fixtures.task, updates)]
@@ -209,7 +209,7 @@ describe('Tasks reducer', () => {
       store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
 
       const { tasks } = store.getState()
-      assert.deepEqual(tasks[0].previousValues, { state: 'open' })
+      assert.deepEqual(tasks[0].changelog, { state: 'open' })
     })
 
     it('changes the updatedAt field when the state field changes', () => {
@@ -226,9 +226,9 @@ describe('Tasks reducer', () => {
       assert.equal(tasks[0].updatedAt, now)
     })
 
-    it('maintains existing previousValues values when the task changes', () => {
-      const previousValues = { previousValues: { state: 'closed' } }
-      const initialTasks = [Object.assign({}, fixtures.task, previousValues)]
+    it('maintains existing changelog values when the task changes', () => {
+      const changelog = { changelog: { state: 'closed' } }
+      const initialTasks = [Object.assign({}, fixtures.task, changelog)]
       const updates = { comments: 3 }
       const updatedTasks = [Object.assign({}, fixtures.task, updates)]
 
@@ -237,10 +237,10 @@ describe('Tasks reducer', () => {
       store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
 
       const { tasks } = store.getState()
-      assert.deepEqual(tasks[0].previousValues, { comments: 1, state: 'closed' })
+      assert.deepEqual(tasks[0].changelog, { comments: 1, state: 'closed' })
     })
 
-    it('does not update the previousValues for new tasks', () => {
+    it('does not update the changelog for new tasks', () => {
       const initialTasks = []
       const updatedTasks = [fixtures.task]
 
@@ -249,7 +249,7 @@ describe('Tasks reducer', () => {
       store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
 
       const { tasks } = store.getState()
-      assert.deepEqual(tasks[0].previousValues, {})
+      assert.deepEqual(tasks[0].changelog, {})
     })
 
     it('does not change the updatedAt field if the body is updated', () => {

@@ -160,7 +160,7 @@ const task = {
   apiUrl: 'https://api.github.com/repos/ansible/ansible/pulls/16510',
   comments: 1,
   filterQueries: ['cats'],
-  previousValues: {},
+  changelog: {},
 }
 
 const anotherTask = {
@@ -188,7 +188,7 @@ const anotherTask = {
   apiUrl: 'https://api.github.com/repos/ansible/ansible/issues/1',
   comments: 1,
   filterQueries: ['cats'],
-  previousValues: {},
+  changelog: {},
 }
 
 const notification = {
