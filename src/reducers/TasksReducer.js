@@ -16,14 +16,13 @@ function updateTasks(existingTasks, { tasks, filter }) {
     if (oldTask) {
       filterQueries = _.union(oldTask.filterQueries, filterQueries)
       previousValues = Object.assign({}, oldTask.previousValues)
-      if (oldTask.comments !== updatedTask.comments && !previousValues.hasOwnProperty('comments')) {
+      if (oldTask.comments !== updatedTask.comments) {
         previousValues.comments = oldTask.comments
+        updatedAt = updatedTask.updatedAt
       }
-      if (oldTask.state !== updatedTask.state && !previousValues.hasOwnProperty('state')) {
+      if (oldTask.state !== updatedTask.state) {
         previousValues.state = oldTask.state
-      }
-      if (_.isEqual(previousValues, oldTask.previousValues)) {
-        updatedAt = oldTask.updatedAt
+        updatedAt = updatedTask.updatedAt
       }
     }
 

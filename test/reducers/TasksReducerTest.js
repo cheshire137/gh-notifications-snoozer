@@ -69,20 +69,18 @@ describe('Tasks reducer', () => {
     })
   })
 
-  describe('TASKS_ARCHIVE', () => {
+  describe.only('TASKS_ARCHIVE', () => {
     it('archives the selected task', () => {
-      const initialTasks = [
-        { id: 35, storageKey: 'issue-35' },
-        { id: 22, storageKey: 'pull-22', isSelected: true },
-      ]
+      const initialTasks = [fixtures.task, fixtures.anotherTask]
 
       const store = Redux.createStore(reducer, { tasks: initialTasks })
+      store.dispatch({ type: 'TASKS_SELECT', task: fixtures.task })
       store.dispatch({ type: 'TASKS_ARCHIVE' })
 
-      const actual = store.getState().tasks
-      assert.equal(2, actual.length, 'should still have 2 tasks')
-      assert(!actual[1].isSelected, 'task should not be selected')
-      assert.equal('string', typeof actual[1].archivedAt, 'archivedAt should be a time string')
+      const archivedTask = store.getState().tasks.find(t => t.archivedAt)
+
+      assert(!archivedTask.isSelected, 'archived tasks should not be selected')
+      assert.isNotNaN(Date.parse(archivedTask.archivedAt), 'archivedAt should be a string date')
     })
   })
 
