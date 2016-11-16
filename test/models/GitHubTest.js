@@ -30,23 +30,21 @@ describe('GitHub', () => {
   })
 
   describe('getTasks', () => {
-    const url = `${Config.githubApiUrl}/search/issues?per_page=2&q=cats`
+    const url = `${Config.githubApiUrl}/search/issues?q=cats`
 
     before(() => {
       fetchMock.get(url, { items: [fixtures.pullRequest] })
     })
 
     it('returns a list of tasks', done => {
-      const github = new GitHub('123abc', 2)
+      const github = new GitHub('fake-token')
       github.getTasks('cats').then(actual => {
         assert.equal('object', typeof actual.tasks,
                      'should have list of tasks property')
         assert.equal(null, actual.nextUrl, 'should not have a second page')
         assert.equal(url, actual.currentUrl, 'should have URL that was fetched')
-        assert.equal(1, actual.tasks.length,
-                     'should have one task')
-        assert.deepEqual(fixtures.task, actual.tasks[0],
-                         'should have the expected task')
+        assert.equal(1, actual.tasks.length, 'should have one task')
+        assert.equal(fixtures.task.specialKey, actual.tasks[0].specialKey, 'not the same task')
         done()
       })
     })

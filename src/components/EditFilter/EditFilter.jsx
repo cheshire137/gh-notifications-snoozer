@@ -1,52 +1,32 @@
+const { connect } = require('react-redux')
 const React = require('react')
-const Filter = require('../../models/Filter')
 const FilterSuggester = require('../FilterSuggester')
 const hookUpStickyNav = require('../hookUpStickyNav')
 
 class EditFilter extends React.Component {
   constructor(props) {
     super(props)
-    const { filter } = props
-    this.state = {
-      valueHasError: false,
-      key: filter,
-      value: new Filter(filter).retrieve(),
-    }
+    this.state = { valueHasError: false }
   }
 
   save(event) {
     event.preventDefault()
-    if (this.state.value.length < 1) {
+    if (this.props.filter.query.length < 1) {
       this.setState({ valueHasError: true })
       return
     }
     this.setState({ valueHasError: false })
-    let key = this.state.key.trim()
-    if (key.length < 1) {
-      key = this.state.value
-    }
-    const filter = new Filter(key)
-    filter.store(this.state.value)
-    if (this.props.filter !== key) {
-      this.props.delete(this.props.filter)
-    }
-    this.props.save(key)
+    this.props.dispatch({ type: 'FILTERS_UPDATE', filter: this.props.filter })
+    this.props.showtasks()
   }
 
   cancel(event) {
     event.preventDefault()
-    this.props.cancel()
-  }
-
-  valueChanged(newValue) {
-    this.setState({ value: newValue })
-  }
-
-  keyChanged(event) {
-    this.setState({ key: event.target.value })
+    this.props.showtasks()
   }
 
   render() {
+    const { filter } = this.props
     let valueClass = 'input'
     if (this.state.valueHasError) {
       valueClass += ' is-danger'
@@ -68,8 +48,8 @@ class EditFilter extends React.Component {
                 type="text"
                 name="filterKey"
                 className="input"
-                value={this.state.key}
-                onChange={e => this.keyChanged(e)}
+                value={filter.name}
+                onChange={event => (filter.key = event.target.value)}
                 placeholder="e.g., Team mentions"
                 autoFocus="autofocus"
               />
@@ -78,8 +58,8 @@ class EditFilter extends React.Component {
             <div className="control">
               <FilterSuggester
                 className={valueClass}
-                value={this.state.value}
-                onChange={val => this.valueChanged(val)}
+                value={filter.query}
+                onChange={val => (filter.query = val)}
                 inputID="edit-filter-query"
               />
             </div>
@@ -101,11 +81,10 @@ class EditFilter extends React.Component {
 }
 
 EditFilter.propTypes = {
-  filter: React.PropTypes.string.isRequired,
-  save: React.PropTypes.func.isRequired,
-  cancel: React.PropTypes.func.isRequired,
-  addFilter: React.PropTypes.func.isRequired,
-  delete: React.PropTypes.func.isRequired,
+  filter: React.PropTypes.object.isRequired,
+  showtasks: React.PropTypes.func.isRequired,
+  dispatch: React.PropTypes.func.isRequired,
 }
 
-module.exports = hookUpStickyNav(EditFilter, '#edit-filter-top-navigation')
+const stickyNav = hookUpStickyNav(EditFilter, '#edit-filter-top-navigation')
+module.exports = connect()(stickyNav)

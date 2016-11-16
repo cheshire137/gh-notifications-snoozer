@@ -1,12 +1,9 @@
 const { connect } = require('react-redux')
 const React = require('react')
 const { ipcRenderer } = require('electron')
-const Filter = require('../../models/Filter')
-const Filters = require('../../models/Filters')
 const GitHub = require('../../models/GitHub')
 const AppMenu = require('../../models/AppMenu')
 const GitHubAuth = require('../../models/GitHubAuth')
-const LastFilter = require('../../models/LastFilter')
 const TabbedNav = require('../TabbedNav')
 const DefaultFilters = require('../../models/DefaultFilters')
 const TaskList = require('../TaskList')
@@ -18,14 +15,16 @@ const Auth = require('../Auth')
 const HiddenTaskList = require('../HiddenTaskList')
 
 class App extends React.Component {
-  constructor() {
-    super()
-    const view = GitHubAuth.isAuthenticated() ? 'tasks' : 'auth'
-    this.state = {
-      view,
-      filters: Filters.findAll(),
-      filter: LastFilter.retrieve(),
-      loadingTasks: true,
+  constructor(props) {
+    super(props)
+    this.state = { }
+  }
+
+  componentWillMount() {
+    if (GitHubAuth.isAuthenticated()) {
+      this.showTaskList()
+    } else {
+      this.showAuth()
     }
   }
 
@@ -34,37 +33,16 @@ class App extends React.Component {
     this.setupAppMenu()
     if (GitHubAuth.isAuthenticated()) {
       this.loadUser()
-      if (this.state.filter) {
-        this.loadFilter(this.state.filter)
-      } else {
-        this.manageFilters()
-      }
     }
   }
 
   onUserLoad(user) {
-    if (user) {
-      const filters = new DefaultFilters(user.login)
-      filters.addDefaults()
+    if (this.props.filters.length === 0) {
+      DefaultFilters.forLogin(user.login).forEach(filter => {
+        this.props.dispatch({ type: 'FILTERS_UPDATE', filter })
+      })
     }
-    this.setState({ user, filters: Filters.findAll() })
-  }
-
-  getTasksAfterNotifications(query) {
-    const github = new GitHub()
-    github.getTasks(query).then(result => {
-      const { tasks, nextUrl, currentUrl } = result
-      const urls = [currentUrl]
-      if (nextUrl) {
-        urls.push(nextUrl)
-      }
-      this.setState({ urls, currentUrlIndex: 0, loadingTasks: false })
-      this.props.dispatch({ type: 'TASKS_UPDATE', tasks,
-                            notifications: this.state.notifications })
-    }).catch(err => {
-      console.error('failed to get tasks from GitHub', query, err)
-      this.setState({ loadingTasks: false })
-    })
+    this.setState({ user })
   }
 
   setupAppMenu() {
@@ -94,67 +72,34 @@ class App extends React.Component {
     if (this.state.previousView === 'filters') {
       cancel = () => this.manageFilters()
     }
-    const addFilter = () => this.showNewFilterForm()
-    const editFilter = key => this.editFilter(key)
-    const save = key => this.savedFilter(key)
-    const manageFilters = () => this.manageFilters()
-    const loadFilter = key => this.loadFilter(key)
-    let loadNextPage = null
-    if (this.state.urls &&
-        this.state.currentUrlIndex < this.state.urls.length - 1) {
-      loadNextPage = () => this.loadNextPage()
-    }
-    let loadPrevPage = null
-    if (this.state.currentUrlIndex > 0) {
-      loadPrevPage = () => this.loadPrevPage()
-    }
-    let currentPage = null
-    if (typeof this.state.currentUrlIndex === 'number') {
-      currentPage = this.state.currentUrlIndex + 1
-    }
     switch (this.state.view) {
       case 'tasks': return (
         <TaskList
-          addFilter={addFilter}
-          changeFilter={loadFilter}
-          manageFilters={manageFilters}
-          user={this.state.user}
-          showAuth={() => this.showAuth()}
           showHidden={() => this.showHidden()}
-          editFilter={editFilter}
-          loadNextPage={loadNextPage}
-          loadPrevPage={loadPrevPage}
-          currentPage={currentPage}
+          editFilter={name => this.editFilter(name)}
           loading={this.state.loadingTasks}
         />)
       case 'filters': return (
         <FilterList
-          filters={this.state.filters}
-          delete={key => this.deleteFilter(key)}
-          edit={editFilter}
-          addFilter={addFilter}
+          edit={name => this.editFilter(name)}
+          addFilter={() => this.showNewFilterForm()}
           cancel={cancel}
         />)
       case 'edit-filter': return (
         <EditFilter
-          filter={this.state.filter}
-          save={save}
-          addFilter={addFilter}
-          cancel={cancel}
-          delete={key => this.deleteFilter(key)}
+          filter={this.props.activeFilter}
+          showtasks={cancel}
         />)
       case 'about': return <About />
       case 'new-filter': return (
         <NewFilter
-          save={save}
           cancel={cancel}
-          manageFilters={manageFilters}
-          loadFilter={loadFilter}
+          manageFilters={() => this.manageFilters()}
+          loadFilter={name => this.loadFilter(name)}
         />)
       case 'hidden': return (
         <HiddenTaskList
           cancel={cancel}
-          activeFilter={this.state.filter}
         />)
       default: return (
         <Auth
@@ -166,55 +111,6 @@ class App extends React.Component {
     }
   }
 
-  loadNextPage() {
-    if (!this.state.urls || this.state.urls.length < 1) {
-      return
-    }
-    this.setState({ loadingTasks: true })
-    this.props.dispatch({ type: 'TASKS_EMPTY' })
-    const github = new GitHub()
-    const url = this.state.urls[this.state.urls.length - 1]
-    github.getTasksFromUrl(url).then(result => {
-      const { tasks, nextUrl } = result
-      let urls = this.state.urls
-      if (nextUrl) {
-        urls = urls.concat([nextUrl])
-      }
-      this.setState({ urls, currentUrlIndex: urls.indexOf(url),
-                      loadingTasks: false })
-      this.props.dispatch({ type: 'TASKS_UPDATE', tasks,
-                            notifications: this.state.notifications })
-      window.scrollTo(0, 0)
-    }).catch(err => {
-      console.error('failed to get next page of tasks from GitHub',
-                    this.state.urls, err)
-      this.setState({ loadingTasks: false })
-    })
-  }
-
-  loadPrevPage() {
-    if (!this.state.urls || this.state.urls.length < 1) {
-      return
-    }
-    this.setState({ loadingTasks: true })
-    this.props.dispatch({ type: 'TASKS_EMPTY' })
-    const github = new GitHub()
-    const url = this.state.urls[this.state.urls.length - 2]
-    github.getTasksFromUrl(url).then(result => {
-      const { tasks } = result
-      const urls = this.state.urls.slice(0, this.state.urls.length - 1)
-      this.setState({ urls, currentUrlIndex: this.state.currentUrlIndex - 1,
-                      loadingTasks: false })
-      this.props.dispatch({ type: 'TASKS_UPDATE', tasks,
-                            notifications: this.state.notifications })
-      window.scrollTo(0, 0)
-    }).catch(err => {
-      console.error('failed to get previous page of tasks from GitHub',
-                    this.state.urls, err)
-      this.setState({ loadingTasks: false })
-    })
-  }
-
   showAbout() {
     ipcRenderer.send('title', 'About')
     this.changeView('about')
@@ -223,22 +119,6 @@ class App extends React.Component {
   showAuth() {
     ipcRenderer.send('title', 'Authenticate')
     this.changeView('auth')
-  }
-
-  loadTasks(query) {
-    const github = new GitHub()
-    if (this.state.notifications) {
-      this.getTasksAfterNotifications(query)
-      return
-    }
-    github.getNotifications().then(notifications => {
-      this.setState({ notifications }, () => {
-        this.getTasksAfterNotifications(query)
-      })
-    }).catch(err => {
-      console.error('failed to get notifications from GitHub', err)
-      this.setState({ loadingTasks: false })
-    })
   }
 
   loadUser() {
@@ -255,38 +135,19 @@ class App extends React.Component {
     this.changeView('new-filter')
   }
 
-  savedFilter(key) {
-    ipcRenderer.send('title', 'Tasks')
-    this.setState({ filters: Filters.findAll() }, () => {
-      this.changeView('tasks')
-      this.loadFilter(key)
-    })
-  }
-
   showTaskList() {
     ipcRenderer.send('title', 'Tasks')
     this.changeView('tasks')
   }
 
-  loadFilter(key) {
-    this.props.dispatch({ type: 'TASKS_EMPTY' })
-    LastFilter.save(key)
-    const filter = new Filter(key)
-    this.setState({ filter: key, urls: null, currentUrlIndex: null,
-                    loadingTasks: true })
-    const query = filter.retrieve()
-    this.loadTasks(query)
+  loadFilter(filter) {
+    this.props.dispatch({ type: 'FILTERS_SELECT', filter })
+    this.setState({ urls: null, currentUrlIndex: null, loadingTasks: true })
   }
 
   manageFilters() {
     ipcRenderer.send('title', 'Manage Filters')
     this.changeView('filters')
-  }
-
-  deleteFilter(key) {
-    const filter = new Filter(key)
-    const remainingFilters = filter.delete()
-    this.setState({ filters: remainingFilters })
   }
 
   showHidden() {
@@ -331,7 +192,13 @@ class App extends React.Component {
 }
 
 App.propTypes = {
+  activeFilter: React.PropTypes.object,
   dispatch: React.PropTypes.func.isRequired,
+  filters: React.PropTypes.array.isRequired,
 }
 
-module.exports = connect()(App)
+const mapStateToProps = state => ({
+  filters: state.filters,
+  activeFilter: state.filters.find(filter => filter.selected),
+})
+module.exports = connect(mapStateToProps)(App)

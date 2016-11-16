@@ -1,7 +1,6 @@
+const { connect } = require('react-redux')
 const React = require('react')
 const ReactDOM = require('react-dom')
-
-const Filter = require('../../models/Filter')
 
 class FilterListItem extends React.Component {
   componentDidMount() {
@@ -18,6 +17,10 @@ class FilterListItem extends React.Component {
       classes.push('focused')
     }
     return classes.join(' ')
+  }
+
+  deleteFilter() {
+    this.props.dispatch({ type: 'FILTERS_REMOVE', filter: this.props.filter })
   }
 
   ensureVisible() {
@@ -38,15 +41,14 @@ class FilterListItem extends React.Component {
   }
 
   render() {
-    const filter = new Filter(this.props.filter)
     return (
       <li className={this.listItemClass()}>
         <div className="columns">
           <div className="column filter-key is-3">
-            {filter.key}
+            {this.props.filter.name}
           </div>
           <div className="column is-7">
-            {filter.retrieve()}
+            {this.props.filter.query}
           </div>
           <div className="column is-2 has-text-right">
             <button
@@ -58,7 +60,7 @@ class FilterListItem extends React.Component {
               ✏️
             </button>
             <button
-              onClick={() => this.props.delete(this.props.filter)}
+              onClick={() => this.deleteFilter()}
               type="button"
               className="button is-link"
               title="Delete filter"
@@ -73,10 +75,10 @@ class FilterListItem extends React.Component {
 }
 
 FilterListItem.propTypes = {
-  filter: React.PropTypes.string.isRequired,
-  delete: React.PropTypes.func.isRequired,
+  dispatch: React.PropTypes.func.isRequired,
   edit: React.PropTypes.func.isRequired,
+  filter: React.PropTypes.object.isRequired,
   isFocused: React.PropTypes.bool.isRequired,
 }
 
-module.exports = FilterListItem
+module.exports = connect()(FilterListItem)

@@ -1,3 +1,4 @@
+const { connect } = require('react-redux')
 const React = require('react')
 const FilterListItem = require('../FilterListItem')
 const hookUpStickyNav = require('../hookUpStickyNav')
@@ -43,15 +44,15 @@ class FilterList extends React.Component {
   }
 
   editFocusedFilter() {
-    const key = this.props.filters[this.state.selectedIndex]
+    const filter = this.props.filters[this.state.selectedIndex]
     this.setState({ selectedIndex: null })
-    this.props.edit(key)
+    this.props.edit(filter)
   }
 
   deleteFocusedFilter() {
-    const key = this.props.filters[this.state.selectedIndex]
+    const filter = this.props.filters[this.state.selectedIndex]
     this.setState({ selectedIndex: null })
-    this.props.delete(key)
+    this.props.dispatch({ type: 'FILTERS_REMOVE', filter })
   }
 
   focusPreviousFilter() {
@@ -94,11 +95,10 @@ class FilterList extends React.Component {
     }
     return (
       <ul className="filter-list">
-        {this.props.filters.map((key, index) => (
+        {this.props.filters.map((filter, index) => (
           <FilterListItem
-            key={key}
-            filter={key}
-            delete={this.props.delete}
+            key={filter.name}
+            filter={filter}
             edit={this.props.edit}
             isFocused={index === this.state.selectedIndex}
           />
@@ -138,11 +138,16 @@ class FilterList extends React.Component {
 }
 
 FilterList.propTypes = {
+  dispatch: React.PropTypes.func.isRequired,
   filters: React.PropTypes.array.isRequired,
-  delete: React.PropTypes.func.isRequired,
   edit: React.PropTypes.func.isRequired,
   addFilter: React.PropTypes.func.isRequired,
   cancel: React.PropTypes.func.isRequired,
 }
 
-module.exports = hookUpStickyNav(FilterList, '#filter-list-top-navigation')
+const mapStateToProps = state => ({
+  filters: state.filters,
+})
+
+const stickyNav = hookUpStickyNav(FilterList, '#filter-list-top-navigation')
+module.exports = connect(mapStateToProps)(stickyNav)

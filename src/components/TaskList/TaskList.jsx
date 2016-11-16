@@ -1,11 +1,9 @@
 const React = require('react')
 const { connect } = require('react-redux')
 const { shell } = require('electron')
-
+const GitHub = require('../../models/GitHub')
 const TaskListItem = require('../TaskListItem')
 const hookUpStickyNav = require('../hookUpStickyNav')
-const Filters = require('../../models/Filters')
-const LastFilter = require('../../models/LastFilter')
 const TaskVisibility = require('../../models/TaskVisibility')
 
 class TaskList extends React.Component {
@@ -70,37 +68,29 @@ class TaskList extends React.Component {
     }
   }
 
-  loadNextPage(event) {
-    event.currentTarget.blur() // defocus button
-    this.props.loadNextPage()
-  }
-
-  loadPrevPage(event) {
-    event.currentTarget.blur() // defocus button
-    this.props.loadPrevPage()
-  }
-
   isFiltersMenuFocused() {
     return document.activeElement &&
         document.activeElement.id === 'filters-menu'
   }
 
-  changeFilter(event) {
-    const filter = event.target.value
-    if (filter === '') {
-      return
-    }
-    this.props.changeFilter(filter)
+  changeFilter(filterName) {
+    const selectedFilter = this.props.filters.find(filter => filter.name === filterName)
+    this.props.dispatch({ type: 'FILTERS_SELECT', filter: selectedFilter })
   }
 
   editSelectedFilter() {
-    this.props.editFilter(LastFilter.retrieve())
+    this.props.editFilter(this.props.activeFilter)
   }
 
   refresh(event) {
     event.currentTarget.blur() // defocus button
-    const filter = document.getElementById('filters-menu').value
-    this.props.changeFilter(filter)
+    const github = new GitHub()
+    github.getTasks(this.props.activeFilter.query)
+      .then(result => {
+        const tasks = result.tasks
+        const filter = this.props.activeFilter
+        this.props.dispatch({ type: 'TASKS_UPDATE', filter, tasks })
+      })
   }
 
   selectFocusedTask() {
@@ -145,54 +135,15 @@ class TaskList extends React.Component {
           {this.props.tasks.map((task, index) => {
             const isFocused = index === this.state.selectedIndex
             const key = `${task.storageKey}-${task.isSelected}-${isFocused}`
-            return (
-              <TaskListItem
-                {...task}
-                key={key}
-                isFocused={isFocused}
-              />
-            )
+            return <TaskListItem task={task} key={key} isFocused={isFocused} />
           })}
         </ol>
       )
     }
-    if (this.props.loading) {
-      return <p>Loading...</p>
-    }
-    return <p>You&rsquo;ve reached the end!</p>
-  }
-
-  paginationSection() {
-    const haveNextPage = typeof this.props.loadNextPage === 'function'
-    const havePrevPage = typeof this.props.loadPrevPage === 'function'
-    const havePagination = haveNextPage || havePrevPage
-    if (!havePagination) {
-      return null
-    }
-    return (
-      <nav className="pagination">
-        <button
-          type="button"
-          className="button"
-          onClick={e => this.loadPrevPage(e)}
-          disabled={!havePrevPage}
-        >&larr; Previous Page</button>
-        <button
-          type="button"
-          className="button"
-          onClick={e => this.loadNextPage(e)}
-          disabled={!haveNextPage}
-        >Next Page &rarr;</button>
-        <ul></ul>
-      </nav>
-    )
   }
 
   render() {
-    const filters = Filters.findAll()
-    const lastFilterKey = LastFilter.retrieve()
-    const isSnoozeDisabled = this.props.tasks.
-        filter(task => task.isSelected).length < 1
+    const isSnoozeDisabled = this.props.tasks.filter(task => task.isSelected).length < 1
     const isArchiveDisabled = isSnoozeDisabled
     const isIgnoreDisabled = isSnoozeDisabled
     return (
@@ -203,11 +154,11 @@ class TaskList extends React.Component {
               <span className="select">
                 <select
                   id="filters-menu"
-                  onChange={event => this.changeFilter(event)}
-                  defaultValue={lastFilterKey}
+                  onChange={event => this.changeFilter(event.target.value)}
+                  value={this.props.activeFilter ? this.props.activeFilter.name : ''}
                 >
-                  {filters.map(key => (
-                    <option key={key} value={key}>{key}</option>
+                  {this.props.filters.map(filter => (
+                    <option key={filter.name} value={filter.name}>{filter.name}</option>
                   ))}
                 </select>
               </span>
@@ -268,19 +219,9 @@ class TaskList extends React.Component {
               >Edit</button>
             </span>
           </div>
-          {typeof this.props.currentPage === 'number' ? (
-            <div className="nav-right">
-              <span className="nav-item compact-vertically">
-                <span className="current-page is-small button is-link">
-                  Page {this.props.currentPage}
-                </span>
-              </span>
-            </div>
-          ) : ''}
         </nav>
         <div className="task-list-container">
           {this.taskListOrMessage()}
-          {this.paginationSection()}
         </div>
       </div>
     )
@@ -288,23 +229,20 @@ class TaskList extends React.Component {
 }
 
 TaskList.propTypes = {
-  tasks: React.PropTypes.array.isRequired,
+  activeFilter: React.PropTypes.object,
   dispatch: React.PropTypes.func.isRequired,
-  addFilter: React.PropTypes.func.isRequired,
-  changeFilter: React.PropTypes.func.isRequired,
-  user: React.PropTypes.object,
-  manageFilters: React.PropTypes.func.isRequired,
-  showAuth: React.PropTypes.func.isRequired,
-  showHidden: React.PropTypes.func.isRequired,
   editFilter: React.PropTypes.func.isRequired,
-  loadPrevPage: React.PropTypes.func,
-  loadNextPage: React.PropTypes.func,
-  currentPage: React.PropTypes.number,
-  loading: React.PropTypes.bool.isRequired,
+  filters: React.PropTypes.array.isRequired,
+  showHidden: React.PropTypes.func.isRequired,
+  tasks: React.PropTypes.array.isRequired,
 }
 
 const stickyNavd = hookUpStickyNav(TaskList, '.task-list-navigation')
-const mapStateToProps = state => ({
-  tasks: state.tasks.filter(task => TaskVisibility.isVisibleTask(task)),
-})
+const mapStateToProps = state => {
+  const activeFilter = state.filters.find(filter => filter.selected)
+  const tasks = state.tasks.filter(task => TaskVisibility.isVisibleTask(task, activeFilter))
+  const filters = state.filters
+  return { tasks, activeFilter, filters }
+}
+
 module.exports = connect(mapStateToProps)(stickyNavd)

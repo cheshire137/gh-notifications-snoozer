@@ -13,10 +13,8 @@ class TaskListItem extends React.Component {
   }
 
   onToggleCheckbox() {
-    const { storageKey, isSelected } = this.props
-    const type = isSelected ? 'TASKS_DESELECT' : 'TASKS_SELECT'
-
-    this.props.dispatch({ type, task: { storageKey } })
+    const type = this.props.task.isSelected ? 'TASKS_DESELECT' : 'TASKS_SELECT'
+    this.props.dispatch({ type, task: this.props.task })
   }
 
   ensureVisible() {
@@ -38,12 +36,11 @@ class TaskListItem extends React.Component {
 
   openExternal(event) {
     event.preventDefault()
-    const { url } = this.props
-    shell.openExternal(url)
+    shell.openExternal(this.props.task.url)
   }
 
   iconClass() {
-    const { state, isPullRequest } = this.props
+    const { state, isPullRequest } = this.props.task
     const iconClasses = ['octicon']
     if (isPullRequest) {
       iconClasses.push('octicon-git-pull-request')
@@ -63,9 +60,8 @@ class TaskListItem extends React.Component {
   }
 
   listItemClass() {
-    const { isFocused } = this.props
     const listItemClasses = ['task-list-item', 'control', 'columns']
-    if (isFocused) {
+    if (this.props.isFocused) {
       listItemClasses.push('focused')
     }
     return listItemClasses.join(' ')
@@ -74,7 +70,7 @@ class TaskListItem extends React.Component {
   render() {
     const { updatedAt, repository, title, repositoryOwner, user, storageKey,
             url, state, repositoryOwnerAvatar, userAvatar,
-            isSelected } = this.props
+            isSelected } = this.props.task
 
     return (
       <li className={this.listItemClass()}>
@@ -139,25 +135,9 @@ class TaskListItem extends React.Component {
 }
 
 TaskListItem.propTypes = {
-  ignore: React.PropTypes.bool,
-  snoozedAt: React.PropTypes.string,
-  archivedAt: React.PropTypes.string,
-  updatedAt: React.PropTypes.string.isRequired,
-  url: React.PropTypes.string.isRequired,
-  storageKey: React.PropTypes.string.isRequired,
-  title: React.PropTypes.string.isRequired,
-  user: React.PropTypes.string.isRequired,
-  userAvatar: React.PropTypes.string.isRequired,
-  userUrl: React.PropTypes.string,
-  repositoryOwner: React.PropTypes.string.isRequired,
-  repositoryOwnerUrl: React.PropTypes.string,
-  repositoryOwnerAvatar: React.PropTypes.string.isRequired,
-  dispatch: React.PropTypes.func.isRequired,
-  state: React.PropTypes.string.isRequired,
-  repository: React.PropTypes.string.isRequired,
-  isPullRequest: React.PropTypes.bool.isRequired,
-  isSelected: React.PropTypes.bool,
-  isFocused: React.PropTypes.bool.isRequired,
+  dispatch: React.PropTypes.func,
+  task: React.PropTypes.object,
+  isFocused: React.PropTypes.bool,
 }
 
 module.exports = connect()(TaskListItem)
