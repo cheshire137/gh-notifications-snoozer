@@ -65,8 +65,7 @@ describe.only('Tasks reducer', () => {
       const actual = store.getState().tasks
       assert.equal(2, actual.length, 'should still have 2 tasks')
       assert(!actual[1].isSelected, 'task should not be selected')
-      assert.equal('string', typeof actual[1].snoozedAt,
-                   'snoozedAt should be a time string')
+      assert.equal('string', typeof actual[1].snoozedAt, 'snoozedAt should be a time string')
     })
   })
 
@@ -83,8 +82,7 @@ describe.only('Tasks reducer', () => {
       const actual = store.getState().tasks
       assert.equal(2, actual.length, 'should still have 2 tasks')
       assert(!actual[1].isSelected, 'task should not be selected')
-      assert.equal('string', typeof actual[1].archivedAt,
-                   'archivedAt should be a time string')
+      assert.equal('string', typeof actual[1].archivedAt, 'archivedAt should be a time string')
     })
   })
 
@@ -122,10 +120,8 @@ describe.only('Tasks reducer', () => {
 
       const actual = store.getState().tasks
       assert.equal(2, actual.length, 'should still have 2 tasks')
-      assert.equal(null, actual[0].archivedAt,
-                   'selected task should not have archivedAt')
-      assert.equal(dateStr, actual[1].archivedAt,
-                   'deselected task should have archivedAt')
+      assert.equal(null, actual[0].archivedAt, 'selected task should not have archivedAt')
+      assert.equal(dateStr, actual[1].archivedAt, 'deselected task should have archivedAt')
     })
 
     it('restores snoozed, selected task', () => {
@@ -146,10 +142,8 @@ describe.only('Tasks reducer', () => {
 
       const actual = store.getState().tasks
       assert.equal(2, actual.length, 'should still have 2 tasks')
-      assert.equal(null, actual[0].snoozedAt,
-                   'selected task should not have snoozedAt')
-      assert.equal(dateStr, actual[1].snoozedAt,
-                   'deselected task should have snoozedAt')
+      assert.equal(null, actual[0].snoozedAt, 'selected task should not have snoozedAt')
+      assert.equal(dateStr, actual[1].snoozedAt, 'deselected task should have snoozedAt')
     })
   })
 
