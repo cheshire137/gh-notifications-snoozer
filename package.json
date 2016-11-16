@@ -26,6 +26,7 @@
     "redux-persist-node-storage": "^1.0.2"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
     "concurrently": "^3.1.0",
     "eslint": "^3.0.1",
     "eslint-config-airbnb": "^9.0.1",
