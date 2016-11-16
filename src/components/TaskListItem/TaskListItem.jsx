@@ -36,6 +36,7 @@ class TaskListItem extends React.Component {
 
   openExternal(event) {
     event.preventDefault()
+    this.props.dispatch({ type: 'TASKS_CLEAR_CHANGELOG', task: this.props.task })
     shell.openExternal(this.props.task.url)
   }
 
