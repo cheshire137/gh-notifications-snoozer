@@ -207,8 +207,8 @@ describe('Tasks reducer', () => {
       const store = Redux.createStore(reducer, { tasks: initialTasks })
       const query = 'some-filter'
       store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
-      const { tasks } = store.getState()
 
+      const { tasks } = store.getState()
       assert.equal(tasks[0].storageKey, fixtures.task.storageKey)
       assert.equal(tasks[0].updatedAt, now)
     })
@@ -220,8 +220,8 @@ describe('Tasks reducer', () => {
       const store = Redux.createStore(reducer, { tasks: initialTasks })
       const query = 'some-filter'
       store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
-      const { tasks } = store.getState()
 
+      const { tasks } = store.getState()
       assert(tasks.find(task => task.storageKey === fixtures.task.storageKey))
       assert(tasks.find(task => task.storageKey === fixtures.anotherTask.storageKey))
     })
@@ -234,9 +234,21 @@ describe('Tasks reducer', () => {
       const store = Redux.createStore(reducer, { tasks: initialTasks })
       const query = 'some-filter'
       store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
-      const { tasks } = store.getState()
 
+      const { tasks } = store.getState()
       assert.deepEqual(tasks[0].changelog, ['comments', 'body', 'labels', 'assignees'])
+    })
+
+    it('does not update the changelog for new tasks', () => {
+      const initialTasks = []
+      const updatedTasks = [fixtures.task]
+
+      const store = Redux.createStore(reducer, { tasks: initialTasks })
+      const query = 'some-filter'
+      store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
+
+      const { tasks } = store.getState()
+      assert.deepEqual(tasks[0].changelog, [])
     })
   })
 })

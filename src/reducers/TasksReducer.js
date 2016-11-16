@@ -8,21 +8,23 @@ function updateTasks(existingTasks, { tasks, filter }) {
 
   // Update existingTasks with new values and add new existingTasks
   tasks.forEach((newTask) => {
-    const oldTask = tasksByKey[newTask.storageKey] || {}
-    const filterQueries = oldTask.filterQueries || []
-    if (!filterQueries.includes(filter.query)) {
-      filterQueries.push(filter.query)
+    const oldTask = tasksByKey[newTask.storageKey]
+    const changelog = []
+    let filterQueries = [filter.query]
+
+    if (oldTask) {
+      filterQueries = _.union(oldTask.filterQueries, filterQueries)
+
+      if (oldTask.comments !== newTask.comments) changelog.push('comments')
+      if (oldTask.body !== newTask.body) changelog.push('body')
+      if (!_.isEqual(oldTask.labels, newTask.labels)) changelog.push('labels')
+      if (!_.isEqual(oldTask.assignees, newTask.assignees)) changelog.push('assignees')
     }
 
-    const changelog = []
-    if (oldTask.comments !== newTask.comments) changelog.push('comments')
-    if (oldTask.body !== newTask.body) changelog.push('body')
-    if (!_.isEqual(oldTask.labels, newTask.labels)) changelog.push('labels')
-    if (!_.isEqual(oldTask.assignees, newTask.assignees)) changelog.push('assignees')
-
-    const updatedTask = Object.assign({}, oldTask, newTask, { filterQueries, changelog })
+    const updatedTask = Object.assign({}, oldTask || {}, newTask, { filterQueries, changelog })
     tasksByKey[newTask.storageKey] = updatedTask
   })
+
 
   return Object.keys(tasksByKey).map(key => tasksByKey[key])
 }
