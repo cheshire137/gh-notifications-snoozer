@@ -272,4 +272,10 @@ const notification = {
   subscription_url: 'https://api.github.com/notifications/threads/1234/subscription',
 }
 
-module.exports = { task, anotherTask, pullRequest, issue, notification }
+module.exports = {
+  task: Object.freeze(task),
+  anotherTask: Object.freeze(anotherTask),
+  pullRequest: Object.freeze(pullRequest),
+  issue: Object.freeze(issue),
+  notification: Object.freeze(notification),
+}
