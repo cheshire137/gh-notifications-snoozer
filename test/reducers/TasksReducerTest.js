@@ -266,4 +266,17 @@ describe('Tasks reducer', () => {
       assert.equal(tasks[0].updatedAt, originalUpdatedAt)
     })
   })
+
+  describe('TASKS_CLEAR_CHANGELOG', () => {
+    it('clears the changelog', () => {
+      const task = Object.assign({}, fixtures.task, { changelog: { comments: 100 } })
+      const initialTasks = [task, fixtures.anotherTask]
+
+      const store = Redux.createStore(reducer, { tasks: initialTasks })
+      store.dispatch({ type: 'TASKS_CLEAR_CHANGELOG', task })
+
+      const updatedTask = store.getState().tasks.find(t => task.storageKey === t.storageKey)
+      assert.deepEqual(updatedTask.changelog, {})
+    })
+  })
 })

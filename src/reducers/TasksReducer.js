@@ -11,9 +11,10 @@ function updateTasks(existingTasks, { tasks, filter }) {
     const oldTask = tasksByKey[updatedTask.storageKey]
     let changelog = {}
     let filterQueries = [filter.query]
-    let updatedAt = oldTask.updatedAt
+    let updatedAt = updatedTask.updatedAt
 
     if (oldTask) {
+      updatedAt = oldTask.updatedAt
       filterQueries = _.union(oldTask.filterQueries, filterQueries)
       changelog = Object.assign({}, oldTask.changelog)
       if (oldTask.comments !== updatedTask.comments) {
@@ -58,6 +59,15 @@ function deselectTasks(existingTasks, { task }) {
   })
   console.info('deselect', deselectedTasks.map(t => t.storageKey))
   return updatedTasks
+}
+
+function clearChangelog(existingTasks, { task }) {
+  return existingTasks.map(existingTask => {
+    if (task.storageKey === existingTask.storageKey) {
+      return Object.assign({}, existingTask, { changelog: {} })
+    }
+    return existingTask
+  })
 }
 
 function currentTimeString() {
@@ -152,6 +162,8 @@ module.exports = (existingTasks = [], action) => {
       return ignoreTasks(existingTasks)
     case 'TASKS_RESTORE':
       return restoreTasks(existingTasks)
+    case 'TASKS_CLEAR_CHANGELOG':
+      return clearChangelog(existingTasks, action)
     default:
       return existingTasks
   }
