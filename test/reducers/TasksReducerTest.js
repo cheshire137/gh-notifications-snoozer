@@ -82,6 +82,19 @@ describe('Tasks reducer', () => {
       assert(!archivedTask.isSelected, 'archived tasks should not be selected')
       assert.isNotNaN(Date.parse(archivedTask.archivedAt), 'archivedAt should be a string date')
     })
+
+    it('clear previousValues when task is archived', () => {
+      const task = Object.assign({}, fixtures.task, { previousValues: { comments: 100 } })
+      const initialTasks = [task]
+
+      const store = Redux.createStore(reducer, { tasks: initialTasks })
+      store.dispatch({ type: 'TASKS_SELECT', task: fixtures.task })
+      store.dispatch({ type: 'TASKS_ARCHIVE' })
+
+      const archivedTask = store.getState().tasks[0]
+
+      assert.deepEqual(archivedTask.previousValues, {})
+    })
   })
 
   describe('TASKS_RESTORE', () => {

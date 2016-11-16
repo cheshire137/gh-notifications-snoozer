@@ -101,16 +101,15 @@ function ignoreTasks(existingTasks) {
 }
 
 function archiveTasks(existingTasks) {
-  const archivedTasks = []
   const updatedTasks = existingTasks.map(task => {
     if (task.isSelected) {
       const archivedAt = currentTimeString()
-      archivedTasks.push(task)
       return Object.assign({}, task, {
         archivedAt,
         snoozedAt: null,
         isSelected: false,
         ignore: false,
+        previousValues: {},
       })
     }
     return task
