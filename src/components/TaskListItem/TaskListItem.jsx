@@ -68,7 +68,7 @@ class TaskListItem extends React.Component {
   }
 
   changes(previousValues) {
-    if (Object.keys(previousValues || {}).length != 0) {
+    if (Object.keys(previousValues || {}).length !== 0) {
       return (
         <span> –
           {previousValues.comments ? ' unread comments' : null}
