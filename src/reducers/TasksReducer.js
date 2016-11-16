@@ -11,7 +11,7 @@ function updateTasks(existingTasks, { tasks, filter }) {
     const oldTask = tasksByKey[updatedTask.storageKey]
     let changelog = {}
     let filterQueries = [filter.query]
-    let updatedAt = updatedTask.updatedAt
+    let updatedAt = oldTask.updatedAt
 
     if (oldTask) {
       filterQueries = _.union(oldTask.filterQueries, filterQueries)
