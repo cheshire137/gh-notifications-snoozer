@@ -46,7 +46,7 @@
     "start": "concurrently \"npm run watch-css\" \"electron .\"",
     "style": "eslint -c .eslintrc *.js scripts/* src/*.js src/**/*.jsx test/**/*.js",
     "unit-tests": "xvfb-maybe electron-mocha --renderer --recursive --compilers js:babel-register test",
-    "test": "npm run-script style && NODE_ENV=test npm run-script unit-tests",
+    "test": "npm run-script style --silent && NODE_ENV=test npm run-script unit-tests --silent",
     "build-css": "lessc src/components/App/App.less > src/App.css",
     "watch-css": "less-watch-compiler src src components/App/App.less",
     "build-macos": "npm run build-css && if [ -d dist/GHSnooze-darwin-x64 ]; then rm -r dist/GHSnooze-darwin-x64; fi && electron-packager . --version=1.4.3 --out=dist --app-version=$npm_package_version --prune --asar --overwrite --platform=darwin --arch=all --ignore=test",
