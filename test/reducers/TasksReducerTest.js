@@ -226,21 +226,8 @@ describe('Tasks reducer', () => {
       assert(tasks.find(task => task.storageKey === fixtures.anotherTask.storageKey))
     })
 
-    it('updates the changelog field when the task changes', () => {
+    it('updates the previousValues field when the comment count changes', () => {
       const initialTasks = [fixtures.task]
-      const updates = { comments: 3, body: 'new', labels: ['new'], assignees: ['bob'] }
-      const updatedTasks = [Object.assign({}, fixtures.task, updates)]
-
-      const store = Redux.createStore(reducer, { tasks: initialTasks })
-      const query = 'some-filter'
-      store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
-
-      const { tasks } = store.getState()
-      assert.deepEqual(tasks[0].changelog, ['comments', 'body', 'labels', 'assignees'])
-    })
-
-    it('maintains existing changelog values when the task changes', () => {
-      const initialTasks = [Object.assign({}, fixtures.task, { changelog: ['body'] })]
       const updates = { comments: 3 }
       const updatedTasks = [Object.assign({}, fixtures.task, updates)]
 
@@ -249,10 +236,37 @@ describe('Tasks reducer', () => {
       store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
 
       const { tasks } = store.getState()
-      assert.sameMembers(tasks[0].changelog, ['comments', 'body'])
+      assert.deepEqual(tasks[0].previousValues, { comments: 1 })
     })
 
-    it('does not update the changelog for new tasks', () => {
+    it('updates the previousValues field when the state field changes', () => {
+      const initialTasks = [fixtures.task]
+      const updates = { state: 'closed' }
+      const updatedTasks = [Object.assign({}, fixtures.task, updates)]
+
+      const store = Redux.createStore(reducer, { tasks: initialTasks })
+      const query = 'some-filter'
+      store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
+
+      const { tasks } = store.getState()
+      assert.deepEqual(tasks[0].previousValues, { state: 'open' })
+    })
+
+    it('maintains existing previousValues values when the task changes', () => {
+      const previousValues = { previousValues: { state: 'closed' } }
+      const initialTasks = [Object.assign({}, fixtures.task, previousValues)]
+      const updates = { comments: 3 }
+      const updatedTasks = [Object.assign({}, fixtures.task, updates)]
+
+      const store = Redux.createStore(reducer, { tasks: initialTasks })
+      const query = 'some-filter'
+      store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
+
+      const { tasks } = store.getState()
+      assert.deepEqual(tasks[0].previousValues, { comments: 1, state: 'closed' })
+    })
+
+    it('does not update the previousValues for new tasks', () => {
       const initialTasks = []
       const updatedTasks = [fixtures.task]
 
@@ -261,7 +275,7 @@ describe('Tasks reducer', () => {
       store.dispatch({ type: 'TASKS_UPDATE', tasks: updatedTasks, filter: { query } })
 
       const { tasks } = store.getState()
-      assert.deepEqual(tasks[0].changelog, [])
+      assert.deepEqual(tasks[0].previousValues, {})
     })
   })
 })

@@ -67,16 +67,21 @@ class TaskListItem extends React.Component {
     return listItemClasses.join(' ')
   }
 
-  changes(changelog) {
-    if (changelog && changelog.length !== 0) {
-      return (<span> – {changelog.join(', ')} changed</span>)
+  changes(previousValues) {
+    if (Object.keys(previousValues || {}).length != 0) {
+      return (
+        <span> –
+          {previousValues.comments ? ' unread comments' : null}
+          {previousValues.state ? ' state changed' : null}
+        </span>
+      )
     }
   }
 
   render() {
     const { updatedAt, repository, title, repositoryOwner, user, storageKey,
             url, state, repositoryOwnerAvatar, userAvatar, isSelected,
-            changelog } = this.props.task
+            previousValues } = this.props.task
 
     return (
       <li className={this.listItemClass()}>
@@ -118,7 +123,7 @@ class TaskListItem extends React.Component {
               <span className="task-list-item-repository">
                 {repository}
               </span>
-              {this.changes(changelog)}
+              {this.changes(previousValues)}
             </span>
           </label>
         </div>

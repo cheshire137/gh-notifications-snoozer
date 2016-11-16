@@ -9,19 +9,21 @@ function updateTasks(existingTasks, { tasks, filter }) {
   // Update existingTasks with new values and add new existingTasks
   tasks.forEach((newTask) => {
     const oldTask = tasksByKey[newTask.storageKey]
-    let changelog = []
+    let previousValues = {}
     let filterQueries = [filter.query]
 
     if (oldTask) {
       filterQueries = _.union(oldTask.filterQueries, filterQueries)
-      changelog = oldTask.changelog
-      if (oldTask.comments !== newTask.comments) changelog.push('comments')
-      if (oldTask.body !== newTask.body) changelog.push('body')
-      if (!_.isEqual(oldTask.labels, newTask.labels)) changelog.push('labels')
-      if (!_.isEqual(oldTask.assignees, newTask.assignees)) changelog.push('assignees')
+      previousValues = Object.assign({}, oldTask.previousValues)
+      if (oldTask.comments !== newTask.comments && !previousValues.hasOwnProperty('comments')) {
+        previousValues.comments = oldTask.comments
+      }
+      if (oldTask.state !== newTask.state && !previousValues.hasOwnProperty('state')) {
+        previousValues.state = oldTask.state
+      }
     }
 
-    const updatedTask = Object.assign({}, oldTask || {}, newTask, { filterQueries, changelog })
+    const updatedTask = Object.assign({}, oldTask || {}, newTask, { filterQueries, previousValues })
     tasksByKey[newTask.storageKey] = updatedTask
   })
 
