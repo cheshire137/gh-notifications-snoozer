@@ -69,7 +69,7 @@ describe('Tasks reducer', () => {
     })
   })
 
-  describe.only('TASKS_ARCHIVE', () => {
+  describe('TASKS_ARCHIVE', () => {
     it('archives the selected task', () => {
       const initialTasks = [fixtures.task, fixtures.anotherTask]
 
