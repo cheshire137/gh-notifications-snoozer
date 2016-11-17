@@ -1,5 +1,6 @@
 const { connect } = require('react-redux')
 const React = require('react')
+const GitHub = require('../../models/github')
 const FilterSuggester = require('../FilterSuggester')
 const hookUpStickyNav = require('../hookUpStickyNav')
 
@@ -27,6 +28,18 @@ class NewFilter extends React.Component {
     const filter = { name, query }
     this.props.dispatch({ type: 'FILTERS_UPDATE', filter })
     this.props.dispatch({ type: 'FILTERS_SELECT', filter })
+
+    const github = new GitHub()
+    github.getTasks(filter).then(result => {
+      const tasks = result.tasks
+
+      // GitHub's api doesn't like when the output includes milliseconds
+      const updatedAt = (new Date()).toISOString().replace(/\.\d{3}Z/, 'Z')
+      this.props.dispatch({ type: 'TASKS_UPDATE', filter, tasks })
+      const updatedFilter = Object.assign({}, filter, { updatedAt })
+      this.props.dispatch({ type: 'FILTERS_UPDATE', filter: updatedFilter })
+    })
+
     this.props.cancel() // Not really canceled, it will force the task list to show
   }
 

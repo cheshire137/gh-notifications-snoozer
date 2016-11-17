@@ -18,20 +18,20 @@ class TaskListItem extends React.Component {
   }
 
   ensureVisible() {
-    if (!this.props.isFocused) {
-      return
-    }
-    const el = ReactDOM.findDOMNode(this)
-    const rect = el.getBoundingClientRect()
-    const isInView = rect.top >= 0 && rect.left >= 0 &&
-        rect.bottom <= window.innerHeight && rect.right <= window.innerWidth
-    const nav = document.querySelector('.tertiary-nav')
-    const navRect = nav.getBoundingClientRect()
-    const isFullyInView = isInView && rect.top >= navRect.bottom
-    if (isFullyInView) {
-      return
-    }
-    window.scrollTo(0, el.offsetTop - navRect.bottom)
+    // if (!this.props.isFocused) {
+    //   return
+    // }
+    // const el = ReactDOM.findDOMNode(this)
+    // const rect = el.getBoundingClientRect()
+    // const isInView = rect.top >= 0 && rect.left >= 0 &&
+    //     rect.bottom <= window.innerHeight && rect.right <= window.innerWidth
+    // const nav = document.querySelector('.tertiary-nav')
+    // const navRect = nav.getBoundingClientRect()
+    // const isFullyInView = isInView && rect.top >= navRect.bottom
+    // if (isFullyInView) {
+    //   return
+    // }
+    // window.scrollTo(0, el.offsetTop - navRect.bottom)
   }
 
   openExternal(event) {
@@ -69,12 +69,16 @@ class TaskListItem extends React.Component {
   }
 
   changes(changelog) {
+    const changes = []
+    if (changelog.comments) {
+      const newCommentCount = this.props.task.comments - changelog.comments
+      changes.push(`${newCommentCount} new comment${newCommentCount === 1 ? '' : 's'}`)
+    }
+    if (changelog.state) changes.push(this.props.task.state)
+
     if (Object.keys(changelog || {}).length !== 0) {
       return (
-        <span> –
-          {changelog.comments ? ' unread comments' : null}
-          {changelog.state ? ' state changed' : null}
-        </span>
+        <span> : {changes.join(', ')}</span>
       )
     }
   }
