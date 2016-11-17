@@ -42,7 +42,7 @@ class TaskList extends React.Component {
     } else if (open.includes(event.key)) {
       this.openFocusedTask()
     } else if (select.includes(event.key)) {
-      this.selectFocusedTask()
+      this.onToggle()
     } else if (snooze.includes(event.key)) {
       this.snooze()
     } else if (archive.includes(event.key)) {
@@ -52,7 +52,7 @@ class TaskList extends React.Component {
     }
   }
 
-  selectFocusedTask() {
+  onToggle(index = this.state.focusedIndex) {
     const task = this.props.tasks[this.state.focusedIndex]
     const type = task.isSelected ? 'TASKS_DESELECT' : 'TASKS_SELECT'
     this.props.dispatch({ type, task: { storageKey: task.storageKey } })
@@ -125,9 +125,11 @@ class TaskList extends React.Component {
       return (
         <ol className="task-list">
           {sortedTasks.map((task, index) => {
-            const isFocused = index === this.state.focusedIndex
-            const key = `${task.storageKey}-${task.isSelected}-${isFocused}`
-            return <TaskListItem task={task} key={key} isFocused={isFocused} />
+            const isFocused = (index === this.state.focusedIndex)
+            return (
+              <TaskListItem task={task} key={task.storageKey}
+                isFocused={isFocused} onToggle={() => this.onToggle(index)}/>
+            )
           })}
         </ol>
       )
@@ -135,9 +137,7 @@ class TaskList extends React.Component {
   }
 
   render() {
-    const isSnoozeDisabled = this.props.tasks.filter(task => task.isSelected).length < 1
-    const isArchiveDisabled = isSnoozeDisabled
-    const isIgnoreDisabled = isSnoozeDisabled
+    const disableButton = (this.selectedTasks.length === 0)
     return (
       <div>
         <nav className="task-list-navigation secondary-nav nav has-tertiary-nav">
@@ -170,7 +170,7 @@ class TaskList extends React.Component {
                 className="control button is-link"
                 id="snooze-button"
                 title="Snooze selected"
-                disabled={isSnoozeDisabled}
+                disabled={disableButton}
               >😴 Snooze</button>
             </span>
             <span className="nav-item compact-vertically">
@@ -180,7 +180,7 @@ class TaskList extends React.Component {
                 className="control button is-link"
                 onClick={e => this.archive()}
                 title="Archive selected"
-                disabled={isArchiveDisabled}
+                disabled={disableButton}
               >📥 Archive</button>
             </span>
             <span className="nav-item compact-vertically">
@@ -189,7 +189,7 @@ class TaskList extends React.Component {
                 className="control button is-link"
                 onClick={e => this.ignore()}
                 title="Ignore selected"
-                disabled={isIgnoreDisabled}
+                disabled={disableButton}
               >❌ Ignore</button>
             </span>
           </div>
