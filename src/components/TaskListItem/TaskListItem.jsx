@@ -22,16 +22,7 @@ class TaskListItem extends React.Component {
       return
     }
     const el = ReactDOM.findDOMNode(this)
-    const rect = el.getBoundingClientRect()
-    const isInView = rect.top >= 0 && rect.left >= 0 &&
-        rect.bottom <= window.innerHeight && rect.right <= window.innerWidth
-    const nav = document.querySelector('.tertiary-nav')
-    const navRect = nav.getBoundingClientRect()
-    const isFullyInView = isInView && rect.top >= navRect.bottom
-    if (isFullyInView) {
-      return
-    }
-    window.scrollTo(0, el.offsetTop - navRect.bottom)
+    el.scrollIntoViewIfNeeded()
   }
 
   openExternal(event) {

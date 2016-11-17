@@ -10,67 +10,71 @@ class TaskList extends React.Component {
   constructor(props) {
     super(props)
     this.state = { selectedIndex: null }
-    this.onKeyUp = this.onKeyUp.bind(this)
-    this.onKeyDown = this.onKeyDown.bind(this)
   }
 
   componentDidMount() {
-    document.addEventListener('keyup', this.onKeyUp)
-    document.addEventListener('keydown', this.onKeyDown)
+    this.keyDownEventListener = event => this.onKeyDown(event)
+    document.addEventListener('keydown', this.keyDownEventListener)
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keyup', this.onKeyUp)
-    document.removeEventListener('keydown', this.onKeyDown)
-  }
-
-  onSnoozeClick(event) {
-    event.currentTarget.blur() // defocus button
-    this.props.dispatch({ type: 'TASKS_SNOOZE' })
-  }
-
-  onArchiveClick(event) {
-    event.currentTarget.blur() // defocus button
-    this.props.dispatch({ type: 'TASKS_ARCHIVE' })
-  }
-
-  onIgnoreClick(event) {
-    event.currentTarget.blur() // defocus button
-    this.props.dispatch({ type: 'TASKS_IGNORE' })
-  }
-
-  onKeyUp(event) {
-    if (this.isFiltersMenuFocused()) {
-      return
-    }
-    if (event.key === 'ArrowUp') {
-      this.focusPreviousTask()
-    } else if (event.key === 'ArrowDown') {
-      this.focusNextTask()
-    } else if (event.key === 'Escape') {
-      this.setState({ selectedIndex: null })
-    } else if (event.key === 'Enter') {
-      if (typeof this.state.selectedIndex === 'number') {
-        this.openLinkToFocusedTask()
-      }
-    }
+    document.removeEventListener('keydown', this.keyDownEventListener)
   }
 
   onKeyDown(event) {
-    if (this.isFiltersMenuFocused()) {
-      return
-    }
-    if (event.key === ' ' && typeof this.state.selectedIndex === 'number') {
-      event.preventDefault()
+    const up = ['ArrowUp', 'k']
+    const down = ['ArrowUp', 'j']
+    const open = ['Enter', 'o']
+    const select = [' ', 'x']
+    const escape = ['Escape']
+    const archive = ['a']
+    const snooze = ['s']
+    const ignore = ['i']
+
+    event.preventDefault()
+
+    if (up.includes(event.key)) {
+      this.focusPreviousTask()
+    } else if (down.includes(event.key)) {
+      this.focusNextTask()
+    } else if (escape.includes(event.key)) {
+      this.setState({ selectedIndex: null })
+    } else if (open.includes(event.key)) {
+      this.openFocusedTask()
+    } else if (select.includes(event.key)) {
       this.selectFocusedTask()
-    } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-      event.preventDefault()
+    } else if (snooze.includes(event.key)) {
+      this.props.dispatch({ type: 'TASKS_SNOOZE' })
+    } else if (archive.includes(event.key)) {
+      this.props.dispatch({ type: 'TASKS_ARCHIVE' })
+    } else if (ignore.includes(event.key)) {
+      this.props.dispatch({ type: 'TASKS_IGNORE' })
     }
   }
 
-  isFiltersMenuFocused() {
-    return document.activeElement &&
-        document.activeElement.id === 'filters-menu'
+  selectFocusedTask() {
+    const task = this.props.tasks[this.state.selectedIndex]
+    const type = task.isSelected ? 'TASKS_DESELECT' : 'TASKS_SELECT'
+    this.props.dispatch({ type, task: { storageKey: task.storageKey } })
+  }
+
+  openFocusedTask() {
+    const task = this.props.tasks[this.state.selectedIndex]
+    shell.openExternal(task.url)
+  }
+
+  focusNextTask() {
+    const lastIndex = this.props.tasks.length - 1
+    let selectedIndex = this.state.selectedIndex + 1
+    if (selectedIndex > lastIndex) selectedIndex = 0
+    this.setState({ selectedIndex })
+  }
+
+  focusPreviousTask() {
+    const lastIndex = this.props.tasks.length - 1
+    let selectedIndex = this.state.selectedIndex + -1
+    if (selectedIndex < 0) selectedIndex = lastIndex
+    this.setState({ selectedIndex })
   }
 
   changeFilter(filterName) {
@@ -94,41 +98,6 @@ class TaskList extends React.Component {
       this.props.dispatch({ type: 'TASKS_UPDATE', filter, tasks })
       this.props.dispatch({ type: 'FILTERS_UPDATE', filter })
     })
-  }
-
-  selectFocusedTask() {
-    const task = this.props.tasks[this.state.selectedIndex]
-    const type = task.isSelected ? 'TASKS_DESELECT' : 'TASKS_SELECT'
-    this.props.dispatch({ type, task: { storageKey: task.storageKey } })
-  }
-
-  openLinkToFocusedTask() {
-    const task = this.props.tasks[this.state.selectedIndex]
-    shell.openExternal(task.url)
-  }
-
-  focusNextTask() {
-    const oldIndex = this.state.selectedIndex
-    let newIndex = typeof oldIndex === 'number' ? oldIndex + 1 : 0
-    if (newIndex > this.props.tasks.length - 1) {
-      newIndex = 0
-    }
-    this.focusTaskAtIndex(newIndex)
-  }
-
-  focusPreviousTask() {
-    const oldIndex = this.state.selectedIndex
-    const lastIndex = this.props.tasks.length - 1
-    let newIndex = typeof oldIndex === 'number' ? oldIndex - 1 : lastIndex
-    if (newIndex < 0) {
-      newIndex = lastIndex
-    }
-    this.focusTaskAtIndex(newIndex)
-  }
-
-  focusTaskAtIndex(index) {
-    console.info('focus task', this.props.tasks[index].storageKey)
-    this.setState({ selectedIndex: index })
   }
 
   taskListOrMessage() {
@@ -181,7 +150,7 @@ class TaskList extends React.Component {
             <span className="nav-item compact-vertically">
               <button
                 type="button"
-                onClick={e => this.onSnoozeClick(e)}
+                onClick={e => this.props.dispatch({ type: 'TASKS_SNOOZE' })}
                 className="control button is-link"
                 id="snooze-button"
                 title="Snooze selected"
@@ -193,7 +162,7 @@ class TaskList extends React.Component {
                 type="button"
                 id="archive-button"
                 className="control button is-link"
-                onClick={e => this.onArchiveClick(e)}
+                onClick={e => this.props.dispatch({ type: 'TASKS_SNOOZE' })}
                 title="Archive selected"
                 disabled={isArchiveDisabled}
               >📥 Archive</button>
@@ -202,7 +171,7 @@ class TaskList extends React.Component {
               <button
                 type="button"
                 className="control button is-link"
-                onClick={e => this.onIgnoreClick(e)}
+                onClick={e => this.props.dispatch({ type: 'TASKS_IGNORE' })}
                 title="Ignore selected"
                 disabled={isIgnoreDisabled}
               >❌ Ignore</button>
