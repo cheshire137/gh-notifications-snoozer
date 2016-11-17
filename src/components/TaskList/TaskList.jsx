@@ -9,7 +9,7 @@ const TaskVisibility = require('../../models/TaskVisibility')
 class TaskList extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { selectedIndex: null }
+    this.state = { focusedIndex: null }
   }
 
   componentDidMount() {
@@ -38,43 +38,59 @@ class TaskList extends React.Component {
     } else if (down.includes(event.key)) {
       this.focusNextTask()
     } else if (escape.includes(event.key)) {
-      this.setState({ selectedIndex: null })
+      this.setState({ focusedIndex: null })
     } else if (open.includes(event.key)) {
       this.openFocusedTask()
     } else if (select.includes(event.key)) {
       this.selectFocusedTask()
     } else if (snooze.includes(event.key)) {
-      this.props.dispatch({ type: 'TASKS_SNOOZE' })
+      this.snooze()
     } else if (archive.includes(event.key)) {
-      this.props.dispatch({ type: 'TASKS_ARCHIVE' })
+      this.archive()
     } else if (ignore.includes(event.key)) {
-      this.props.dispatch({ type: 'TASKS_IGNORE' })
+      this.ignore()
     }
   }
 
   selectFocusedTask() {
-    const task = this.props.tasks[this.state.selectedIndex]
+    const task = this.props.tasks[this.state.focusedIndex]
     const type = task.isSelected ? 'TASKS_DESELECT' : 'TASKS_SELECT'
     this.props.dispatch({ type, task: { storageKey: task.storageKey } })
   }
 
   openFocusedTask() {
-    const task = this.props.tasks[this.state.selectedIndex]
+    const task = this.props.tasks[this.state.focusedIndex]
     shell.openExternal(task.url)
   }
 
   focusNextTask() {
     const lastIndex = this.props.tasks.length - 1
-    let selectedIndex = this.state.selectedIndex + 1
-    if (selectedIndex > lastIndex) selectedIndex = 0
-    this.setState({ selectedIndex })
+    let focusedIndex = this.state.focusedIndex + 1
+    if (focusedIndex > lastIndex) focusedIndex = 0
+    this.setState({ focusedIndex })
   }
 
   focusPreviousTask() {
     const lastIndex = this.props.tasks.length - 1
-    let selectedIndex = this.state.selectedIndex + -1
-    if (selectedIndex < 0) selectedIndex = lastIndex
-    this.setState({ selectedIndex })
+    let focusedIndex = this.state.focusedIndex + -1
+    if (focusedIndex < 0) focusedIndex = lastIndex
+    this.setState({ focusedIndex })
+  }
+
+  selectedTasks() {
+    this.state.selectedIndexes.map(index => this.props.tasks[index])
+  }
+
+  snooze() {
+    this.props.dispatch({ type: 'TASKS_SNOOZE', tasks: this.selectedTasks() })
+  }
+
+  archive() {
+    this.props.dispatch({ type: 'TASKS_ARCHIVE', tasks: this.selectedTasks() })
+  }
+
+  ignore() {
+    this.props.dispatch({ type: 'TASKS_IGNORE', tasks: this.selectedTasks() })
   }
 
   changeFilter(filterName) {
@@ -109,7 +125,7 @@ class TaskList extends React.Component {
       return (
         <ol className="task-list">
           {sortedTasks.map((task, index) => {
-            const isFocused = index === this.state.selectedIndex
+            const isFocused = index === this.state.focusedIndex
             const key = `${task.storageKey}-${task.isSelected}-${isFocused}`
             return <TaskListItem task={task} key={key} isFocused={isFocused} />
           })}
@@ -150,7 +166,7 @@ class TaskList extends React.Component {
             <span className="nav-item compact-vertically">
               <button
                 type="button"
-                onClick={e => this.props.dispatch({ type: 'TASKS_SNOOZE' })}
+                onClick={e => this.snooze()}
                 className="control button is-link"
                 id="snooze-button"
                 title="Snooze selected"
@@ -162,7 +178,7 @@ class TaskList extends React.Component {
                 type="button"
                 id="archive-button"
                 className="control button is-link"
-                onClick={e => this.props.dispatch({ type: 'TASKS_SNOOZE' })}
+                onClick={e => this.archive()}
                 title="Archive selected"
                 disabled={isArchiveDisabled}
               >📥 Archive</button>
@@ -171,7 +187,7 @@ class TaskList extends React.Component {
               <button
                 type="button"
                 className="control button is-link"
-                onClick={e => this.props.dispatch({ type: 'TASKS_IGNORE' })}
+                onClick={e => this.ignore()}
                 title="Ignore selected"
                 disabled={isIgnoreDisabled}
               >❌ Ignore</button>
