@@ -124,7 +124,9 @@ class TaskList extends React.Component {
 
   taskListOrMessage() {
     const sortedTasks = this.props.tasks.sort((a, b) => {
-      return Date.parse(b.updatedAt) - Date.parse(a.updatedAt)
+      const dateA = Date.parse(a.updatedAt)
+      const dateB = Date.parse(b.updatedAt)
+      return dateB - dateA
     })
 
     if (this.props.tasks.length > 0) {

@@ -119,9 +119,7 @@ class App extends React.Component {
 
     let promise = Promise.resolve()
     this.props.filters.forEach(filter => {
-      promise = promise.then(() => {
-        return HelperActions.updateTasks(this.props.dispatch, filter)
-      })
+      promise = promise.then(() => HelperActions.updateTasks(this.props.dispatch, filter))
     })
 
     return promise.then(() => {
@@ -219,7 +217,7 @@ App.propTypes = {
 const mapStateToProps = state => {
   const props = {
     filters: state.filters,
-    activeFilter: state.filters.find(filter => filter.selected)
+    activeFilter: state.filters.find(filter => filter.selected),
   }
   return props
 }
