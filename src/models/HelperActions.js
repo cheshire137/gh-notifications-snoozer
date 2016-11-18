@@ -3,7 +3,7 @@ const GitHub = require('./GitHub')
 module.exports = class HelperActions {
   static updateTasks(dispatch, filter) {
     const github = new GitHub()
-    github.getTasks(filter).then(result => {
+    return github.getTasks(filter).then(result => {
       const { tasks } = result
 
       // GitHub's api doesn't like when the output includes milliseconds
