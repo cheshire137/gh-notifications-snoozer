@@ -49,6 +49,8 @@ class TaskListItem extends React.Component {
         iconClasses.push('opened')
       } else if (state === 'closed') {
         iconClasses.push('closed')
+      } if (state === 'merged') {
+        iconClasses.push('merged')
       }
     } else {
       if (state === 'open') {
