@@ -168,6 +168,7 @@ describe('TaskList', () => {
       const tasks = store.getState().tasks
       const updatedTask = Object.assign({}, tasks[0], {
         updatedAt: new Date(archiveTime.getFullYear() + 1, 0, 1).toISOString(),
+        comments: 13,
       })
 
       store.dispatch({

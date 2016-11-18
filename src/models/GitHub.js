@@ -36,14 +36,17 @@ function getTask(data) {
     userUrl: data.user.html_url,
     userAvatar: `https://github.com/${data.user.login}.png?size=20`,
     userType: data.user.type,
+    comments: data.comments,
+    labels: data.labels,
+    milestone: data.milestone,
+    assignees: data.assignees,
   }
 }
 
 class GitHub extends Fetcher {
-  constructor(token, perPage = 30) {
+  constructor(token) {
     super()
     this.token = token
-    this.perPage = perPage
   }
 
   // https://developer.github.com/v3/activity/notifications/#list-your-notifications
@@ -54,22 +57,27 @@ class GitHub extends Fetcher {
       date.setDate(date.getDate() - 31)
     }
     const dateStr = date.toISOString()
-    return this.get(`notifications?since=${encodeURIComponent(dateStr)}`,
-                    { fetchAll: true }).then(result => result.json)
+    const url = `notifications?since=${encodeURIComponent(dateStr)}`
+    return this.get(url).then(result => result.json)
   }
 
   // https://developer.github.com/v3/search/#search-issues
-  getTasks(query) {
-    const params = `?q=${encodeURIComponent(query)}`
-    const url = `${Config.githubApiUrl}/search/issues${params}`
+  getTasks(filter) {
+    const extraParams = filter.updatedAt ? ` updated:>${filter.updatedAt}` : ' is:open'
+    const params = `?q=${encodeURIComponent(filter.query + extraParams)}`
+    const url = `${Config.githubApiUrl}/search/issues${params}&per_page=100`
     return this.getTasksFromUrl(url)
   }
 
-  getTasksFromUrl(url) {
-    return this.get(url).then(result => {
-      const { json, nextUrl } = result
-      return { tasks: json.items.map(d => getTask(d)), nextUrl,
-               currentUrl: url }
+  getTasksFromUrl(url, items = []) {
+    return this.get(url).then(({ json, headers }) => {
+      const allItems = items.concat(json.items)
+      const nextUrl = this.getNextUrl(headers)
+      if (nextUrl) {
+        return this.getTasksFromUrl(nextUrl, allItems)
+      }
+
+      return { tasks: allItems.map(d => getTask(d)), nextUrl, currentUrl: url }
     })
   }
 
@@ -103,30 +111,10 @@ class GitHub extends Fetcher {
     }
   }
 
-  get(path, args = {}) {
+  get(path) {
     const url = this.getFullUrl(path)
     const opts = { headers: this.getHeaders() }
-    return new Promise((resolve, reject) => super.get(url, opts).then(res => {
-      const combinedJson = this.combineJson(res.json, args.previousJson)
-      const nextUrl = this.getNextUrl(res.headers)
-      if (nextUrl && args.fetchAll) {
-        return this.get(nextUrl, { previousJson: combinedJson }).
-            then(resolve).catch(reject)
-      }
-      return resolve({ json: combinedJson, nextUrl })
-    }).catch(reject))
-  }
-
-  combineJson(json1, json2) {
-    if (typeof json2 === 'undefined') {
-      return json1
-    }
-    const is1Array = json1.constructor.name === 'Array'
-    const is2Array = json2.constructor.name === 'Array'
-    if (is1Array && is2Array) {
-      return json1.concat(json2)
-    }
-    return Object.assign({}, json1, json2)
+    return super.get(url, opts)
   }
 
   getFullUrl(relativeOrAbsoluteUrl) {

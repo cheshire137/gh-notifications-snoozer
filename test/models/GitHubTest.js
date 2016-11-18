@@ -30,17 +30,31 @@ describe('GitHub', () => {
   })
 
   describe('getTasks', () => {
-    const url = `${Config.githubApiUrl}/search/issues?q=cats`
-
-    before(() => {
+    it('returns a list of tasks', done => {
+      const url = `${Config.githubApiUrl}/search/issues?q=cats%20is%3Aopen&per_page=100`
       fetchMock.get(url, { items: [fixtures.pullRequest] })
+
+      const github = new GitHub('fake-token')
+      const filter = { query: 'cats' }
+      github.getTasks(filter).then(actual => {
+        assert.equal('object', typeof actual.tasks, 'should have list of tasks property')
+        assert.equal(null, actual.nextUrl, 'should not have a second page')
+        assert.equal(url, actual.currentUrl, 'should have URL that was fetched')
+        assert.equal(1, actual.tasks.length, 'should have one task')
+        assert.equal(fixtures.task.specialKey, actual.tasks[0].specialKey, 'not the same task')
+        done()
+      })
     })
 
-    it('returns a list of tasks', done => {
+    it('returns a list of updated tasks', done => {
+      const query = 'cats%20updated%3A%3E2014-06-11T16%3A48%3A20Z'
+      const url = `${Config.githubApiUrl}/search/issues?q=${query}&per_page=100`
+      fetchMock.get(url, { items: [fixtures.pullRequest] })
+
       const github = new GitHub('fake-token')
-      github.getTasks('cats').then(actual => {
-        assert.equal('object', typeof actual.tasks,
-                     'should have list of tasks property')
+      const filter = { query: 'cats', updatedAt: '2014-06-11T16:48:20Z' }
+      github.getTasks(filter).then(actual => {
+        assert.equal('object', typeof actual.tasks, 'should have list of tasks property')
         assert.equal(null, actual.nextUrl, 'should not have a second page')
         assert.equal(url, actual.currentUrl, 'should have URL that was fetched')
         assert.equal(1, actual.tasks.length, 'should have one task')
@@ -65,25 +79,6 @@ describe('GitHub', () => {
       const actual = github.getNextUrlFromLink(header)
 
       assert.equal(expected, actual)
-    })
-  })
-
-  describe('combineJson', () => {
-    it('combines two arrays', () => {
-      const json1 = [{ cat: 1 }]
-      const json2 = [{ dog: 2, frog: 3 }]
-
-      const github = new GitHub()
-      const actual = github.combineJson(json1, json2)
-      assert.deepEqual([{ cat: 1 }, { dog: 2, frog: 3 }], actual)
-    })
-
-    it('returns first JSON if second is omitted', () => {
-      const json = [{ id: 3, hello: 'yes' }]
-
-      const github = new GitHub()
-      const actual = github.combineJson(json)
-      assert.deepEqual(json, actual)
     })
   })
 })

@@ -85,12 +85,15 @@ class TaskList extends React.Component {
   refresh(event) {
     event.currentTarget.blur() // defocus button
     const github = new GitHub()
-    github.getTasks(this.props.activeFilter.query)
-      .then(result => {
-        const tasks = result.tasks
-        const filter = this.props.activeFilter
-        this.props.dispatch({ type: 'TASKS_UPDATE', filter, tasks })
-      })
+    github.getTasks(this.props.activeFilter).then(result => {
+      const tasks = result.tasks
+
+      // GitHub's api doesn't like when the output includes milliseconds
+      const updatedAt = (new Date()).toISOString().replace(/\.\d{3}Z/, 'Z')
+      const filter = Object.assign({}, this.props.activeFilter, { updatedAt })
+      this.props.dispatch({ type: 'TASKS_UPDATE', filter, tasks })
+      this.props.dispatch({ type: 'FILTERS_UPDATE', filter })
+    })
   }
 
   selectFocusedTask() {
@@ -129,10 +132,14 @@ class TaskList extends React.Component {
   }
 
   taskListOrMessage() {
+    const sortedTasks = this.props.tasks.sort((a, b) => {
+      return Date.parse(b.updatedAt) - Date.parse(a.updatedAt)
+    })
+
     if (this.props.tasks.length > 0) {
       return (
         <ol className="task-list">
-          {this.props.tasks.map((task, index) => {
+          {sortedTasks.map((task, index) => {
             const isFocused = index === this.state.selectedIndex
             const key = `${task.storageKey}-${task.isSelected}-${isFocused}`
             return <TaskListItem task={task} key={key} isFocused={isFocused} />

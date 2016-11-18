@@ -36,6 +36,7 @@ class TaskListItem extends React.Component {
 
   openExternal(event) {
     event.preventDefault()
+    this.props.dispatch({ type: 'TASKS_CLEAR_CHANGELOG', task: this.props.task })
     shell.openExternal(this.props.task.url)
   }
 
@@ -67,10 +68,21 @@ class TaskListItem extends React.Component {
     return listItemClasses.join(' ')
   }
 
+  changes(changelog) {
+    if (Object.keys(changelog || {}).length > 0) {
+      return (
+        <span> –
+          {changelog.comments ? ' unread comments' : null}
+          {changelog.state ? ' state changed' : null}
+        </span>
+      )
+    }
+  }
+
   render() {
     const { updatedAt, repository, title, repositoryOwner, user, storageKey,
-            url, state, repositoryOwnerAvatar, userAvatar,
-            isSelected } = this.props.task
+            url, state, repositoryOwnerAvatar, userAvatar, isSelected,
+            changelog } = this.props.task
 
     return (
       <li className={this.listItemClass()}>
@@ -112,6 +124,7 @@ class TaskListItem extends React.Component {
               <span className="task-list-item-repository">
                 {repository}
               </span>
+              {this.changes(changelog)}
             </span>
           </label>
         </div>

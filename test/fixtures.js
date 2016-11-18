@@ -158,7 +158,37 @@ const task = {
   userAvatar: 'https://github.com/jgrowl.png?size=20',
   userType: 'User',
   apiUrl: 'https://api.github.com/repos/ansible/ansible/pulls/16510',
-  filterQueries: ['cats']
+  comments: 1,
+  filterQueries: ['cats'],
+  changelog: {},
+}
+
+const anotherTask = {
+  storageKey: 'issue-55555',
+  id: 55555,
+  type: 'issue',
+  title: 'this is some issue',
+  body: 'this is the body',
+  state: 'open',
+  createdAt: '2016-01-01T00:00:00Z',
+  updatedAt: '2016-01-02T00:00:00Z',
+  closedAt: null,
+  isPullRequest: false,
+  repositoryApiUrl: 'https://api.github.com/repos/ansible/ansible',
+  url: 'https://github.com/ansible/ansible/issue/1',
+  number: 1,
+  repository: 'ansible/ansible',
+  repositoryOwner: 'ansible',
+  repositoryOwnerUrl: 'https://github.com/ansible',
+  repositoryOwnerAvatar: 'https://github.com/ansible.png?size=25',
+  user: 'jgrowl',
+  userUrl: 'https://github.com/jgrowl',
+  userAvatar: 'https://github.com/jgrowl.png?size=20',
+  userType: 'User',
+  apiUrl: 'https://api.github.com/repos/ansible/ansible/issues/1',
+  comments: 1,
+  filterQueries: ['cats'],
+  changelog: {},
 }
 
 const notification = {
@@ -242,4 +272,10 @@ const notification = {
   subscription_url: 'https://api.github.com/notifications/threads/1234/subscription',
 }
 
-module.exports = { task, pullRequest, issue, notification }
+module.exports = {
+  task: Object.freeze(task),
+  anotherTask: Object.freeze(anotherTask),
+  pullRequest: Object.freeze(pullRequest),
+  issue: Object.freeze(issue),
+  notification: Object.freeze(notification),
+}

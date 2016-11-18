@@ -1,3 +1,5 @@
+const _ = require('lodash')
+
 function updateTasks(existingTasks, { tasks, filter }) {
   const tasksByKey = {}
 
@@ -5,15 +7,30 @@ function updateTasks(existingTasks, { tasks, filter }) {
   existingTasks.forEach(task => (tasksByKey[task.storageKey] = task))
 
   // Update existingTasks with new values and add new existingTasks
-  tasks.forEach((newTask) => {
-    const oldTask = tasksByKey[newTask.storageKey] || {}
-    const filterQueries = oldTask.filterQueries || []
-    if (!filterQueries.includes(filter.query)) {
-      filterQueries.push(filter.query)
+  tasks.forEach(updatedTask => {
+    const oldTask = tasksByKey[updatedTask.storageKey]
+    let changelog = {}
+    let filterQueries = [filter.query]
+    let updatedAt = updatedTask.updatedAt
+
+    if (oldTask) {
+      updatedAt = oldTask.updatedAt
+      filterQueries = _.union(oldTask.filterQueries, filterQueries)
+      changelog = Object.assign({}, oldTask.changelog)
+      if (oldTask.comments !== updatedTask.comments) {
+        changelog.comments = oldTask.comments
+        updatedAt = updatedTask.updatedAt
+      }
+      if (oldTask.state !== updatedTask.state) {
+        changelog.state = oldTask.state
+        updatedAt = updatedTask.updatedAt
+      }
     }
-    const updatedTask = Object.assign({}, oldTask, newTask, { filterQueries })
-    tasksByKey[newTask.storageKey] = updatedTask
+
+    const customUpdates = { filterQueries, changelog, updatedAt }
+    tasksByKey[updatedTask.storageKey] = Object.assign({}, oldTask, updatedTask, customUpdates)
   })
+
 
   return Object.keys(tasksByKey).map(key => tasksByKey[key])
 }
@@ -42,6 +59,15 @@ function deselectTasks(existingTasks, { task }) {
   })
   console.info('deselect', deselectedTasks.map(t => t.storageKey))
   return updatedTasks
+}
+
+function clearChangelog(existingTasks, { task }) {
+  return existingTasks.map(existingTask => {
+    if (task.storageKey === existingTask.storageKey) {
+      return Object.assign({}, existingTask, { changelog: {} })
+    }
+    return existingTask
+  })
 }
 
 function currentTimeString() {
@@ -85,16 +111,15 @@ function ignoreTasks(existingTasks) {
 }
 
 function archiveTasks(existingTasks) {
-  const archivedTasks = []
   const updatedTasks = existingTasks.map(task => {
     if (task.isSelected) {
       const archivedAt = currentTimeString()
-      archivedTasks.push(task)
       return Object.assign({}, task, {
         archivedAt,
         snoozedAt: null,
         isSelected: false,
         ignore: false,
+        changelog: {},
       })
     }
     return task
@@ -137,6 +162,8 @@ module.exports = (existingTasks = [], action) => {
       return ignoreTasks(existingTasks)
     case 'TASKS_RESTORE':
       return restoreTasks(existingTasks)
+    case 'TASKS_CLEAR_CHANGELOG':
+      return clearChangelog(existingTasks, action)
     default:
       return existingTasks
   }
