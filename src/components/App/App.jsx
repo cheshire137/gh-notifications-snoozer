@@ -42,7 +42,7 @@ class App extends React.Component {
   onUserLoad(user) {
     if (this.props.filters.length === 0) {
       DefaultFilters.forLogin(user.login).forEach(filter => {
-        this.props.dispatch({ type: 'FILTERS_UPDATE', filter })
+        HelperActions.updateFilter(this.props.dispatch, filter)
       })
     }
     this.setState({ user })

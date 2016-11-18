@@ -13,4 +13,9 @@ module.exports = class HelperActions {
       dispatch({ type: 'TASKS_UPDATE', filter, tasks })
     })
   }
+
+  static updateFilter(dispatch, filter) {
+    dispatch({ type: 'FILTERS_UPDATE', filter })
+    this.updateTasks(dispatch, filter)
+  }
 }

@@ -26,9 +26,8 @@ class NewFilter extends React.Component {
     }
 
     const filter = { name, query }
-    this.props.dispatch({ type: 'FILTERS_UPDATE', filter })
+    HelperActions.updateFilter(this.props.dispatch, filter)
     this.props.dispatch({ type: 'FILTERS_SELECT', filter })
-    HelperActions.updateTasks(this.props.dispatch, filter)
     this.props.cancel() // Not really canceled, it will force the task list to show
   }
 
