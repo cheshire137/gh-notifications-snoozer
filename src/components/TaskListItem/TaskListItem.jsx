@@ -45,17 +45,14 @@ class TaskListItem extends React.Component {
     const iconClasses = ['octicon']
     if (isPullRequest) {
       iconClasses.push('octicon-git-pull-request')
-      if (state === 'open') {
-        iconClasses.push('opened')
-      } else if (state === 'closed') {
-        iconClasses.push('closed')
-      }
     } else {
-      if (state === 'open') {
-        iconClasses.push('octicon-issue-opened')
-      } else if (state === 'closed') {
-        iconClasses.push('octicon-issue-closed')
-      }
+      iconClasses.push(`octicon-issue-${state === 'open' ? 'opened' : 'closed'}`)
+    }
+
+    if (state === 'open') {
+      iconClasses.push('opened')
+    } else if (state === 'closed') {
+      iconClasses.push('closed')
     }
     return iconClasses.join(' ')
   }
