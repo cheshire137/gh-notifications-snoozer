@@ -69,7 +69,7 @@ class TaskListItem extends React.Component {
   }
 
   changes(changelog) {
-    if (Object.keys(changelog || {}).length !== 0) {
+    if (Object.keys(changelog || {}).length > 0) {
       return (
         <span> –
           {changelog.comments ? ' unread comments' : null}
