@@ -40,15 +40,7 @@ class HiddenTaskListItem extends React.Component {
             url, state, repositoryOwnerAvatar, userAvatar } = this.props
 
     return (
-      <li className="task-list-item control columns">
-        <div className="column has-text-right">
-          <input
-            id={storageKey}
-            type="checkbox"
-            className="task-list-item-checkbox"
-            onChange={event => this.onChange(event)}
-          />
-        </div>
+      <li id={storageKey} className="task-list-item control columns">
         <div className="column has-text-centered">
           <label className="checkbox state-label" htmlFor={storageKey}>
             <span title={state} className={this.iconClass()}></span>
