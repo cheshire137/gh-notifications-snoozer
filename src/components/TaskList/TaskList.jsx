@@ -1,7 +1,7 @@
 const React = require('react')
 const { connect } = require('react-redux')
 const { shell } = require('electron')
-const GitHub = require('../../models/GitHub')
+const HelperActions = require('../../models/HelperActions')
 const TaskListItem = require('../TaskListItem')
 const hookUpStickyNav = require('../hookUpStickyNav')
 const TaskVisibility = require('../../models/TaskVisibility')
@@ -84,16 +84,7 @@ class TaskList extends React.Component {
 
   refresh(event) {
     event.currentTarget.blur() // defocus button
-    const github = new GitHub()
-    github.getTasks(this.props.activeFilter).then(result => {
-      const tasks = result.tasks
-
-      // GitHub's api doesn't like when the output includes milliseconds
-      const updatedAt = (new Date()).toISOString().replace(/\.\d{3}Z/, 'Z')
-      const filter = Object.assign({}, this.props.activeFilter, { updatedAt })
-      this.props.dispatch({ type: 'TASKS_UPDATE', filter, tasks })
-      this.props.dispatch({ type: 'FILTERS_UPDATE', filter })
-    })
+    HelperActions.updateTasks(this.props.dispatch, this.props.activeFilter)
   }
 
   selectFocusedTask() {
