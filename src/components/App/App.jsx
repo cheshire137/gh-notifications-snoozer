@@ -13,7 +13,6 @@ const NewFilter = require('../NewFilter')
 const EditFilter = require('../EditFilter')
 const About = require('../About')
 const Auth = require('../Auth')
-const HiddenTaskList = require('../HiddenTaskList')
 
 class App extends React.Component {
   constructor(props) {
@@ -99,10 +98,6 @@ class App extends React.Component {
           cancel={cancel}
           manageFilters={() => this.manageFilters()}
           loadFilter={name => this.loadFilter(name)}
-        />)
-      case 'hidden': return (
-        <HiddenTaskList
-          cancel={cancel}
         />)
       default: return (
         <Auth
