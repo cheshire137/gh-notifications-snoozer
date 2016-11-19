@@ -67,7 +67,7 @@ class TaskListItem extends React.Component {
 
   render() {
     const { updatedAt, repository, title, repositoryOwner, user, storageKey,
-            url, state, repositoryOwnerAvatar, userAvatar, isSelected,
+            url, state, repositoryOwnerAvatar, userAvatar,
             changelog } = this.props.task
 
     return (
