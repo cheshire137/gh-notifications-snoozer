@@ -31,7 +31,7 @@ class TaskList extends React.Component {
     const snooze = ['s']
     const ignore = ['i']
 
-    event.preventDefault()
+    let preventDefault = true
 
     if (up.includes(event.key)) {
       this.focusPreviousTask()
@@ -49,7 +49,11 @@ class TaskList extends React.Component {
       this.archive()
     } else if (ignore.includes(event.key)) {
       this.ignore()
+    } else {
+      preventDefault = false
     }
+
+    if (preventDefault) event.preventDefault()
   }
 
   openFocusedTask() {
