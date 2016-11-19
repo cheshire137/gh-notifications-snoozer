@@ -4,6 +4,7 @@ const { ipcRenderer } = require('electron')
 const GitHub = require('../../models/GitHub')
 const AppMenu = require('../../models/AppMenu')
 const GitHubAuth = require('../../models/GitHubAuth')
+const HelperActions = require('../../models/HelperActions')
 const TabbedNav = require('../TabbedNav')
 const DefaultFilters = require('../../models/DefaultFilters')
 const TaskList = require('../TaskList')
@@ -29,6 +30,8 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    this.updateTasksInBackground()
+
     ipcRenderer.send('title', 'Tasks')
     this.setupAppMenu()
     if (GitHubAuth.isAuthenticated()) {
@@ -39,7 +42,7 @@ class App extends React.Component {
   onUserLoad(user) {
     if (this.props.filters.length === 0) {
       DefaultFilters.forLogin(user.login).forEach(filter => {
-        this.props.dispatch({ type: 'FILTERS_UPDATE', filter })
+        HelperActions.updateFilter(this.props.dispatch, filter)
       })
     }
     this.setState({ user })
@@ -109,6 +112,20 @@ class App extends React.Component {
         />
       )
     }
+  }
+
+  updateTasksInBackground() {
+    if (!GitHubAuth.isAuthenticated()) return
+
+    let promise = Promise.resolve()
+    this.props.filters.forEach(filter => {
+      promise = promise.then(() => HelperActions.updateTasks(this.props.dispatch, filter))
+    })
+
+    return promise.then(() => {
+      const secondsBetweenPolling = 60
+      setTimeout(() => this.updateTasksInBackground(), secondsBetweenPolling * 1000)
+    })
   }
 
   showAbout() {
@@ -197,8 +214,11 @@ App.propTypes = {
   filters: React.PropTypes.array.isRequired,
 }
 
-const mapStateToProps = state => ({
-  filters: state.filters,
-  activeFilter: state.filters.find(filter => filter.selected),
-})
+const mapStateToProps = state => {
+  const props = {
+    filters: state.filters,
+    activeFilter: state.filters.find(filter => filter.selected),
+  }
+  return props
+}
 module.exports = connect(mapStateToProps)(App)

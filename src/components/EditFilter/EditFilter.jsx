@@ -1,5 +1,6 @@
 const { connect } = require('react-redux')
 const React = require('react')
+const HelperActions = require('../../models/HelperActions')
 const FilterSuggester = require('../FilterSuggester')
 const hookUpStickyNav = require('../hookUpStickyNav')
 
@@ -16,7 +17,7 @@ class EditFilter extends React.Component {
       return
     }
     this.setState({ valueHasError: false })
-    this.props.dispatch({ type: 'FILTERS_UPDATE', filter: this.props.filter })
+    HelperActions.updateFilter(this.props.dispatch, this.props.filter)
     this.props.showtasks()
   }
 

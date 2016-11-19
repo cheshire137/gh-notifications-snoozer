@@ -1,5 +1,6 @@
 const { connect } = require('react-redux')
 const React = require('react')
+const HelperActions = require('../../models/HelperActions')
 const FilterSuggester = require('../FilterSuggester')
 const hookUpStickyNav = require('../hookUpStickyNav')
 
@@ -25,7 +26,7 @@ class NewFilter extends React.Component {
     }
 
     const filter = { name, query }
-    this.props.dispatch({ type: 'FILTERS_UPDATE', filter })
+    HelperActions.updateFilter(this.props.dispatch, filter)
     this.props.dispatch({ type: 'FILTERS_SELECT', filter })
     this.props.cancel() // Not really canceled, it will force the task list to show
   }
