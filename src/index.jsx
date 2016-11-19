@@ -10,7 +10,7 @@ import { remote } from 'electron'
 import { persistStore, autoRehydrate } from 'redux-persist'
 import { AsyncNodeStorage } from 'redux-persist-node-storage'
 
-// This hack makes my blood boil. But without it the intial state is
+// This hack makes my blood boil. But without it the initial state is
 // used instead of using the persisted state from AsyncNodeStorage. I'd prefer
 // to use something other than setTimeout to make this work, but it works for
 // now.
