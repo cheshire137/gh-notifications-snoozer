@@ -102,7 +102,6 @@ class TaskList extends React.Component {
   }
 
   restore() {
-    debugger
     this.props.dispatch({ type: 'TASKS_RESTORE', task: this.focusedTask() })
   }
 
