@@ -19,20 +19,19 @@ class HiddenTaskListItem extends React.Component {
   iconClass() {
     const { state, isPullRequest } = this.props
     const iconClasses = ['octicon']
+    iconClasses.push('octicon-git-pull-request')
     if (isPullRequest) {
-      iconClasses.push('octicon-git-pull-request')
-      if (state === 'open') {
-        iconClasses.push('opened')
-      } else if (state === 'closed') {
-        iconClasses.push('closed')
-      }
+      iconClasses.push('octicon-pull-request')
     } else {
-      if (state === 'open') {
-        iconClasses.push('octicon-issue-opened')
-      } else if (state === 'closed') {
-        iconClasses.push('octicon-issue-closed')
-      }
+      iconClasses.push(`octicon-issue-${state}`)
     }
+
+    if (state === 'open') {
+      iconClasses.push('opened')
+    } else if (state === 'closed') {
+      iconClasses.push('closed')
+    }
+
     return iconClasses.join(' ')
   }
 

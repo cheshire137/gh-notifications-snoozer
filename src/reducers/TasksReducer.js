@@ -7,7 +7,7 @@ function updateTasks(existingTasks, { tasks, filter }) {
   existingTasks.forEach(task => (tasksByKey[task.storageKey] = task))
 
   // Update existingTasks with new values and add new existingTasks
-  tasks.forEach((updatedTask) => {
+  tasks.forEach(updatedTask => {
     const oldTask = tasksByKey[updatedTask.storageKey]
     let changelog = {}
     let filterQueries = [filter.query]

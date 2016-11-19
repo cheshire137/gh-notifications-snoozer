@@ -46,7 +46,7 @@ describe('Tasks reducer', () => {
       assert.isNotNaN(Date.parse(archivedTask.archivedAt), 'archivedAt should be a string date')
     })
 
-    it('clear changelog when task is archived', () => {
+    it('clears changelog when the task is archived', () => {
       const task = Object.assign({}, fixtures.task, { changelog: { comments: 100 } })
       const initialTasks = [task]
 
