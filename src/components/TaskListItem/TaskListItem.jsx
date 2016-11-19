@@ -12,11 +12,6 @@ class TaskListItem extends React.Component {
     this.ensureVisible()
   }
 
-  onToggleCheckbox() {
-    const type = this.props.task.isSelected ? 'TASKS_DESELECT' : 'TASKS_SELECT'
-    this.props.dispatch({ type, task: this.props.task })
-  }
-
   ensureVisible() {
     if (!this.props.isFocused) {
       return
@@ -77,15 +72,6 @@ class TaskListItem extends React.Component {
 
     return (
       <li className={this.listItemClass()}>
-        <div className="column has-text-right">
-          <input
-            id={storageKey}
-            type="checkbox"
-            className="task-list-item-checkbox"
-            defaultChecked={!!isSelected}
-            onChange={() => this.onToggleCheckbox()}
-          />
-        </div>
         <div className="column has-text-centered">
           <label className="checkbox state-label" htmlFor={storageKey}>
             <span title={state} className={this.iconClass()}></span>

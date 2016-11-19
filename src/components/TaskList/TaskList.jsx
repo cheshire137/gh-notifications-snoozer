@@ -52,15 +52,8 @@ class TaskList extends React.Component {
     }
   }
 
-  // onToggle(index = this.state.focusedIndex) {
-  //   const task = this.props.tasks[this.state.focusedIndex]
-  //   const type = task.isSelected ? 'TASKS_DESELECT' : 'TASKS_SELECT'
-  //   this.props.dispatch({ type, task: { storageKey: task.storageKey } })
-  // }
-
   openFocusedTask() {
-    const task = this.props.tasks[this.state.focusedIndex]
-    shell.openExternal(task.url)
+    shell.openExternal(this.focusedTask().url)
   }
 
   focusNextTask() {
@@ -77,20 +70,20 @@ class TaskList extends React.Component {
     this.setState({ focusedIndex })
   }
 
-  selectedTasks() {
-    this.state.selectedIndexes.map(index => this.props.tasks[index])
+  focusedTask() {
+    return this.props.tasks[this.state.focusedIndex]
   }
 
   snooze() {
-    this.props.dispatch({ type: 'TASKS_SNOOZE', tasks: this.selectedTasks() })
+    this.props.dispatch({ type: 'TASKS_SNOOZE', task: this.focusedTask() })
   }
 
   archive() {
-    this.props.dispatch({ type: 'TASKS_ARCHIVE', tasks: this.selectedTasks() })
+    this.props.dispatch({ type: 'TASKS_ARCHIVE', task: this.focusedTask() })
   }
 
   ignore() {
-    this.props.dispatch({ type: 'TASKS_IGNORE', tasks: this.selectedTasks() })
+    this.props.dispatch({ type: 'TASKS_IGNORE', task: this.focusedTask() })
   }
 
   changeFilter(filterName) {
@@ -141,7 +134,7 @@ class TaskList extends React.Component {
   }
 
   render() {
-    const disableButton = (this.selectedTasks.length === 0)
+    const disableButton = (this.focusedIndex === null)
     return (
       <div>
         <nav className="task-list-navigation secondary-nav nav has-tertiary-nav">
