@@ -23,7 +23,7 @@ class TaskList extends React.Component {
 
   onKeyDown(event) {
     const up = ['ArrowUp', 'k']
-    const down = ['ArrowUp', 'j']
+    const down = ['ArrowDown', 'j']
     const open = ['Enter', 'o']
     const select = [' ', 'x']
     const escape = ['Escape']
