@@ -9,7 +9,7 @@ const TaskVisibility = require('../../models/TaskVisibility')
 class TaskList extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { focusedIndex: null }
+    this.state = { focusedIndex: 0 }
   }
 
   componentDidMount() {
@@ -38,7 +38,7 @@ class TaskList extends React.Component {
     } else if (down.includes(event.key)) {
       this.focusNextTask()
     } else if (escape.includes(event.key)) {
-      this.setState({ focusedIndex: null })
+      this.setState({ focusedIndex: 0 })
     } else if (open.includes(event.key)) {
       this.openFocusedTask()
     } else if (select.includes(event.key)) {
@@ -134,7 +134,6 @@ class TaskList extends React.Component {
   }
 
   render() {
-    const disableButton = (this.focusedIndex === null)
     return (
       <div>
         <nav className="task-list-navigation secondary-nav nav has-tertiary-nav">
@@ -167,7 +166,7 @@ class TaskList extends React.Component {
                 className="control button is-link"
                 id="snooze-button"
                 title="Snooze selected"
-                disabled={disableButton}
+                disabled={!this.focusedTask()}
               >😴 Snooze</button>
             </span>
             <span className="nav-item compact-vertically">
@@ -177,7 +176,7 @@ class TaskList extends React.Component {
                 className="control button is-link"
                 onClick={() => this.archive()}
                 title="Archive selected"
-                disabled={disableButton}
+                disabled={!this.focusedTask()}
               >📥 Archive</button>
             </span>
             <span className="nav-item compact-vertically">
@@ -186,7 +185,7 @@ class TaskList extends React.Component {
                 className="control button is-link"
                 onClick={() => this.ignore()}
                 title="Ignore selected"
-                disabled={disableButton}
+                disabled={!this.focusedTask()}
               >❌ Ignore</button>
             </span>
           </div>

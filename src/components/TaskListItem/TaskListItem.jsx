@@ -71,7 +71,7 @@ class TaskListItem extends React.Component {
             changelog } = this.props.task
 
     return (
-      <li className={this.listItemClass()}>
+      <li id={storageKey} className={this.listItemClass()}>
         <div className="column has-text-centered">
           <label className="checkbox state-label" htmlFor={storageKey}>
             <span title={state} className={this.iconClass()}></span>
