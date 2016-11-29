@@ -58,7 +58,10 @@ class TaskList extends React.Component {
 
   tasks() {
     return this.props.allTasks.filter(task => {
-      const isVisisble = TaskVisibility.isVisibleTask(task, this.props.activeFilter)
+      const matchesFilter = (task.filterQueries || []).includes(this.props.activeFilter.query)
+      if (!matchesFilter) return false
+
+      const isVisisble = TaskVisibility.isHiddenTask(task)
       return this.state.showHidden ? !isVisisble : isVisisble
     })
   }
