@@ -76,7 +76,7 @@ function archiveTask(existingTasks, { task: taskToUpdate }) {
   const newValues = {
     snoozedAt: null,
     archivedAt: new Date().toISOString(),
-    ignore: true,
+    ignore: false,
     changelog: {},
   }
   return updateTask(existingTasks, taskToUpdate, newValues)

@@ -114,6 +114,24 @@ describe('TaskList', () => {
       const task = store.getState().tasks[0]
       assert.equal('string', typeof task.archivedAt)
     })
+
+    it('shows tasks again if `updatedAt` is greater than `archivedAt`', () => {
+      const theFuture = new Date(3016, 0, 1)
+      const tasks = store.getState().tasks
+      const updatedTask = Object.assign({}, tasks[0], {
+        updatedAt: theFuture.toISOString(),
+        comments: 13,
+      })
+
+      store.dispatch({
+        type: 'TASKS_UPDATE',
+        tasks: [updatedTask],
+        filter: 'cats',
+      })
+
+      const taskListItems = renderedDOM().querySelectorAll('#pull-163031382')
+      assert.equal(1, taskListItems.length)
+    })
   })
 
   context('when the ignore button is clicked', () => {
