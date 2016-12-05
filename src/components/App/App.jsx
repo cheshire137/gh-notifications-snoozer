@@ -110,7 +110,9 @@ class App extends React.Component {
   }
 
   updateTasksInBackground() {
-    if (!GitHubAuth.isAuthenticated()) return
+    if (!GitHubAuth.isAuthenticated()) {
+      return
+    }
 
     let promise = Promise.resolve()
     this.props.filters.forEach(filter => {
