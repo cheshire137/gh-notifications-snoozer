@@ -54,7 +54,7 @@ function updateTask(existingTasks, taskToUpdate, newValues) {
   return updatedTasks
 }
 
-function snoozeTasks(existingTasks, { task: taskToUpdate }) {
+function snoozeTask(existingTasks, { task: taskToUpdate }) {
   const newValues = {
     snoozedAt: new Date().toISOString(),
     archivedAt: null,
@@ -63,7 +63,7 @@ function snoozeTasks(existingTasks, { task: taskToUpdate }) {
   return updateTask(existingTasks, taskToUpdate, newValues)
 }
 
-function ignoreTasks(existingTasks, { task: taskToUpdate }) {
+function ignoreTask(existingTasks, { task: taskToUpdate }) {
   const newValues = {
     snoozedAt: null,
     archivedAt: null,
@@ -72,7 +72,7 @@ function ignoreTasks(existingTasks, { task: taskToUpdate }) {
   return updateTask(existingTasks, taskToUpdate, newValues)
 }
 
-function archiveTasks(existingTasks, { task: taskToUpdate }) {
+function archiveTask(existingTasks, { task: taskToUpdate }) {
   const newValues = {
     snoozedAt: null,
     archivedAt: new Date().toISOString(),
@@ -82,7 +82,7 @@ function archiveTasks(existingTasks, { task: taskToUpdate }) {
   return updateTask(existingTasks, taskToUpdate, newValues)
 }
 
-function restoreTasks(existingTasks, { task: taskToUpdate }) {
+function restoreTask(existingTasks, { task: taskToUpdate }) {
   const newValues = {
     snoozedAt: null,
     archivedAt: null,
@@ -98,13 +98,13 @@ module.exports = (existingTasks = [], action) => {
     case 'TASKS_UPDATE':
       return updateTasks(existingTasks, action)
     case 'TASKS_SNOOZE':
-      return snoozeTasks(existingTasks, action)
+      return snoozeTask(existingTasks, action)
     case 'TASKS_ARCHIVE':
-      return archiveTasks(existingTasks, action)
+      return archiveTask(existingTasks, action)
     case 'TASKS_IGNORE':
-      return ignoreTasks(existingTasks, action)
+      return ignoreTask(existingTasks, action)
     case 'TASKS_RESTORE':
-      return restoreTasks(existingTasks, action)
+      return restoreTask(existingTasks, action)
     case 'TASKS_CLEAR_CHANGELOG':
       return clearChangelog(existingTasks, action)
     default:
