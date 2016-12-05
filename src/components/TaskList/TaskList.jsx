@@ -22,22 +22,22 @@ class TaskList extends React.Component {
   }
 
   onKeyDown(event) {
-    const up = ['ArrowUp', 'k']
-    const down = ['ArrowDown', 'j']
+    const previous = ['ArrowUp', 'k']
+    const next = ['ArrowDown', 'j']
     const open = ['Enter', 'o']
     const select = [' ', 'x']
-    const escape = ['Escape']
+    const blur = ['Escape']
     const archive = ['a']
     const snooze = ['s']
     const ignore = ['i']
 
     let preventDefault = true
 
-    if (up.includes(event.key)) {
+    if (previous.includes(event.key)) {
       this.focusPreviousTask()
-    } else if (down.includes(event.key)) {
+    } else if (next.includes(event.key)) {
       this.focusNextTask()
-    } else if (escape.includes(event.key)) {
+    } else if (blur.includes(event.key)) {
       this.setState({ focusedIndex: 0 })
     } else if (open.includes(event.key)) {
       this.openFocusedTask()
