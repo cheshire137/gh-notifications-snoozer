@@ -89,7 +89,7 @@ class TaskList extends React.Component {
 
   focusPreviousTask() {
     const lastIndex = this.tasks().length - 1
-    let focusedIndex = this.state.focusedIndex + -1
+    let focusedIndex = this.state.focusedIndex - 1
     if (focusedIndex < 0) {
       focusedIndex = lastIndex
     }
@@ -134,18 +134,16 @@ class TaskList extends React.Component {
     if (this.state.showHidden) {
       return (
         <div className="nav-right">
-          <div className="nav-right">
-            <span className="nav-item">
-              <button
-                type="button"
-                onClick={() => this.restore()}
-                className="control button is-link"
-                id="restore-button"
-                title="Restore selected"
-                disabled={!this.focusedTask()}
-              >↩️ Restore</button>
-            </span>
-          </div>
+          <span className="nav-item">
+            <button
+              type="button"
+              onClick={() => this.restore()}
+              className="control button is-link"
+              id="restore-button"
+              title="Restore selected"
+              disabled={!this.focusedTask()}
+            >↩️ Restore</button>
+          </span>
         </div>
       )
     }
