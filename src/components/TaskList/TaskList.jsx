@@ -53,13 +53,17 @@ class TaskList extends React.Component {
       preventDefault = false
     }
 
-    if (preventDefault) event.preventDefault()
+    if (preventDefault) {
+      event.preventDefault()
+    }
   }
 
   tasks() {
     return this.props.allTasks.filter(task => {
       const matchesFilter = (task.filterQueries || []).includes(this.props.activeFilter.query)
-      if (!matchesFilter) return false
+      if (!matchesFilter) {
+        return false
+      }
 
       const isHidden = TaskVisibility.isHiddenTask(task)
       return this.state.showHidden ? isHidden : !isHidden
@@ -77,14 +81,18 @@ class TaskList extends React.Component {
   focusNextTask() {
     const lastIndex = this.tasks().length - 1
     let focusedIndex = this.state.focusedIndex + 1
-    if (focusedIndex > lastIndex) focusedIndex = 0
+    if (focusedIndex > lastIndex) {
+      focusedIndex = 0
+    }
     this.setState({ focusedIndex })
   }
 
   focusPreviousTask() {
     const lastIndex = this.tasks().length - 1
     let focusedIndex = this.state.focusedIndex + -1
-    if (focusedIndex < 0) focusedIndex = lastIndex
+    if (focusedIndex < 0) {
+      focusedIndex = lastIndex
+    }
     this.setState({ focusedIndex })
   }
 
