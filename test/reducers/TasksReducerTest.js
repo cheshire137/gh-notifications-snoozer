@@ -10,40 +10,12 @@ describe('Tasks reducer', () => {
     assert.deepEqual({ filters: [], tasks: [] }, store.getState())
   })
 
-  describe('TASKS_SELECT', () => {
-    it('selects specified task', () => {
-      const initialTasks = [fixtures.task, fixtures.anotherTask]
-
-      const store = Redux.createStore(reducer, { tasks: initialTasks })
-      store.dispatch({ type: 'TASKS_SELECT', task: fixtures.task })
-
-      const selectedTask = store.getState().tasks.find(task => task.isSelected)
-      const unselectedTask = store.getState().tasks.find(task => !task.isSelected)
-      assert.equal(selectedTask.storageKey, fixtures.task.storageKey)
-      assert.equal(unselectedTask.storageKey, fixtures.anotherTask.storageKey)
-    })
-  })
-
-  describe('TASKS_DESELECT', () => {
-    it('deselects the specified task', () => {
-      const selectedTask = Object.assign({}, fixtures.anotherTask, { isSelected: true })
-      const initialTasks = [fixtures.task, selectedTask]
-
-      const store = Redux.createStore(reducer, { tasks: initialTasks })
-      store.dispatch({ type: 'TASKS_DESELECT', task: selectedTask })
-
-      const updatedSelectedTask = store.getState().tasks.find(task => task.isSelected)
-      assert.equal(updatedSelectedTask, null)
-    })
-  })
-
   describe('TASKS_IGNORE', () => {
     it('ignores selected task', () => {
       const initialTasks = [fixtures.task, fixtures.anotherTask]
 
       const store = Redux.createStore(reducer, { tasks: initialTasks })
-      store.dispatch({ type: 'TASKS_SELECT', task: fixtures.task })
-      store.dispatch({ type: 'TASKS_IGNORE' })
+      store.dispatch({ type: 'TASKS_IGNORE', task: fixtures.task })
 
       const ignoredTask = store.getState().tasks.find(t => t.ignore)
       const task = store.getState().tasks.find(t => !t.ignore)
@@ -54,18 +26,12 @@ describe('Tasks reducer', () => {
 
   describe('TASKS_SNOOZE', () => {
     it('snoozes selected task', () => {
-      const initialTasks = [
-        { id: 15, storageKey: 'issue-15' },
-        { id: 12, storageKey: 'pull-12', isSelected: true },
-      ]
-
+      const initialTasks = [fixtures.task, fixtures.anotherTask]
       const store = Redux.createStore(reducer, { tasks: initialTasks })
-      store.dispatch({ type: 'TASKS_SNOOZE' })
+      store.dispatch({ type: 'TASKS_SNOOZE', task: fixtures.task })
 
-      const actual = store.getState().tasks
-      assert.equal(2, actual.length, 'should still have 2 tasks')
-      assert(!actual[1].isSelected, 'task should not be selected')
-      assert.equal('string', typeof actual[1].snoozedAt, 'snoozedAt should be a time string')
+      const snoozedTask = store.getState().tasks.find(t => t.snoozedAt)
+      assert.isNotNaN(Date.parse(snoozedTask.snoozedAt), 'snoozedTask should be a string date')
     })
   })
 
@@ -74,12 +40,9 @@ describe('Tasks reducer', () => {
       const initialTasks = [fixtures.task, fixtures.anotherTask]
 
       const store = Redux.createStore(reducer, { tasks: initialTasks })
-      store.dispatch({ type: 'TASKS_SELECT', task: fixtures.task })
-      store.dispatch({ type: 'TASKS_ARCHIVE' })
+      store.dispatch({ type: 'TASKS_ARCHIVE', task: fixtures.task })
 
       const archivedTask = store.getState().tasks.find(t => t.archivedAt)
-
-      assert(!archivedTask.isSelected, 'archived tasks should not be selected')
       assert.isNotNaN(Date.parse(archivedTask.archivedAt), 'archivedAt should be a string date')
     })
 
@@ -88,8 +51,7 @@ describe('Tasks reducer', () => {
       const initialTasks = [task]
 
       const store = Redux.createStore(reducer, { tasks: initialTasks })
-      store.dispatch({ type: 'TASKS_SELECT', task: fixtures.task })
-      store.dispatch({ type: 'TASKS_ARCHIVE' })
+      store.dispatch({ type: 'TASKS_ARCHIVE', task })
 
       const archivedTask = store.getState().tasks[0]
 
@@ -98,63 +60,48 @@ describe('Tasks reducer', () => {
   })
 
   describe('TASKS_RESTORE', () => {
-    it('restores ignored, selected task', () => {
-      const initialTasks = [
-        { id: 18, storageKey: 'issue-18', ignore: true, isSelected: true },
-        { id: 42, storageKey: 'pull-42', ignore: true },
-      ]
+    it('restores ignored task', () => {
+      const initialTasks = [fixtures.task, fixtures.anotherTask].map(task => {
+        const updatedTask = Object.assign({}, task, { ignore: true })
+        return updatedTask
+      })
 
       const store = Redux.createStore(reducer, { tasks: initialTasks })
-      store.dispatch({ type: 'TASKS_RESTORE' })
+      store.dispatch({ type: 'TASKS_RESTORE', task: initialTasks[0] })
 
-      const actual = store.getState().tasks
-      assert.equal(2, actual.length, 'should still have 2 tasks')
-      assert(!actual[0].ignore, 'selected task should not be ignored')
-      assert(actual[1].ignore, 'deselected task should be ignored')
+      const { tasks } = store.getState()
+      assert.isFalse(tasks[0].ignore, 'specified task should be un-ignored')
+      assert.isTrue(tasks[1].ignore, 'unspecified task should still be ignored')
     })
 
-    it('restores archived, selected task', () => {
-      const dateStr = new Date().toISOString()
-
-      const initialTasks = [
-        {
-          id: 99,
-          storageKey: 'issue-99',
-          archivedAt: dateStr,
-          isSelected: true,
-        },
-        { id: 88, storageKey: 'pull-88', archivedAt: dateStr },
-      ]
+    it('restores archived task', () => {
+      const archivedAt = new Date().toISOString()
+      const initialTasks = [fixtures.task, fixtures.anotherTask].map(task => {
+        const updatedTask = Object.assign({}, task, { archivedAt })
+        return updatedTask
+      })
 
       const store = Redux.createStore(reducer, { tasks: initialTasks })
-      store.dispatch({ type: 'TASKS_RESTORE' })
+      store.dispatch({ type: 'TASKS_RESTORE', task: initialTasks[0] })
 
-      const actual = store.getState().tasks
-      assert.equal(2, actual.length, 'should still have 2 tasks')
-      assert.equal(null, actual[0].archivedAt, 'selected task should not have archivedAt')
-      assert.equal(dateStr, actual[1].archivedAt, 'deselected task should have archivedAt')
+      const { tasks } = store.getState()
+      assert.isNull(tasks[0].archivedAt, 'specified task should be un-archived')
+      assert.equal(tasks[1].archivedAt, archivedAt, 'unspecified task should still be archived')
     })
 
-    it('restores snoozed, selected task', () => {
-      const dateStr = new Date().toISOString()
-
-      const initialTasks = [
-        {
-          id: 97,
-          storageKey: 'issue-97',
-          snoozedAt: dateStr,
-          isSelected: true,
-        },
-        { id: 183, storageKey: 'pull-183', snoozedAt: dateStr },
-      ]
+    it('restores snoozed task', () => {
+      const snoozedAt = new Date().toISOString()
+      const initialTasks = [fixtures.task, fixtures.anotherTask].map(task => {
+        const updatedTask = Object.assign({}, task, { snoozedAt })
+        return updatedTask
+      })
 
       const store = Redux.createStore(reducer, { tasks: initialTasks })
-      store.dispatch({ type: 'TASKS_RESTORE' })
+      store.dispatch({ type: 'TASKS_RESTORE', task: initialTasks[0] })
 
-      const actual = store.getState().tasks
-      assert.equal(2, actual.length, 'should still have 2 tasks')
-      assert.equal(null, actual[0].snoozedAt, 'selected task should not have snoozedAt')
-      assert.equal(dateStr, actual[1].snoozedAt, 'deselected task should have snoozedAt')
+      const { tasks } = store.getState()
+      assert.isNull(tasks[0].snoozedAt, 'specified task should be un-snoozed')
+      assert.equal(tasks[1].snoozedAt, snoozedAt, 'unspecified task should still be snoozed')
     })
   })
 

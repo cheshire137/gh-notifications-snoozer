@@ -13,7 +13,6 @@ const NewFilter = require('../NewFilter')
 const EditFilter = require('../EditFilter')
 const About = require('../About')
 const Auth = require('../Auth')
-const HiddenTaskList = require('../HiddenTaskList')
 
 class App extends React.Component {
   constructor(props) {
@@ -100,10 +99,6 @@ class App extends React.Component {
           manageFilters={() => this.manageFilters()}
           loadFilter={name => this.loadFilter(name)}
         />)
-      case 'hidden': return (
-        <HiddenTaskList
-          cancel={cancel}
-        />)
       default: return (
         <Auth
           done={user => this.finishedWithAuth(user)}
@@ -115,7 +110,9 @@ class App extends React.Component {
   }
 
   updateTasksInBackground() {
-    if (!GitHubAuth.isAuthenticated()) return
+    if (!GitHubAuth.isAuthenticated()) {
+      return
+    }
 
     let promise = Promise.resolve()
     this.props.filters.forEach(filter => {

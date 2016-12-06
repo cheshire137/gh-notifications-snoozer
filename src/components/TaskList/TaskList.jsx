@@ -9,68 +9,111 @@ const TaskVisibility = require('../../models/TaskVisibility')
 class TaskList extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { selectedIndex: null }
-    this.onKeyUp = this.onKeyUp.bind(this)
-    this.onKeyDown = this.onKeyDown.bind(this)
+    this.state = { focusedIndex: 0, showHidden: false }
   }
 
   componentDidMount() {
-    document.addEventListener('keyup', this.onKeyUp)
-    document.addEventListener('keydown', this.onKeyDown)
+    this.keyDownEventListener = event => this.onKeyDown(event)
+    document.addEventListener('keydown', this.keyDownEventListener)
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keyup', this.onKeyUp)
-    document.removeEventListener('keydown', this.onKeyDown)
-  }
-
-  onSnoozeClick(event) {
-    event.currentTarget.blur() // defocus button
-    this.props.dispatch({ type: 'TASKS_SNOOZE' })
-  }
-
-  onArchiveClick(event) {
-    event.currentTarget.blur() // defocus button
-    this.props.dispatch({ type: 'TASKS_ARCHIVE' })
-  }
-
-  onIgnoreClick(event) {
-    event.currentTarget.blur() // defocus button
-    this.props.dispatch({ type: 'TASKS_IGNORE' })
-  }
-
-  onKeyUp(event) {
-    if (this.isFiltersMenuFocused()) {
-      return
-    }
-    if (event.key === 'ArrowUp') {
-      this.focusPreviousTask()
-    } else if (event.key === 'ArrowDown') {
-      this.focusNextTask()
-    } else if (event.key === 'Escape') {
-      this.setState({ selectedIndex: null })
-    } else if (event.key === 'Enter') {
-      if (typeof this.state.selectedIndex === 'number') {
-        this.openLinkToFocusedTask()
-      }
-    }
+    document.removeEventListener('keydown', this.keyDownEventListener)
   }
 
   onKeyDown(event) {
-    if (this.isFiltersMenuFocused()) {
-      return
+    const previous = ['ArrowUp', 'k']
+    const next = ['ArrowDown', 'j']
+    const open = ['Enter', 'o']
+    const select = [' ', 'x']
+    const blur = ['Escape']
+    const archive = ['a']
+    const snooze = ['s']
+    const ignore = ['i']
+
+    let preventDefault = true
+
+    if (previous.includes(event.key)) {
+      this.focusPreviousTask()
+    } else if (next.includes(event.key)) {
+      this.focusNextTask()
+    } else if (blur.includes(event.key)) {
+      this.setState({ focusedIndex: 0 })
+    } else if (open.includes(event.key)) {
+      this.openFocusedTask()
+    } else if (select.includes(event.key)) {
+      this.onToggle()
+    } else if (snooze.includes(event.key)) {
+      this.snooze()
+    } else if (archive.includes(event.key)) {
+      this.archive()
+    } else if (ignore.includes(event.key)) {
+      this.ignore()
+    } else {
+      preventDefault = false
     }
-    if (event.key === ' ' && typeof this.state.selectedIndex === 'number') {
-      event.preventDefault()
-      this.selectFocusedTask()
-    } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+
+    if (preventDefault) {
       event.preventDefault()
     }
   }
 
-  isFiltersMenuFocused() {
-    return document.activeElement &&
-        document.activeElement.id === 'filters-menu'
+  tasks() {
+    return this.props.allTasks.filter(task => {
+      const matchesFilter = (task.filterQueries || []).includes(this.props.activeFilter.query)
+      if (!matchesFilter) {
+        return false
+      }
+
+      const isHidden = TaskVisibility.isHiddenTask(task)
+      return this.state.showHidden ? isHidden : !isHidden
+    })
+  }
+
+  openFocusedTask() {
+    shell.openExternal(this.focusedTask().url)
+  }
+
+  toggleHidden() {
+    this.setState({ showHidden: !this.state.showHidden })
+  }
+
+  focusNextTask() {
+    const lastIndex = this.tasks().length - 1
+    let focusedIndex = this.state.focusedIndex + 1
+    if (focusedIndex > lastIndex) {
+      focusedIndex = 0
+    }
+    this.setState({ focusedIndex })
+  }
+
+  focusPreviousTask() {
+    const lastIndex = this.tasks().length - 1
+    let focusedIndex = this.state.focusedIndex - 1
+    if (focusedIndex < 0) {
+      focusedIndex = lastIndex
+    }
+    this.setState({ focusedIndex })
+  }
+
+  focusedTask() {
+    return this.tasks()[this.state.focusedIndex]
+  }
+
+  snooze() {
+    this.props.dispatch({ type: 'TASKS_SNOOZE', task: this.focusedTask() })
+  }
+
+  archive() {
+    this.props.dispatch({ type: 'TASKS_ARCHIVE', task: this.focusedTask() })
+  }
+
+  ignore() {
+    this.props.dispatch({ type: 'TASKS_IGNORE', task: this.focusedTask() })
+  }
+
+  restore() {
+    this.props.dispatch({ type: 'TASKS_RESTORE', task: this.focusedTask() })
   }
 
   changeFilter(filterName) {
@@ -87,53 +130,73 @@ class TaskList extends React.Component {
     HelperActions.updateTasks(this.props.dispatch, this.props.activeFilter)
   }
 
-  selectFocusedTask() {
-    const task = this.props.tasks[this.state.selectedIndex]
-    const type = task.isSelected ? 'TASKS_DESELECT' : 'TASKS_SELECT'
-    this.props.dispatch({ type, task: { storageKey: task.storageKey } })
-  }
-
-  openLinkToFocusedTask() {
-    const task = this.props.tasks[this.state.selectedIndex]
-    shell.openExternal(task.url)
-  }
-
-  focusNextTask() {
-    const oldIndex = this.state.selectedIndex
-    let newIndex = typeof oldIndex === 'number' ? oldIndex + 1 : 0
-    if (newIndex > this.props.tasks.length - 1) {
-      newIndex = 0
+  navRight() {
+    if (this.state.showHidden) {
+      return (
+        <div className="nav-right">
+          <span className="nav-item">
+            <button
+              type="button"
+              onClick={() => this.restore()}
+              className="control button is-link"
+              id="restore-button"
+              title="Restore selected"
+              disabled={!this.focusedTask()}
+            >↩️ Restore</button>
+          </span>
+        </div>
+      )
     }
-    this.focusTaskAtIndex(newIndex)
-  }
 
-  focusPreviousTask() {
-    const oldIndex = this.state.selectedIndex
-    const lastIndex = this.props.tasks.length - 1
-    let newIndex = typeof oldIndex === 'number' ? oldIndex - 1 : lastIndex
-    if (newIndex < 0) {
-      newIndex = lastIndex
-    }
-    this.focusTaskAtIndex(newIndex)
-  }
-
-  focusTaskAtIndex(index) {
-    console.info('focus task', this.props.tasks[index].storageKey)
-    this.setState({ selectedIndex: index })
+    return (
+      <div className="nav-right">
+        <span className="nav-item compact-vertically">
+          <button
+            type="button"
+            onClick={() => this.snooze()}
+            className="control button is-link"
+            id="snooze-button"
+            title="Snooze selected"
+            disabled={!this.focusedTask()}
+          >😴 Snooze</button>
+        </span>
+        <span className="nav-item compact-vertically">
+          <button
+            type="button"
+            id="archive-button"
+            className="control button is-link"
+            onClick={() => this.archive()}
+            title="Archive selected"
+            disabled={!this.focusedTask()}
+          >📥 Archive</button>
+        </span>
+        <span className="nav-item compact-vertically">
+          <button
+            type="button"
+            className="control button is-link"
+            onClick={() => this.ignore()}
+            title="Ignore selected"
+            disabled={!this.focusedTask()}
+          >❌ Ignore</button>
+        </span>
+      </div>
+    )
   }
 
   taskListOrMessage() {
-    const sortedTasks = this.props.tasks.sort((a, b) => {
-      return Date.parse(b.updatedAt) - Date.parse(a.updatedAt)
-    })
-
-    if (this.props.tasks.length > 0) {
+    if (this.tasks().length > 0) {
       return (
         <ol className="task-list">
-          {sortedTasks.map((task, index) => {
-            const isFocused = index === this.state.selectedIndex
-            const key = `${task.storageKey}-${task.isSelected}-${isFocused}`
-            return <TaskListItem task={task} key={key} isFocused={isFocused} />
+          {this.tasks().map((task, index) => {
+            const isFocused = (index === this.state.focusedIndex)
+            return (
+              <TaskListItem
+                task={task}
+                key={task.storageKey}
+                isFocused={isFocused}
+                onToggle={() => this.onToggle(index)}
+              />
+            )
           })}
         </ol>
       )
@@ -141,9 +204,6 @@ class TaskList extends React.Component {
   }
 
   render() {
-    const isSnoozeDisabled = this.props.tasks.filter(task => task.isSelected).length < 1
-    const isArchiveDisabled = isSnoozeDisabled
-    const isIgnoreDisabled = isSnoozeDisabled
     return (
       <div>
         <nav className="task-list-navigation secondary-nav nav has-tertiary-nav">
@@ -168,47 +228,17 @@ class TaskList extends React.Component {
               >🔄</button>
             </span>
           </div>
-          <div className="nav-right">
-            <span className="nav-item compact-vertically">
-              <button
-                type="button"
-                onClick={e => this.onSnoozeClick(e)}
-                className="control button is-link"
-                id="snooze-button"
-                title="Snooze selected"
-                disabled={isSnoozeDisabled}
-              >😴 Snooze</button>
-            </span>
-            <span className="nav-item compact-vertically">
-              <button
-                type="button"
-                id="archive-button"
-                className="control button is-link"
-                onClick={e => this.onArchiveClick(e)}
-                title="Archive selected"
-                disabled={isArchiveDisabled}
-              >📥 Archive</button>
-            </span>
-            <span className="nav-item compact-vertically">
-              <button
-                type="button"
-                className="control button is-link"
-                onClick={e => this.onIgnoreClick(e)}
-                title="Ignore selected"
-                disabled={isIgnoreDisabled}
-              >❌ Ignore</button>
-            </span>
-          </div>
+          {this.navRight()}
         </nav>
         <nav className="task-list-navigation tertiary-nav nav">
           <div className="nav-left">
             <span className="nav-item compact-vertically">
               <button
-                onClick={() => this.props.showHidden()}
+                onClick={() => this.toggleHidden()}
                 type="button"
                 className="is-link is-small button"
                 title="Show hidden tasks"
-              >View hidden</button>
+              >View {this.state.showHidden ? 'active' : 'hidden'} tasks</button>
               <button
                 onClick={() => this.editSelectedFilter()}
                 type="button"
@@ -219,7 +249,9 @@ class TaskList extends React.Component {
           </div>
         </nav>
         <div className="task-list-container">
-          {this.taskListOrMessage()}
+          <div className={this.state.showHidden && 'viewing-hidden'}>
+            {this.taskListOrMessage()}
+          </div>
         </div>
       </div>
     )
@@ -231,16 +263,18 @@ TaskList.propTypes = {
   dispatch: React.PropTypes.func.isRequired,
   editFilter: React.PropTypes.func.isRequired,
   filters: React.PropTypes.array.isRequired,
-  showHidden: React.PropTypes.func.isRequired,
-  tasks: React.PropTypes.array.isRequired,
+  allTasks: React.PropTypes.array.isRequired,
 }
 
 const stickyNavd = hookUpStickyNav(TaskList, '.task-list-navigation')
 const mapStateToProps = state => {
   const activeFilter = state.filters.find(filter => filter.selected)
-  const tasks = state.tasks.filter(task => TaskVisibility.isVisibleTask(task, activeFilter))
   const filters = state.filters
-  return { tasks, activeFilter, filters }
+  const allTasks = state.tasks.sort((a, b) => {
+    return Date.parse(b.updatedAt) - Date.parse(a.updatedAt)
+  })
+
+  return { allTasks, activeFilter, filters }
 }
 
 module.exports = connect(mapStateToProps)(stickyNavd)

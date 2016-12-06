@@ -35,32 +35,6 @@ function updateTasks(existingTasks, { tasks, filter }) {
   return Object.keys(tasksByKey).map(key => tasksByKey[key])
 }
 
-function selectTasks(existingTasks, { task }) {
-  const selectedTasks = []
-  const updatedTasks = existingTasks.map(t => {
-    if (t.storageKey === task.storageKey) {
-      selectedTasks.push(t)
-      return Object.assign({}, t, { isSelected: true })
-    }
-    return t
-  })
-  console.info('select', selectedTasks.map(t => t.storageKey))
-  return updatedTasks
-}
-
-function deselectTasks(existingTasks, { task }) {
-  const deselectedTasks = []
-  const updatedTasks = existingTasks.map(t => {
-    if (t.storageKey === task.storageKey) {
-      deselectedTasks.push(t)
-      return Object.assign({}, t, { isSelected: false })
-    }
-    return t
-  })
-  console.info('deselect', deselectedTasks.map(t => t.storageKey))
-  return updatedTasks
-}
-
 function clearChangelog(existingTasks, { task }) {
   return existingTasks.map(existingTask => {
     if (task.storageKey === existingTask.storageKey) {
@@ -70,78 +44,51 @@ function clearChangelog(existingTasks, { task }) {
   })
 }
 
-function currentTimeString() {
-  const date = new Date()
-  return date.toISOString()
-}
-
-function snoozeTasks(existingTasks) {
-  const snoozedTasks = []
+function updateTask(existingTasks, taskToUpdate, newValues) {
   const updatedTasks = existingTasks.map(task => {
-    if (task.isSelected) {
-      const snoozedAt = currentTimeString()
-      snoozedTasks.push(task)
-      return Object.assign({}, task, {
-        snoozedAt,
-        archivedAt: null,
-        isSelected: false,
-        ignore: false,
-      })
+    if (task.storageKey === taskToUpdate.storageKey) {
+      return Object.assign({}, task, newValues)
     }
     return task
   })
   return updatedTasks
 }
 
-function ignoreTasks(existingTasks) {
-  const ignoredTasks = []
-  const updatedTasks = existingTasks.map(task => {
-    if (task.isSelected) {
-      ignoredTasks.push(task)
-      return Object.assign({}, task, {
-        ignore: true,
-        isSelected: false,
-        snoozedAt: null,
-        archivedAt: null,
-      })
-    }
-    return task
-  })
-  return updatedTasks
+function snoozeTask(existingTasks, { task: taskToUpdate }) {
+  const newValues = {
+    snoozedAt: new Date().toISOString(),
+    archivedAt: null,
+    ignore: false,
+  }
+  return updateTask(existingTasks, taskToUpdate, newValues)
 }
 
-function archiveTasks(existingTasks) {
-  const updatedTasks = existingTasks.map(task => {
-    if (task.isSelected) {
-      const archivedAt = currentTimeString()
-      return Object.assign({}, task, {
-        archivedAt,
-        snoozedAt: null,
-        isSelected: false,
-        ignore: false,
-        changelog: {},
-      })
-    }
-    return task
-  })
-  return updatedTasks
+function ignoreTask(existingTasks, { task: taskToUpdate }) {
+  const newValues = {
+    snoozedAt: null,
+    archivedAt: null,
+    ignore: true,
+  }
+  return updateTask(existingTasks, taskToUpdate, newValues)
 }
 
-function restoreTasks(existingTasks) {
-  const restoredTasks = []
-  const updatedTasks = existingTasks.map(task => {
-    if (task.isSelected) {
-      restoredTasks.push(task)
-      return Object.assign({}, task, {
-        archivedAt: null,
-        ignore: false,
-        snoozedAt: null,
-        isSelected: false,
-      })
-    }
-    return task
-  })
-  return updatedTasks
+function archiveTask(existingTasks, { task: taskToUpdate }) {
+  const newValues = {
+    snoozedAt: null,
+    archivedAt: new Date().toISOString(),
+    ignore: false,
+    changelog: {},
+  }
+  return updateTask(existingTasks, taskToUpdate, newValues)
+}
+
+function restoreTask(existingTasks, { task: taskToUpdate }) {
+  const newValues = {
+    snoozedAt: null,
+    archivedAt: null,
+    ignore: false,
+  }
+  return updateTask(existingTasks, taskToUpdate, newValues)
 }
 
 module.exports = (existingTasks = [], action) => {
@@ -150,18 +97,14 @@ module.exports = (existingTasks = [], action) => {
       return []
     case 'TASKS_UPDATE':
       return updateTasks(existingTasks, action)
-    case 'TASKS_SELECT':
-      return selectTasks(existingTasks, action)
-    case 'TASKS_DESELECT':
-      return deselectTasks(existingTasks, action)
     case 'TASKS_SNOOZE':
-      return snoozeTasks(existingTasks)
+      return snoozeTask(existingTasks, action)
     case 'TASKS_ARCHIVE':
-      return archiveTasks(existingTasks)
+      return archiveTask(existingTasks, action)
     case 'TASKS_IGNORE':
-      return ignoreTasks(existingTasks)
+      return ignoreTask(existingTasks, action)
     case 'TASKS_RESTORE':
-      return restoreTasks(existingTasks)
+      return restoreTask(existingTasks, action)
     case 'TASKS_CLEAR_CHANGELOG':
       return clearChangelog(existingTasks, action)
     default:

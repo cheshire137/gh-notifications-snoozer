@@ -35,10 +35,6 @@ class TaskVisibility {
 
     return false
   }
-
-  static isVisibleTask(task, filter) {
-    return task.filterQueries && task.filterQueries.includes(filter.query) && !this.isHiddenTask(task)
-  }
 }
 
 module.exports = TaskVisibility

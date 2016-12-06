@@ -12,26 +12,12 @@ class TaskListItem extends React.Component {
     this.ensureVisible()
   }
 
-  onToggleCheckbox() {
-    const type = this.props.task.isSelected ? 'TASKS_DESELECT' : 'TASKS_SELECT'
-    this.props.dispatch({ type, task: this.props.task })
-  }
-
   ensureVisible() {
     if (!this.props.isFocused) {
       return
     }
     const el = ReactDOM.findDOMNode(this)
-    const rect = el.getBoundingClientRect()
-    const isInView = rect.top >= 0 && rect.left >= 0 &&
-        rect.bottom <= window.innerHeight && rect.right <= window.innerWidth
-    const nav = document.querySelector('.tertiary-nav')
-    const navRect = nav.getBoundingClientRect()
-    const isFullyInView = isInView && rect.top >= navRect.bottom
-    if (isFullyInView) {
-      return
-    }
-    window.scrollTo(0, el.offsetTop - navRect.bottom)
+    el.scrollIntoViewIfNeeded()
   }
 
   openExternal(event) {
@@ -78,20 +64,11 @@ class TaskListItem extends React.Component {
 
   render() {
     const { updatedAt, repository, title, repositoryOwner, user, storageKey,
-            url, state, repositoryOwnerAvatar, userAvatar, isSelected,
+            url, state, repositoryOwnerAvatar, userAvatar,
             changelog } = this.props.task
 
     return (
-      <li className={this.listItemClass()}>
-        <div className="column has-text-right">
-          <input
-            id={storageKey}
-            type="checkbox"
-            className="task-list-item-checkbox"
-            defaultChecked={!!isSelected}
-            onChange={() => this.onToggleCheckbox()}
-          />
-        </div>
+      <li id={storageKey} className={this.listItemClass()}>
         <div className="column has-text-centered">
           <label className="checkbox state-label" htmlFor={storageKey}>
             <span title={state} className={this.iconClass()}></span>

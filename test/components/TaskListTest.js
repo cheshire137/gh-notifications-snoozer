@@ -43,66 +43,31 @@ describe('TaskList', () => {
 
   it('does not show task that is ignored', () => {
     assert.equal(1, renderedDOM().querySelectorAll('#pull-163031382').length)
-    store.dispatch({
-      type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
-    })
-    store.dispatch({ type: 'TASKS_IGNORE' })
+    store.dispatch({ type: 'TASKS_IGNORE', task: { storageKey: 'pull-163031382' } })
     assert.equal(0, renderedDOM().querySelectorAll('#pull-163031382').length)
-
-    // Reset state
-    store.dispatch({
-      type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
-    })
-    store.dispatch({ type: 'TASKS_RESTORE' })
+    store.dispatch({ type: 'TASKS_RESTORE', task: { storageKey: 'pull-163031382' } })
   })
 
   it('does not show task that is archived', () => {
     assert.equal(1, renderedDOM().querySelectorAll('#pull-163031382').length)
-    store.dispatch({
-      type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
-    })
-    store.dispatch({ type: 'TASKS_ARCHIVE' })
+    store.dispatch({ type: 'TASKS_ARCHIVE', task: { storageKey: 'pull-163031382' } })
     assert.equal(0, renderedDOM().querySelectorAll('#pull-163031382').length)
-
-    // Reset state
-    store.dispatch({
-      type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
-    })
-    store.dispatch({ type: 'TASKS_RESTORE' })
+    store.dispatch({ type: 'TASKS_RESTORE', task: { storageKey: 'pull-163031382' } })
   })
 
   it('does not show task that is snoozed', () => {
     assert.equal(1, renderedDOM().querySelectorAll('#pull-163031382').length)
-    store.dispatch({
-      type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
-    })
-    store.dispatch({ type: 'TASKS_SNOOZE' })
+    store.dispatch({ type: 'TASKS_SNOOZE', task: { storageKey: 'pull-163031382' } })
     assert.equal(0, renderedDOM().querySelectorAll('#pull-163031382').length)
-
-    // Reset state
-    store.dispatch({
-      type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
-    })
-    store.dispatch({ type: 'TASKS_RESTORE' })
+    store.dispatch({ type: 'TASKS_RESTORE', task: { storageKey: 'pull-163031382' } })
   })
 
   context('when the snooze button is clicked', () => {
     let snoozeTime
 
     before(() => {
-      store.dispatch({ type: 'TASKS_SELECT', task: {
-        storageKey: 'pull-163031382',
-      } })
-
       TestUtils.Simulate.click(renderedDOM().querySelector('#snooze-button'))
       snoozeTime = new Date()
-    })
-
-    after(() => {
-      store.dispatch({
-        type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
-      })
-      store.dispatch({ type: 'TASKS_RESTORE' })
     })
 
     it('hides selected tasks', () => {
@@ -136,22 +101,8 @@ describe('TaskList', () => {
   })
 
   context('when the archive button is clicked', () => {
-    let archiveTime
-
     before(() => {
-      store.dispatch({ type: 'TASKS_SELECT', task: {
-        storageKey: 'pull-163031382',
-      } })
-
       TestUtils.Simulate.click(renderedDOM().querySelector('#archive-button'))
-      archiveTime = new Date()
-    })
-
-    after(() => {
-      store.dispatch({
-        type: 'TASKS_SELECT', task: { storageKey: 'pull-163031382' },
-      })
-      store.dispatch({ type: 'TASKS_RESTORE' })
     })
 
     it('hides selected tasks', () => {
@@ -165,9 +116,10 @@ describe('TaskList', () => {
     })
 
     it('shows tasks again if `updatedAt` is greater than `archivedAt`', () => {
+      const theFuture = new Date(3016, 0, 1)
       const tasks = store.getState().tasks
       const updatedTask = Object.assign({}, tasks[0], {
-        updatedAt: new Date(archiveTime.getFullYear() + 1, 0, 1).toISOString(),
+        updatedAt: theFuture.toISOString(),
         comments: 13,
       })
 
