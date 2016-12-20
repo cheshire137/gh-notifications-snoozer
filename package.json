@@ -45,6 +45,7 @@
   "scripts": {
     "postinstall": "npm run build-css && node postinstall.js",
     "start": "concurrently \"npm run watch-css\" \"electron .\"",
+    "dev": "concurrently \"npm run watch-css\" \"SNOOZER_ENV=DEV electron .\"",
     "style": "eslint -c .eslintrc *.js scripts/* src/*.js src/**/*.jsx test/**/*.js",
     "unit-tests": "xvfb-maybe electron-mocha --renderer --recursive --compilers js:babel-register test",
     "test": "npm run-script style --silent && NODE_ENV=test npm run-script unit-tests --silent",
