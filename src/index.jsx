@@ -31,7 +31,12 @@ window.onload = function() {
   const reduxDevTools = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
   const enhancers = compose(autoRehydrate(), reduxDevTools)
   const store = createStore(reducer, undefined, enhancers)
-  const persistDir = remote.app.getPath('desktop')
+
+  let persistDir = remote.app.getPath('userData')
+  if (process.env.SNOOZER_ENV) {
+    persistDir = remote.app.getPath('desktop')
+  }
+
   const persistOptions = { storage: new AsyncNodeStorage(persistDir) }
   persistStore(store, persistOptions)
 
