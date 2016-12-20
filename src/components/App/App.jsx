@@ -89,7 +89,7 @@ class App extends React.Component {
         />)
       case 'edit-filter': return (
         <EditFilter
-          filter={this.props.activeFilter}
+          filter={this.state.filter}
           showtasks={cancel}
         />)
       case 'about': return <About />
