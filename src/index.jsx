@@ -1,5 +1,6 @@
 /* eslint no-underscore-dangle: "off" */
 
+import mkdirp from 'mkdirp'
 import React from 'react'
 import ReactDom from 'react-dom'
 import { Provider } from 'react-redux'
@@ -28,15 +29,13 @@ const hackToLoadEverything = store => {
 }
 
 window.onload = function() {
+  const pathName = process.env.NODE_ENV === 'development' ? 'desktop' : 'userData'
+  const persistDir = remote.app.getPath(pathName)
+  mkdirp.sync(persistDir)
+
   const reduxDevTools = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
   const enhancers = compose(autoRehydrate(), reduxDevTools)
   const store = createStore(reducer, undefined, enhancers)
-
-  let persistDir = remote.app.getPath('userData')
-  if (process.env.SNOOZER_ENV) {
-    persistDir = remote.app.getPath('desktop')
-  }
-
   const persistOptions = { storage: new AsyncNodeStorage(persistDir) }
   persistStore(store, persistOptions)
 
