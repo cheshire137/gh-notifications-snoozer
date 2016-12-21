@@ -98,7 +98,7 @@ class GitHub extends Fetcher {
     }
     const options = opts || {}
     options.headers = this.getHeaders()
-    return super.patch(url, options)
+    return super.post(url, options)
   }
 
   getHeaders() {

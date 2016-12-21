@@ -17,6 +17,13 @@ class Fetcher {
     return this.makeRequest(url, options)
   }
 
+  post(url, opts) {
+    const options = opts || {}
+    options.method = 'POST'
+    console.info('POST', url)
+    return this.makeRequest(url, options)
+  }
+
   makeRequest(url, opts) {
     const options = opts || {}
     if (typeof options.headers === 'undefined') {
@@ -31,7 +38,7 @@ class Fetcher {
             reject()
           }
         } else {
-          this.handleJsonResponse(response, url, resolve, reject)
+          resolve(response.body)
         }
       }).catch(reject)
     })

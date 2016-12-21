@@ -35,6 +35,15 @@ class App extends React.Component {
     this.setupAppMenu()
     if (GitHubAuth.isAuthenticated()) {
       this.loadUser()
+      const url = 'https://api.github.com/graphql'
+      const data = { query: 'query { viewer { login }}' }
+      new GitHub().patch(url, data)
+        .then(body => {
+          console.log(body)
+        })
+        .catch(error => {
+          console.error(error)
+        })
     }
   }
 
