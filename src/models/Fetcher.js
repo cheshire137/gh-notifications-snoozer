@@ -1,5 +1,3 @@
-'use strict'
-
 require('isomorphic-fetch')
 
 class Fetcher {
@@ -20,7 +18,7 @@ class Fetcher {
   post(url, opts) {
     const options = opts || {}
     options.method = 'POST'
-    console.info('POST', url)
+    console.info('POST', url, opts)
     return this.makeRequest(url, options)
   }
 
@@ -29,18 +27,18 @@ class Fetcher {
     if (typeof options.headers === 'undefined') {
       options.headers = {}
     }
-    return new Promise((resolve, reject) => {
-      fetch(url, options).then(response => {
-        if (options.ignoreBody) {
-          if (response.ok) {
-            resolve()
-          } else {
-            reject()
-          }
-        } else {
-          resolve(response.body)
+    return fetch(url, options).then(response => {
+      if (options.ignoreBody && response.ok) {
+        return {}
+      }
+
+      response.json().then(json => {
+        if (!response.ok) {
+          throw new Error(`${response.status}: ${json}`)
         }
-      }).catch(reject)
+
+        return json
+      })
     })
   }
 

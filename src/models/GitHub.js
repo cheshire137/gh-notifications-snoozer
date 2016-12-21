@@ -49,6 +49,11 @@ class GitHub extends Fetcher {
     this.token = token
   }
 
+  post(url, query) {
+    const options = { query, headers: this.getHeaders() }
+    return super.post(url, options)
+  }
+
   // https://developer.github.com/v3/activity/notifications/#list-your-notifications
   getNotifications(sinceDate) {
     let date = sinceDate
@@ -106,8 +111,7 @@ class GitHub extends Fetcher {
       this.token = GitHubAuth.getToken()
     }
     return {
-      Accept: 'application/vnd.github.v3+json',
-      Authorization: `token ${this.token}`,
+      Authorization: `bearer ${this.token}`,
     }
   }
 
