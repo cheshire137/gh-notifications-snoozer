@@ -5,6 +5,35 @@ class GitHub {
     this.token = token
   }
 
+  getTasks(filter) {
+    const extraParams = filter.updatedAt ? ` updated:>${filter.updatedAt}` : ' is:open'
+    const search = `${filter.query} ${extraParams}`
+    return this.getIssuesFromSearch(search)
+  }
+
+  getCurrentUser() {
+    const query = `{
+      viewer {
+        login
+      }
+    }`
+
+    return this.graphql(query).then(result => result.viewer)
+  }
+
+  getIssuesFromSearch(search, endCursor, edges = []) {
+    return this.graphql(this.taskQuery(), { search, endCursor }).then(results => {
+      const allEdges = edges.concat(results.search.edges)
+
+      if (results.search.pageInfo.hasNextPage) {
+        const nextEndCursor = results.search.pageInfo.endCursor
+        return this.getIssuesFromSearch(search, nextEndCursor, allEdges)
+      }
+
+      return { tasks: allEdges.map(edge => this.transformEdgeToTask(edge)) }
+    })
+  }
+
   graphql(query, variables = {}) {
     const url = 'https://api.github.com/graphql'
     const options = {
@@ -30,35 +59,6 @@ class GitHub {
         return result.data
       })
     })
-  }
-
-  getTasks(filter) {
-    const extraParams = filter.updatedAt ? ` updated:>${filter.updatedAt}` : ' is:open'
-    const searchQuery = `${filter.query} ${extraParams}`
-    return this.getIssuesFromSearchQuery(searchQuery)
-  }
-
-  getIssuesFromSearchQuery(searchQuery, endCursor, edges = []) {
-    return this.graphql(this.taskQuery(), { searchQuery, endCursor }).then(results => {
-      const allEdges = edges.concat(results.search.edges)
-
-      if (results.search.pageInfo.hasNextPage) {
-        const nextEndCursor = results.search.pageInfo.endCursor
-        return this.getIssuesFromSearchQuery(searchQuery, nextEndCursor, allEdges)
-      }
-
-      return { tasks: allEdges.map(edge => this.transformEdgeToTask(edge)) }
-    })
-  }
-
-  getCurrentUser() {
-    const query = `{
-      viewer {
-        login
-      }
-    }`
-
-    return this.graphql(query).then(result => result.viewer)
   }
 
   getHeaders() {
@@ -97,8 +97,8 @@ class GitHub {
   }
 
   taskQuery() {
-    return `query($searchQuery: String!, $endCursor: String) {
-      search(first: 30, query: $searchQuery, after: $endCursor, type: ISSUE) {
+    return `query($search: String!, $endCursor: String) {
+      search(first: 30, query: $search, after: $endCursor, type: ISSUE) {
         pageInfo {
          endCursor,
           hasNextPage
