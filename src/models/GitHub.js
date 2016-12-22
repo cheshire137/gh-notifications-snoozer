@@ -42,9 +42,9 @@ class GitHub {
       headers: this.getHeaders(),
     }
 
-    console.log(JSON.stringify(variables))
-
+    console.log(`${response.status} ${JSON.stringify(variables)}`)
     return fetch(url, options).then(response => {
+
       if (!response.ok) {
         return response.json().then(json => {
           throw new Error(`${response.status}: ${JSON.stringify(json)}`)
