@@ -19,7 +19,7 @@ class Fetcher {
     const options = opts || {}
     options.method = 'POST'
     console.info('POST', url, opts)
-    return this.makeRequest(url, options)
+    return this.makeRequest(url, options).then(json => json.data)
   }
 
   makeRequest(url, opts) {
@@ -28,17 +28,17 @@ class Fetcher {
       options.headers = {}
     }
     return fetch(url, options).then(response => {
-      if (options.ignoreBody && response.ok) {
+      if (!response.ok) {
+        return response.json().then(json => {
+          throw new Error(`${response.status}: ${JSON.stringify(json)}`)
+        })
+      }
+
+      if (options.ignoreBody) {
         return {}
       }
 
-      response.json().then(json => {
-        if (!response.ok) {
-          throw new Error(`${response.status}: ${json}`)
-        }
-
-        return json
-      })
+      return response.json()
     })
   }
 
