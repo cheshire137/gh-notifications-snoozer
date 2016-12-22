@@ -1,9 +1,7 @@
-const Fetcher = require('./Fetcher')
 const GitHubAuth = require('./GitHubAuth')
 
-class GitHub extends Fetcher {
+class GitHub {
   constructor(token) {
-    super()
     this.token = token
   }
 
