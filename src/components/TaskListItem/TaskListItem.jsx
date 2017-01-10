@@ -27,22 +27,22 @@ class TaskListItem extends React.Component {
   }
 
   iconClass() {
-    const { state, isPullRequest } = this.props.task
-    console.log(state)
-    const iconClasses = ['octicon']
-    if (isPullRequest) {
-      iconClasses.push('octicon-git-pull-request')
-    } else {
-      iconClasses.push(`octicon-issue-${state === 'open' ? 'opened' : 'closed'}`)
+    let state
+    if (this.props.task.state.match(/open/i)) {
+      state = 'opened'
+    } else if (this.props.task.state.match(/closed/i)) {
+      state = 'closed'
+    } else if (this.props.task.state.match(/merged/i)) {
+      state = 'merged'
     }
 
-    if (state.match(/open/i)) {
-      iconClasses.push('opened')
-    } else if (state.match(/closed/i)) {
-      iconClasses.push('closed')
-    } else if (state.match(/merged/i)) {
-      iconClasses.push('merged')
+    const iconClasses = ['octicon']
+    if (this.props.task.isPullRequest) {
+      iconClasses.push('octicon-git-pull-request')
+    } else {
+      iconClasses.push(`octicon-issue-${state}`)
     }
+
     return iconClasses.join(' ')
   }
 
