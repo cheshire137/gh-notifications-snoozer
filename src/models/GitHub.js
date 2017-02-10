@@ -1,104 +1,67 @@
-const Config = require('../config.json')
-const Fetcher = require('./Fetcher')
 const GitHubAuth = require('./GitHubAuth')
 
-const REPO_URL_PREFIX = 'https://api.github.com/repos/'
+const TASKS_PER_PAGE = 30
 
-function getTask(data) {
-  const repoUrl = data.repository_url
-  const repository = repoUrl.slice(REPO_URL_PREFIX.length)
-  const repositoryOwner = repository.split('/')[0]
-  const type = typeof data.pull_request === 'object' ? 'pull' : 'issue'
-  let apiUrl = data.url
-  if (type === 'pull') {
-    apiUrl = apiUrl.replace(/\/issues\//, '/pulls/')
-  }
-  return {
-    storageKey: `${type}-${data.id}`,
-    id: data.id,
-    type,
-    title: data.title,
-    body: data.body,
-    state: data.state,
-    createdAt: data.created_at,
-    updatedAt: data.updated_at,
-    closedAt: data.closed_at,
-    isPullRequest: type === 'pull',
-    repositoryApiUrl: repoUrl,
-    url: data.html_url,
-    apiUrl,
-    number: data.number,
-    repository,
-    repositoryOwner,
-    repositoryOwnerUrl: `https://github.com/${repositoryOwner}`,
-    repositoryOwnerAvatar: `https://github.com/${repositoryOwner}.png?size=25`,
-    user: data.user.login,
-    userUrl: data.user.html_url,
-    userAvatar: `https://github.com/${data.user.login}.png?size=20`,
-    userType: data.user.type,
-    comments: data.comments,
-    labels: data.labels,
-    milestone: data.milestone,
-    assignees: data.assignees,
-  }
-}
-
-class GitHub extends Fetcher {
+class GitHub {
   constructor(token) {
-    super()
     this.token = token
   }
 
-  // https://developer.github.com/v3/activity/notifications/#list-your-notifications
-  getNotifications(sinceDate) {
-    let date = sinceDate
-    if (typeof date === 'undefined') {
-      date = new Date()
-      date.setDate(date.getDate() - 31)
-    }
-    const dateStr = date.toISOString()
-    const url = `notifications?since=${encodeURIComponent(dateStr)}`
-    return this.get(url).then(result => result.json)
-  }
-
-  // https://developer.github.com/v3/search/#search-issues
   getTasks(filter) {
     const extraParams = filter.updatedAt ? ` updated:>${filter.updatedAt}` : ' is:open'
-    const params = `?q=${encodeURIComponent(filter.query + extraParams)}`
-    const url = `${Config.githubApiUrl}/search/issues${params}&per_page=100`
-    return this.getTasksFromUrl(url)
+    const search = `${filter.query} ${extraParams}`
+    return this.getIssuesFromSearch(search)
   }
 
-  getTasksFromUrl(url, items = []) {
-    return this.get(url).then(({ json, headers }) => {
-      const allItems = items.concat(json.items)
-      const nextUrl = this.getNextUrl(headers)
-      if (nextUrl) {
-        return this.getTasksFromUrl(nextUrl, allItems)
+  getCurrentUser() {
+    const query = `{
+      viewer {
+        login
+      }
+    }`
+
+    return this.graphql(query).then(result => result.viewer)
+  }
+
+  getIssuesFromSearch(search, endCursor, edges = []) {
+    const limit = TASKS_PER_PAGE
+    return this.graphql(this.taskQuery(), { search, endCursor, limit }).then(results => {
+      const allEdges = edges.concat(results.search.edges)
+
+      if (results.search.pageInfo.hasNextPage) {
+        const nextEndCursor = results.search.pageInfo.endCursor
+        return this.getIssuesFromSearch(search, nextEndCursor, allEdges)
       }
 
-      return { tasks: allItems.map(d => getTask(d)), nextUrl, currentUrl: url }
+      return { tasks: allEdges.map(edge => this.transformEdgeToTask(edge)) }
     })
   }
 
-  // https://developer.github.com/v3/users/#get-the-authenticated-user
-  getCurrentUser() {
-    return this.get('user').then(result => result.json)
-  }
-
-  // https://developer.github.com/v3/activity/notifications/#mark-a-thread-as-read
-  markAsRead(url) {
-    return this.patch(url, { ignoreBody: true })
-  }
-
-  patch(relativeOrAbsoluteUrl, opts) {
-    let url = relativeOrAbsoluteUrl
-    if (url.indexOf('http') !== 0) {
-      url = `${Config.githubApiUrl}/${relativeOrAbsoluteUrl}`
+  graphql(query, variables = {}) {
+    const url = 'https://api.github.com/graphql'
+    const options = {
+      body: JSON.stringify({ query, variables }),
+      method: 'POST',
+      headers: this.getHeaders(),
     }
-    const options = opts || {}
-    options.headers = this.getHeaders()
-    return super.patch(url, options)
+
+    return fetch(url, options).then(response => {
+      console.log(`${response.status} ${JSON.stringify(variables)}`)
+
+      if (!response.ok) {
+        return response.json().then(json => {
+          throw new Error(`${response.status}: ${JSON.stringify(json)}`)
+        })
+      }
+
+      return response.json().then(result => {
+        if (result.errors) {
+          throw new Error(`GraphQL Error: ${result.errors.map(e => e.message).join(', ')}`)
+        }
+
+        return result.data
+      })
+    })
   }
 
   getHeaders() {
@@ -106,52 +69,94 @@ class GitHub extends Fetcher {
       this.token = GitHubAuth.getToken()
     }
     return {
-      Accept: 'application/vnd.github.v3+json',
-      Authorization: `token ${this.token}`,
+      Authorization: `bearer ${this.token}`,
     }
   }
 
-  get(path) {
-    const url = this.getFullUrl(path)
-    const opts = { headers: this.getHeaders() }
-    return super.get(url, opts)
-  }
-
-  getFullUrl(relativeOrAbsoluteUrl) {
-    if (relativeOrAbsoluteUrl.indexOf('http') !== 0) {
-      return `${Config.githubApiUrl}/${relativeOrAbsoluteUrl}`
+  transformEdgeToTask(edge) {
+    const node = edge.node
+    const type = node.type === 'PullRequest' ? 'pull' : 'issue'
+    return {
+      storageKey: `${type}-${node.id}`,
+      id: node.id,
+      type: node.type,
+      title: node.title,
+      body: node.body,
+      state: node.state,
+      createdAt: node.createdAt,
+      updatedAt: node.updatedAt,
+      isPullRequest: node.type === 'PullRequest',
+      url: node.url,
+      number: node.number,
+      repository: `${node.repository.owner.login}/${node.repository.name}`,
+      repositoryOwner: node.repository.owner.login,
+      repositoryOwnerUrl: node.repository.owner.url,
+      repositoryOwnerAvatar: node.repository.owner.avatarURL,
+      user: node.author.login,
+      userUrl: node.author.url,
+      userAvatar: node.author.avatarURL,
+      comments: node.comments ? node.comments.totalCount : 0,
     }
-    return relativeOrAbsoluteUrl
   }
 
-  getNextUrl(headers) {
-    const link = headers.get('Link')
-    if (!link) {
-      return null
-    }
-    return this.getNextUrlFromLink(link)
-  }
+  // A GraphQL query using GitHubs GraphQL API https://developer.github.com/early-access/graphql/
+  taskQuery() {
+    return `query($limit: Integer, $search: String!, $endCursor: String) {
+      search(first: $limit, query: $search, after: $endCursor, type: ISSUE) {
+        pageInfo {
+         endCursor,
+          hasNextPage
+        }
+        edges {
+          node {
+            ... on Issueish {
+              body,
+              id,
+              title,
+              number,
+              type: __typename,
 
-  // Sample input:
-  // Link: <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=15>; rel="next",
-  // <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=34>; rel="last",
-  // <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=1>; rel="first",
-  // <https://api.github.com/search/code?q=addClass+user%3Amozilla&page=13>; rel="prev"
-  //
-  // Sample output:
-  // https://api.github.com/search/code?q=addClass+user%3Amozilla&page=15
-  getNextUrlFromLink(link) {
-    const urlsAndRels = link.split(',')
-    let nextUrl
-    urlsAndRels.forEach(str => {
-      const urlAndRel = str.trim().split('; ')
-      if (urlAndRel[1] === 'rel="next"') {
-        const urlInBrackets = urlAndRel[0]
-        nextUrl = urlInBrackets.slice(1, urlInBrackets.length - 1)
-        return
+              author {
+                login,
+                url,
+                avatarURL
+              },
+
+              repository {
+                name,
+                owner {
+                  login
+                  url,
+                  avatarURL
+                },
+              },
+            },
+            ... on Issue {
+              url,
+              state,
+              updatedAt,
+              createdAt,
+              comments(last: 1) {
+                totalCount,
+                edges {
+                  node {
+                    author {
+                      login
+                    }
+                  }
+                }
+              }
+            },
+            ... on PullRequest {
+              url,
+              state,
+              updatedAt,
+              createdAt
+            }
+          }
+        }
       }
-    })
-    return nextUrl
+    }`
   }
 }
 

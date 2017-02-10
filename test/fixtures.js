@@ -144,9 +144,7 @@ const task = {
   state: 'open',
   createdAt: '2016-06-29T21:30:36Z',
   updatedAt: '2016-07-11T03:19:37Z',
-  closedAt: null,
   isPullRequest: true,
-  repositoryApiUrl: 'https://api.github.com/repos/ansible/ansible',
   url: 'https://github.com/ansible/ansible/pull/16510',
   number: 16510,
   repository: 'ansible/ansible',
@@ -156,8 +154,6 @@ const task = {
   user: 'jgrowl',
   userUrl: 'https://github.com/jgrowl',
   userAvatar: 'https://github.com/jgrowl.png?size=20',
-  userType: 'User',
-  apiUrl: 'https://api.github.com/repos/ansible/ansible/pulls/16510',
   comments: 1,
   filterQueries: ['cats'],
   changelog: {},
@@ -172,9 +168,7 @@ const anotherTask = {
   state: 'open',
   createdAt: '2016-01-01T00:00:00Z',
   updatedAt: '2016-01-02T00:00:00Z',
-  closedAt: null,
   isPullRequest: false,
-  repositoryApiUrl: 'https://api.github.com/repos/ansible/ansible',
   url: 'https://github.com/ansible/ansible/issue/1',
   number: 1,
   repository: 'ansible/ansible',
@@ -184,8 +178,6 @@ const anotherTask = {
   user: 'jgrowl',
   userUrl: 'https://github.com/jgrowl',
   userAvatar: 'https://github.com/jgrowl.png?size=20',
-  userType: 'User',
-  apiUrl: 'https://api.github.com/repos/ansible/ansible/issues/1',
   comments: 1,
   filterQueries: ['cats'],
   changelog: {},
@@ -272,8 +264,74 @@ const notification = {
   subscription_url: 'https://api.github.com/notifications/threads/1234/subscription',
 }
 
+const searchResults = {
+  data: {
+    search: {
+      pageInfo: {
+        endCursor: 'Y3Vyc29yOjI=',
+        hasNextPage: false,
+      },
+      edges: [
+        {
+          node: {
+            body: 'This moves Snoozer off the REST API and to GraphQL. There are a few advantages with this:\r\n\r\n- We can now know if a PR is merged!\r\n- We can get all the new comments for an Issue or PR. This will allow us to keep an issue/pr archived if you were the one who commented on it.\r\n- Less Code and GraphQL is the future!\r\n\r\nThere are two hiccups. You have to visit https://github.com/prerelease/agreement for the GraphQL API to work! And I need to get the tests to pass.\r\n\r\ncc @cheshire137 ',
+            id: 'MDExOlB1bGxSZXF1ZXN0OTkwMzQ0Mjk=',
+            title: 'Start using GraphQL',
+            number: 124,
+            type: 'PullRequest',
+            author: {
+              login: 'probablycorey',
+              url: 'https://github.com/probablycorey',
+              avatarURL: 'https://avatars0.githubusercontent.com/u/596?v=3',
+            },
+            repository: {
+              name: 'gh-notifications-snoozer',
+              owner: {
+                login: 'cheshire137',
+                url: 'https://github.com/cheshire137',
+                avatarURL: 'https://avatars0.githubusercontent.com/u/82317?v=3',
+              },
+            },
+            url: 'https://github.com/cheshire137/gh-notifications-snoozer/pull/124',
+            state: 'OPEN',
+            updatedAt: '2016-12-22T16:26:24Z',
+            createdAt: '2016-12-22T01:29:47Z',
+          },
+        },
+        {
+          node: {
+            body: 'This PR',
+            id: 'MDExOlB1bGxSZXF1ZXN0OTg4NDEzNjc=',
+            title: 'Make deving better',
+            number: 123,
+            type: 'PullRequest',
+            author: {
+              login: 'probablycorey',
+              url: 'https://github.com/probablycorey',
+              avatarURL: 'https://avatars0.githubusercontent.com/u/596?v=3',
+            },
+            repository: {
+              name: 'gh-notifications-snoozer',
+              owner: {
+                login: 'cheshire137',
+                url: 'https://github.com/cheshire137',
+                avatarURL: 'https://avatars0.githubusercontent.com/u/82317?v=3',
+              },
+            },
+            url: 'https://github.com/cheshire137/gh-notifications-snoozer/pull/123',
+            state: 'OPEN',
+            updatedAt: '2016-12-22T16:18:04Z',
+            createdAt: '2016-12-20T22:55:03Z',
+          },
+        },
+      ],
+    },
+  },
+}
+
 module.exports = {
   task: Object.freeze(task),
+  searchResults: Object.freeze(searchResults),
   anotherTask: Object.freeze(anotherTask),
   pullRequest: Object.freeze(pullRequest),
   issue: Object.freeze(issue),
