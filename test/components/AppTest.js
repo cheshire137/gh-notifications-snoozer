@@ -10,7 +10,6 @@ const fetchMock = require('fetch-mock')
 const App = require('../../src/components/App')
 const reducer = require('../../src/reducers/reducer')
 const GitHubAuth = require('../../src/models/GitHubAuth')
-const Config = require('../../src/config.json')
 
 function renderPage(store) {
   return TestUtils.renderIntoDocument(
@@ -58,8 +57,7 @@ describe('App', () => {
     before(() => {
       store = Redux.createStore(reducer)
       simple.mock(GitHubAuth, 'getToken').returnWith('test-whee')
-      fetchMock.get(`${Config.githubApiUrl}/user`, { login: 'testuser123' })
-      fetchMock.get(`${Config.githubApiUrl}/search/issues?per_page=30&q=cats`, [])
+      fetchMock.post('https://api.github.com/graphql', { login: 'testuser123' })
     })
 
     after(() => {
@@ -72,8 +70,6 @@ describe('App', () => {
 
       const fetchedCalls = fetchMock.calls().matched
       assert.equal(1, fetchedCalls.length, 'Only one fetch call should be made')
-      assert(fetchedCalls[0][0].match(/\/user/),
-             'Fetch call should be to the user API')
     })
   })
 })

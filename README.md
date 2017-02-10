@@ -39,11 +39,10 @@ npm install
 
 ### Every Time
 
-Run the app with:
+If you are developing snoozer use `npm run-script dev`. This will use your
+Desktop as the storage location to make deving easier.
 
-```bash
-npm start
-```
+For everything else use `npm start`.
 
 ### Troubleshooting
 
