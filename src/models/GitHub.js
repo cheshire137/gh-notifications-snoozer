@@ -1,8 +1,8 @@
 const GitHubAuth = require('./GitHubAuth')
 
-class GitHub {
-  TASKS_PER_PAGE = 30
+const TASKS_PER_PAGE = 30
 
+class GitHub {
   constructor(token) {
     this.token = token
   }
