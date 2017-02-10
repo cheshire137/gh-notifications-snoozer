@@ -24,8 +24,7 @@ class GitHub {
   }
 
   getIssuesFromSearch(search, endCursor, edges = []) {
-    const limit = TASKS_PER_PAGE
-    return this.graphql(this.taskQuery(), { search, endCursor, limit }).then(results => {
+    return this.graphql(this.taskQuery(), { search, endCursor }).then(results => {
       const allEdges = edges.concat(results.search.edges)
 
       if (results.search.pageInfo.hasNextPage) {
@@ -101,8 +100,8 @@ class GitHub {
 
   // A GraphQL query using GitHubs GraphQL API https://developer.github.com/early-access/graphql/
   taskQuery() {
-    return `query($limit: Integer, $search: String!, $endCursor: String) {
-      search(first: $limit, query: $search, after: $endCursor, type: ISSUE) {
+    return `query($search: String!, $endCursor: String) {
+      search(first: 30, query: $search, after: $endCursor, type: ISSUE) {
         pageInfo {
          endCursor,
           hasNextPage
