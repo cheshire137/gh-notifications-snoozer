@@ -73,6 +73,7 @@ class GitHub {
   }
 
   transformEdgeToTask(edge) {
+    const rootPath = "https://github.com"
     const node = edge.node
     const type = node.type === 'PullRequest' ? 'pull' : 'issue'
     return {
@@ -85,14 +86,14 @@ class GitHub {
       createdAt: node.createdAt,
       updatedAt: node.updatedAt,
       isPullRequest: node.type === 'PullRequest',
-      url: node.path,
+      url: rootPath + node.path,
       number: node.number,
       repository: `${node.repository.owner.login}/${node.repository.name}`,
       repositoryOwner: node.repository.owner.login,
-      repositoryOwnerUrl: node.repository.owner.path,
+      repositoryOwnerUrl: rootPath + node.repository.owner.path,
       repositoryOwnerAvatar: node.repository.owner.avatarURL,
       user: node.author.login,
-      userUrl: node.author.path,
+      userUrl: rootPath + node.author.path,
       userAvatar: node.author.avatarURL,
       comments: node.comments ? node.comments.totalCount : 0,
     }
