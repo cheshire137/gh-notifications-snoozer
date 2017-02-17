@@ -85,14 +85,14 @@ class GitHub {
       createdAt: node.createdAt,
       updatedAt: node.updatedAt,
       isPullRequest: node.type === 'PullRequest',
-      url: node.url,
+      url: node.path,
       number: node.number,
       repository: `${node.repository.owner.login}/${node.repository.name}`,
       repositoryOwner: node.repository.owner.login,
-      repositoryOwnerUrl: node.repository.owner.url,
+      repositoryOwnerUrl: node.repository.owner.path,
       repositoryOwnerAvatar: node.repository.owner.avatarURL,
       user: node.author.login,
-      userUrl: node.author.url,
+      userUrl: node.author.path,
       userAvatar: node.author.avatarURL,
       comments: node.comments ? node.comments.totalCount : 0,
     }
@@ -117,7 +117,7 @@ class GitHub {
 
               author {
                 login,
-                url,
+                path,
                 avatarURL
               },
 
@@ -125,13 +125,13 @@ class GitHub {
                 name,
                 owner {
                   login
-                  url,
+                  path,
                   avatarURL
                 },
               },
             },
             ... on Issue {
-              url,
+              path,
               state,
               updatedAt,
               createdAt,
@@ -147,7 +147,7 @@ class GitHub {
               }
             },
             ... on PullRequest {
-              url,
+              path,
               state,
               updatedAt,
               createdAt
