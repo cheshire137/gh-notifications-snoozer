@@ -49,8 +49,10 @@ describe('TaskList', () => {
   })
 
   it('does not show task that is archived', () => {
+    const filter = { updatedAt: '2015-01-01T01:01:01.000Z' }
+
     assert.equal(1, renderedDOM().querySelectorAll('#pull-163031382').length)
-    store.dispatch({ type: 'TASKS_ARCHIVE', task: { storageKey: 'pull-163031382' } })
+    store.dispatch({ type: 'TASKS_ARCHIVE', task: { storageKey: 'pull-163031382' }, filter })
     assert.equal(0, renderedDOM().querySelectorAll('#pull-163031382').length)
     store.dispatch({ type: 'TASKS_RESTORE', task: { storageKey: 'pull-163031382' } })
   })

@@ -105,7 +105,11 @@ class TaskList extends React.Component {
   }
 
   archive() {
-    this.props.dispatch({ type: 'TASKS_ARCHIVE', task: this.focusedTask() })
+    this.props.dispatch({
+      type: 'TASKS_ARCHIVE',
+      task: this.focusedTask(),
+      filter: this.props.activeFilter,
+    })
   }
 
   ignore() {
