@@ -28,15 +28,22 @@ const hackToLoadEverything = store => {
   setTimeout(render, 10)
 }
 
-window.onload = function() {
-  const pathName = process.env.NODE_ENV === 'development' ? 'desktop' : 'userData'
-  const persistDir = remote.app.getPath(pathName)
-  mkdirp.sync(persistDir)
+const getStoragePath = () => {
+  if (process.env.NODE_ENV === 'development') {
+    return process.env.SNOOZER_STORAGE_PATH || remote.app.getPath('desktop')
+  }
 
+  return remote.app.getPath('userData')
+}
+
+window.onload = function() {
   const reduxDevTools = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
   const enhancers = compose(autoRehydrate(), reduxDevTools)
   const store = createStore(reducer, undefined, enhancers)
-  const persistOptions = { storage: new AsyncNodeStorage(persistDir) }
+
+  const storagePath = getStoragePath()
+  mkdirp.sync(storagePath)
+  const persistOptions = { storage: new AsyncNodeStorage(storagePath) }
   persistStore(store, persistOptions)
 
   hackToLoadEverything(store)
