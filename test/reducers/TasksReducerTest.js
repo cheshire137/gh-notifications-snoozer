@@ -46,6 +46,18 @@ describe('Tasks reducer', () => {
       assert.isNotNaN(Date.parse(archivedTask.archivedAt), 'archivedAt should be a string date')
     })
 
+    it('uses the updatedAt date as the archivedAt date', () => {
+      // Since the issue could have been updated between the time it was updated
+      // and when they press archive, it should only archive it at the last updated time
+      const initialTasks = [fixtures.task, fixtures.anotherTask]
+
+      const store = Redux.createStore(reducer, { tasks: initialTasks })
+      store.dispatch({ type: 'TASKS_ARCHIVE', task: fixtures.task })
+
+      const archivedTask = store.getState().tasks.find(t => t.archivedAt)
+      assert.equal(archivedTask.archivedAt, archivedTask.updatedAt)
+    })
+
     it('clears changelog when the task is archived', () => {
       const task = Object.assign({}, fixtures.task, { changelog: { comments: 100 } })
       const initialTasks = [task]
