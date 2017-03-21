@@ -72,10 +72,10 @@ function ignoreTask(existingTasks, { task: taskToUpdate }) {
   return updateTask(existingTasks, taskToUpdate, newValues)
 }
 
-function archiveTask(existingTasks, { task: taskToUpdate }) {
+function archiveTask(existingTasks, { task: taskToUpdate, filter }) {
   const newValues = {
     snoozedAt: null,
-    archivedAt: new Date().toISOString(),
+    archivedAt: filter.updatedAt,
     ignore: false,
     changelog: {},
   }

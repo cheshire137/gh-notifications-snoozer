@@ -39,19 +39,34 @@ describe('Tasks reducer', () => {
     it('archives the selected task', () => {
       const initialTasks = [fixtures.task, fixtures.anotherTask]
 
+      const filter = { updatedAt: '2015-01-01T01:01:01.000Z' }
       const store = Redux.createStore(reducer, { tasks: initialTasks })
-      store.dispatch({ type: 'TASKS_ARCHIVE', task: fixtures.task })
+      store.dispatch({ type: 'TASKS_ARCHIVE', task: fixtures.task, filter })
 
       const archivedTask = store.getState().tasks.find(t => t.archivedAt)
       assert.isNotNaN(Date.parse(archivedTask.archivedAt), 'archivedAt should be a string date')
+    })
+
+    it('uses the filter\'s updatedAt date as the archivedAt date', () => {
+      // Since the issue could have been updated between the time it was updated
+      // and when they press archive, it should only archive it at the last updated time
+      const initialTasks = [fixtures.task, fixtures.anotherTask]
+
+      const filter = { updatedAt: '2015-01-01T01:01:01.000Z' }
+      const store = Redux.createStore(reducer, { tasks: initialTasks })
+      store.dispatch({ type: 'TASKS_ARCHIVE', task: fixtures.task, filter })
+
+      const archivedTask = store.getState().tasks.find(t => t.archivedAt)
+      assert.equal(archivedTask.archivedAt, filter.updatedAt)
     })
 
     it('clears changelog when the task is archived', () => {
       const task = Object.assign({}, fixtures.task, { changelog: { comments: 100 } })
       const initialTasks = [task]
 
+      const filter = { updatedAt: '2015-01-01T01:01:01.000Z' }
       const store = Redux.createStore(reducer, { tasks: initialTasks })
-      store.dispatch({ type: 'TASKS_ARCHIVE', task })
+      store.dispatch({ type: 'TASKS_ARCHIVE', task, filter })
 
       const archivedTask = store.getState().tasks[0]
 

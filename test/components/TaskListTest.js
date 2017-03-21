@@ -19,7 +19,12 @@ describe('TaskList', () => {
     simple.mock(GitHubAuth, 'getToken').returnWith('test-whee')
 
     // Setup Redux store and render app
-    const filters = [{ name: 'Cool name', query: 'cats', selected: true }]
+    const filters = [{
+      name: 'Cool name',
+      query: 'cats',
+      selected: true,
+      updatedAt: '2017-01-01T01:01:01.000Z',
+    }]
     const tasks = [fixtures.task]
 
     store = Redux.createStore(reducer, { filters, tasks })
@@ -49,8 +54,10 @@ describe('TaskList', () => {
   })
 
   it('does not show task that is archived', () => {
+    const filter = { updatedAt: '2017-01-01T01:01:01.000Z' }
+
     assert.equal(1, renderedDOM().querySelectorAll('#pull-163031382').length)
-    store.dispatch({ type: 'TASKS_ARCHIVE', task: { storageKey: 'pull-163031382' } })
+    store.dispatch({ type: 'TASKS_ARCHIVE', task: { storageKey: 'pull-163031382' }, filter })
     assert.equal(0, renderedDOM().querySelectorAll('#pull-163031382').length)
     store.dispatch({ type: 'TASKS_RESTORE', task: { storageKey: 'pull-163031382' } })
   })

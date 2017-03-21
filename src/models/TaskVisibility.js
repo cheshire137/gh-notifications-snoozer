@@ -27,7 +27,7 @@ class TaskVisibility {
     if (typeof archivedAt === 'string') {
       const updateDate = new Date(updatedAt)
       const archiveDate = new Date(archivedAt)
-      if (archiveDate > updateDate) {
+      if (archiveDate >= updateDate) {
         // Has not been updated since it was archived, hide it
         return true
       }
